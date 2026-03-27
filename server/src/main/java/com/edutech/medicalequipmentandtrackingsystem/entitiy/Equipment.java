@@ -7,5 +7,6 @@ import javax.persistence.*;
 public class Equipment {
     String name="piyush";
     String name1="hrugved";
+    String newBranch = "created";
 
 }
