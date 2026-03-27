@@ -6,9 +6,15 @@ import org.springframework.stereotype.Repository;
 
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.Equipment;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
+    static List<Equipment>findByHospitalId(Long hospitalId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByHospitalId'");
+    }
 
-public interface EquipmentRepository {
     // extent jpa repository and add custom methods if needed
 }
