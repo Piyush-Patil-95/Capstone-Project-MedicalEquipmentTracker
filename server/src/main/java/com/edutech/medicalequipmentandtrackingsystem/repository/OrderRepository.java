@@ -9,7 +9,7 @@ import com.edutech.medicalequipmentandtrackingsystem.entitiy.Order;
 import java.util.List;
 
 
-public interface OrderRepository  {
-
+public interface OrderRepository  extends JpaRepository<Order,Long>{
+    List<Order>findByEquipmentId(Long equipmentId);
     // extend jpa repository and add method if needed
 }

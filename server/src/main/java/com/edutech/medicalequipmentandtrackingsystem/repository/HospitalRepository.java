@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.Hospital;
 
 
-public interface HospitalRepository  {
+public interface HospitalRepository extends JpaRepository<Hospital,Long> {
     // extends JpaRepositor and add custom methods if needed
 }
 
