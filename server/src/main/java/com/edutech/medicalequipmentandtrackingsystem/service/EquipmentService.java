@@ -10,7 +10,7 @@ import com.edutech.medicalequipmentandtrackingsystem.repository.HospitalReposito
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-
+@Service
 public class EquipmentService {
     @Autowired
     private EquipmentRepository equipmentRepository;
@@ -23,7 +23,7 @@ public class EquipmentService {
         return equipmentRepository.save(equipment);
     }
     public List<Equipment> getAllEquipmentOfHospital(Long hospitalId){
-        return EquipmentRepository.findByHospitalId(hospitalId);
+        return equipmentRepository.findByHospitalId(hospitalId);
     }
 
 }
