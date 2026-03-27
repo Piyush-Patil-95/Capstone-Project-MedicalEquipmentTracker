@@ -9,6 +9,9 @@ import com.edutech.medicalequipmentandtrackingsystem.entitiy.Maintenance;
 import java.util.List;
 
 
-public interface MaintenanceRepository  {
+public interface MaintenanceRepository extends JpaRepository<Maintenance,Long>{
+
+     List<Maintenance>findByEquipmentId(Long equipmentId);
+
     // extend jpa repository and add custom methods if needed
 }
