@@ -19,5 +19,5 @@ import java.util.List;
 
 
 public class HospitalController {
-
+    String name = "Virendra";
     }
