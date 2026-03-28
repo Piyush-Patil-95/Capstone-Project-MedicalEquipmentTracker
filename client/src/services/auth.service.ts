@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class AuthService {
 
   private token: string | null = null;
-  private isLoggedIn: boolean = false;
+  private isLoggedIn: boolean = true;
 
   constructor() {}
 
@@ -24,12 +24,13 @@ export class AuthService {
   }
   // Method to retrieve login status
   get getLoginStatus(): boolean {
-  
+  return true
       //please complete this
    
   }
   getToken(): string | null {
   //please complete this
+  return null
   }
   logout(){
     //please complete this
