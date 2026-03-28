@@ -9,7 +9,17 @@ import { HttpService } from '../../services/http.service';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss']
 })
-export class RegistrationComponent 
+export class RegistrationComponent implements OnInit {
+  
+
+
+
+  
+ngOnInit(): void {
+  
+}
+
+}
 //doto: complete missing code..
 
 

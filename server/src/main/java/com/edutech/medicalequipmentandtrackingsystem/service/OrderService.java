@@ -12,9 +12,11 @@ import com.edutech.medicalequipmentandtrackingsystem.repository.OrderRepository;
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
-
+@Service
 public class OrderService {
     
 //Implement the required code here
+
+
 
 }

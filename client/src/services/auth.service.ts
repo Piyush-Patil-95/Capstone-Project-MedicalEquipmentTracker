@@ -23,14 +23,14 @@ export class AuthService {
     return localStorage.getItem('role');
   }
   // Method to retrieve login status
-  get getLoginStatus(): boolean {
+  // get getLoginStatus(): boolean {
   
-      //please complete this
+  //     //please complete this
    
-  }
-  getToken(): string | null {
-  //please complete this
-  }
+  // }
+  // getToken(): string | null {
+  // //please complete this
+  // }
   logout(){
     //please complete this
    }

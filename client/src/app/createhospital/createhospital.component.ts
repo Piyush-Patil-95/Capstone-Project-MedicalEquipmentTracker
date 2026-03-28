@@ -13,5 +13,8 @@ import { AuthService } from '../../services/auth.service';
 export class CreatehospitalComponent implements OnInit {
  
   //todo: Complete missing code..
+  ngOnInit(): void {
+    
+  }
   
 }
