@@ -8,15 +8,20 @@ export class AuthService {
   private token: string | null = null;
   private isLoggedIn: boolean = true;
 
-  constructor() {}
+  constructor() {
+    this.token=localStorage.getItem('token')
+    this.isLoggedIn=!this.token;
+  }
 
-  // Method to save token received from login
+  
   saveToken(token: string) {
-  //please complete this
+  this.token=token;
+  this.isLoggedIn=true;
+  localStorage.setItem('token',token);
   }
    SetRole(role:any)
   {
-     //please complete this
+     localStorage.setItem('role',role);
   }
   get getRole ():string|null
   {
@@ -24,15 +29,15 @@ export class AuthService {
   }
   // Method to retrieve login status
   get getLoginStatus(): boolean {
-  return true
-      //please complete this
+   return !!localStorage.getItem('token') || this.isLoggedIn;
    
   }
   getToken(): string | null {
-  //please complete this
-  return null
+   return this.token;
   }
   logout(){
-    //please complete this
+    this.isLoggedIn=false;
+    this.token=null;
+    localStorage.clear()
    }
 }
