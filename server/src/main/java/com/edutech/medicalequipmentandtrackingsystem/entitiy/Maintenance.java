@@ -3,10 +3,10 @@ package com.edutech.medicalequipmentandtrackingsystem.entitiy;
 
 import javax.persistence.*;
 
-import org.springframework.data.annotation.Id;
+
 
 import java.util.Date;
-
+@Entity
 @Table(name = "maintenances") // do not change table name
 public class Maintenance {
      @Id

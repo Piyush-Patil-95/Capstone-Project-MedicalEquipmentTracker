@@ -6,23 +6,29 @@ import { Injectable } from '@angular/core';
 export class AuthService {
 
   private token: string | null = null;
-  private isLoggedIn: boolean = false;
+  private isLoggedIn: boolean = true;
 
-  constructor() {}
+  constructor() {
+    this.token=localStorage.getItem('token')
+    this.isLoggedIn=!this.token;
+  }
 
-  // Method to save token received from login
+  
   saveToken(token: string) {
-  //please complete this
+  this.token=token;
+  this.isLoggedIn=true;
+  localStorage.setItem('token',token);
   }
    SetRole(role:any)
   {
-     //please complete this
+     localStorage.setItem('role',role);
   }
   get getRole ():string|null
   {
     return localStorage.getItem('role');
   }
   // Method to retrieve login status
+<<<<<<< HEAD
   // get getLoginStatus(): boolean {
   
   //     //please complete this
@@ -31,7 +37,18 @@ export class AuthService {
   // getToken(): string | null {
   // //please complete this
   // }
+=======
+  get getLoginStatus(): boolean {
+   return !!localStorage.getItem('token') || this.isLoggedIn;
+   
+  }
+  getToken(): string | null {
+   return this.token;
+  }
+>>>>>>> a12018e0c757cf6d91df533619a84d10dd72561f
   logout(){
-    //please complete this
+    this.isLoggedIn=false;
+    this.token=null;
+    localStorage.clear()
    }
 }

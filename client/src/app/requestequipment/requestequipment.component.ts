@@ -9,8 +9,12 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './requestequipment.component.html',
   styleUrls: ['./requestequipment.component.scss']
 })
+<<<<<<< HEAD
 export class RequestequipmentComponent {
   
 }
+=======
+export class RequestequipmentComponent {}
+>>>>>>> a12018e0c757cf6d91df533619a84d10dd72561f
 //todo: complete missing code..
 

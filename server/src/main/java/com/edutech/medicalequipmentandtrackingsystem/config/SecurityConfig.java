@@ -17,7 +17,48 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.edutech.medicalequipmentandtrackingsystem.jwt.JwtRequestFilter;
 
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private final UserDetailsService userDetailsService;
+private final JwtRequestFilter jwtRequestFilter;
+private final PasswordEncoder passwordEncoder;
+public SecurityConfig(UserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter,
+        PasswordEncoder passwordEncoder) {
+    this.userDetailsService = userDetailsService;
+    this.jwtRequestFilter = jwtRequestFilter;
+    this.passwordEncoder = passwordEncoder;
+}
+protected void configure(AuthenticationManagerBuilder auth) throws Exception{
+    auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+}
+protected void configure(HttpSecurity http) throws Exception {
+    http.csrf().disable()
+        .authorizeRequests()
+        // POST endpoints
+        .antMatchers(HttpMethod.POST, "/api/user/register", "/api/user/login").permitAll()
+        .antMatchers(HttpMethod.POST, "/api/hospital/create", "/api/hospital/equipment", 
+                     "/api/hospital/maintenance/schedule", "/api/hospital/order").hasAuthority("HOSPITAL")
+        
+        // GET endpoints
+        .antMatchers(HttpMethod.GET, "/api/hospitals", "/api/hospital/equipment/{hospitalId}").hasAuthority("HOSPITAL")
+        .antMatchers(HttpMethod.GET, "/api/technician/maintenance", "/api/supplier/orders").hasAuthority("TECHNICIAN")
+        
+        // PUT endpoints
+        .antMatchers(HttpMethod.PUT, "/api/technician/maintenance/update/{maintenanceId}").hasAuthority("TECHNICIAN")
+        .antMatchers(HttpMethod.PUT, "/api/supplier/order/update/{orderId}").hasAuthority("SUPPLIER")
+        
+        .anyRequest().authenticated()
+        .and()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-public class SecurityConfig {
-    
+    // Add JWT Filter
+    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+}
+@Bean
+@Override
+ public AuthenticationManager authenticationManagerBean() throws Exception{
+    return super. authenticationManagerBean();
+ }
+
 }

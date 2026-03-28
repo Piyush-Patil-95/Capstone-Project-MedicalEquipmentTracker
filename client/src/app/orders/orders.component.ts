@@ -9,11 +9,15 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.scss']
 })
+<<<<<<< HEAD
 export class OrdersComponent implements OnInit{
   ngOnInit(): void {
     
   }
 }
+=======
+export class OrdersComponent  {}
+>>>>>>> a12018e0c757cf6d91df533619a84d10dd72561f
  //todo: complete missing code..
  
  
