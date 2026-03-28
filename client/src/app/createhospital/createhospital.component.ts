@@ -16,7 +16,10 @@ export class CreatehospitalComponent implements OnInit {
   formModel:any={status:null};
   showError:boolean=false;
   errorMessage:any;
-  hospitalList:any=[]; 
+  hospitalList:any=[
+    {name:"Taj hospital", location:"mumbai"},
+    {name:"Oberoy hospital", location:"mumbai"},
+  ]; 
   assignModel: any={};
   showMessage: any;
   responseMessage: any
@@ -47,15 +50,17 @@ export class CreatehospitalComponent implements OnInit {
   }
 
   onSubmit(){
+    if(this.itemForm.invalid){
+      this.itemForm.markAllAsTouched()
+      this.showError = true;
+      this.errorMessage = "Please find all required hospital fields"
+    }
     if(this.itemForm.valid){
       this.service.createHospital(this.itemForm.value).subscribe(()=>{
         this.router.navigate(['/dashboard'])
       })
     }
-    else{
-      this.showError = true;
-      this.errorMessage = "Please find all required hospital fields"
-    }
+    
 
   }
 
@@ -67,6 +72,7 @@ export class CreatehospitalComponent implements OnInit {
 
   submitEquipment(){
     if(this.equipmentForm.invalid){
+      this.equipmentForm.markAllAsTouched()
       this.showError = true;
       this.errorMessage = "Please find all required equipment fields"
     }

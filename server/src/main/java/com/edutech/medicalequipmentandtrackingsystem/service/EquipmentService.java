@@ -1,6 +1,5 @@
 package com.edutech.medicalequipmentandtrackingsystem.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +10,20 @@ import com.edutech.medicalequipmentandtrackingsystem.repository.HospitalReposito
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-
-
+@Service
 public class EquipmentService {
+    @Autowired
+    private EquipmentRepository equipmentRepository;
+    @Autowired
+    private HospitalRepository hospitalRepository;
 
-    
-    //Implement the required code here
+    public Equipment addEquipment(Long hospitalId,Equipment equipment){
+        Hospital hospital=hospitalRepository.findById(hospitalId).orElseThrow(()-> new RuntimeException("not contains"));
+        equipment.setHospital(hospital);
+        return equipmentRepository.save(equipment);
+    }
+    public List<Equipment> getAllEquipmentOfHospital(Long hospitalId){
+        return equipmentRepository.findByHospitalId(hospitalId);
+    }
+
 }

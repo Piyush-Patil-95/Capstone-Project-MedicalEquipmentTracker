@@ -20,21 +20,24 @@
           <!-- Hospital Name -->
           <div class="col-md-4">
             <label class="form-label">Name</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Jipmer Hospital"
-              formControlName="name">
+            <input placeholder="Hospital Name" type="text" class="form-control" formControlName="name"
+              [class.is-invalid]="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
+
+            <div class="invalid-feedback">
+              Hospital name is required
+            </div>
           </div>
+
 
           <!-- Location -->
           <div class="col-md-4">
             <label class="form-label">Location</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Delhi"
-              formControlName="location">
+            <input placeholder="Location" type="text" class="form-control" formControlName="location"
+              [class.is-invalid]="itemForm.get('location')?.invalid && itemForm.get('location')?.touched">
+
+            <div class="invalid-feedback">
+              Location is required
+            </div>
           </div>
 
           <!-- Submit Button -->

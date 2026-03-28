@@ -9,8 +9,16 @@ import org.springframework.stereotype.Service;
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.Hospital;
 import com.edutech.medicalequipmentandtrackingsystem.repository.HospitalRepository;
 
-
+@Service
 public class HospitalService {
+    @Autowired
+    private HospitalRepository hospitalRepository;
+    public List<Hospital> getAllHospitals(){
+        return hospitalRepository.findAll();
+    }
+    public Hospital createHospital(Hospital hospital){
+        return hospitalRepository.save(hospital);
+    }
 
     //Implement the required code here
 }
