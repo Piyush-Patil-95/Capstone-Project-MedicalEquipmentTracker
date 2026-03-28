@@ -3,20 +3,20 @@ package com.edutech.medicalequipmentandtrackingsystem.entitiy;
 
 import javax.persistence.*;
 import java.util.Date;
-
+@Entity
 @Table(name = "orders") // do not change table name
 public class Order {
      @Id
      @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private  Date OrderDate;
-    private Status status;
-    private enum Status{
-        Pending,
-        Shipped,
-        Delivered
+    private String status;
+    // private enum Status{
+    //     Pending,
+    //     Shipped,
+    //     Delivered
 
-    }
+    // }
     private int quantity;
     @ManyToOne
     @JoinColumn(name="equipment_id")
@@ -33,10 +33,10 @@ public class Order {
     public void setOrderDate(Date orderDate) {
         OrderDate = orderDate;
     }
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
     public int getQuantity() {

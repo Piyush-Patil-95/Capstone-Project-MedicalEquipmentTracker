@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.User;
 
 import java.util.Optional;
-
+@Repository
 public interface UserRepository extends JpaRepository<User,Long> {
     User findByUsername(String username);
     // extend jpa repository and add custom methods if needed
