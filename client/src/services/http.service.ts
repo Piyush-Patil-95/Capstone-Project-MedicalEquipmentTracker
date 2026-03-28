@@ -8,6 +8,9 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class HttpService {
+  getHospital() {
+    throw new Error('Method not implemented.');
+  }
   public serverName=environment.apiUrl;
 //todo: complete missing code.. 
   
