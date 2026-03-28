@@ -19,5 +19,29 @@ import java.util.List;
 public class OrderService {
     
 //Implement the required code here
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private EquipmentRepository equipmentRepository;
+  
+    public Order placeOrder(Long equipmentId, Order order) {
+        Equipment equipment = equipmentRepository.findById(equipmentId)
+                .orElseThrow(() -> new RuntimeException("Equipment not found"));
+
+        order.setEquipment(equipment);
+        return orderRepository.save(order);
+ }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+ }
+
+    public Order updateOrderStatus(Long orderId, String newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(newStatus);
+        return orderRepository.save(order);
+ }
 
 }

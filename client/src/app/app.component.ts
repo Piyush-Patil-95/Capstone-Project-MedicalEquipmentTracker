@@ -13,7 +13,7 @@ export class AppComponent {
   constructor(private authService: AuthService, private router:Router)
   {
    
-    // this.IsLoggin=authService.getLoginStatus;
+    this.IsLoggin=authService.getLoginStatus;
     this.roleName=authService.getRole;
     if(this.IsLoggin==false)
     {

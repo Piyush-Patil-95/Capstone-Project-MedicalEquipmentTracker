@@ -10,12 +10,6 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './schedule-maintenance.component.html',
   styleUrls: ['./schedule-maintenance.component.scss']
 })
-<<<<<<< HEAD
-export class ScheduleMaintenanceComponent {
-  
-}
-=======
 export class ScheduleMaintenanceComponent {}
->>>>>>> a12018e0c757cf6d91df533619a84d10dd72561f
 //todo: complete missing code
 

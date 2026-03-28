@@ -25,9 +25,6 @@ export class CreatehospitalComponent implements OnInit {
   responseMessage: any
  
   //todo: Complete missing code..
-  ngOnInit(): void {
-    
-  }
   
   constructor(private fb:FormBuilder, private service:HttpService, private router:Router){
     this.itemForm = this.fb.group({
