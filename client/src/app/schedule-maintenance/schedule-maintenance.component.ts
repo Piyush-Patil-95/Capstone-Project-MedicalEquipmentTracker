@@ -116,7 +116,7 @@ export class ScheduleMaintenanceComponent {
     };
 
 
-    this.http.scheduleMaintenance(equipmentId, payload).subscribe(
+    this.http.scheduleMaintenance(equipmentId).subscribe(
       (res: any) => {
         this.showMessage = true;
         this.responseMessage = "Saved Successfully";
