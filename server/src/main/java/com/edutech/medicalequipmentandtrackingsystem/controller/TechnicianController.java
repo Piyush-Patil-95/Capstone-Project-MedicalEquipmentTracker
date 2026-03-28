@@ -10,19 +10,30 @@ import com.edutech.medicalequipmentandtrackingsystem.service.MaintenanceService;
 
 import java.util.List;
 
-
+@RestController
 public class TechnicianController {
 
-    @GetMapping("/api/technician/maintenance")
-    public ResponseEntity<List<Maintenance>> getAllMaintenance() {
-        return null;
-        // Get all maintenance records and return them with status code 200 OK;
-    }
 
-    @PutMapping("/api/technician/maintenance/update/{maintenanceId}")
-    public ResponseEntity<Maintenance> updateMaintenance
-            (@PathVariable Long maintenanceId, @RequestBody Maintenance updatedMaintenance) {
-                return null;
-        // Update the maintenance record with the given id and return updated record with status code 200 OK;
-    }
+    @Autowired
+    private MaintenanceService maintenanceService;
+
+    // Get all maintenance
+ @GetMapping("/api/technician/maintenance")
+    public ResponseEntity<List<Maintenance>> getMaintenance() {
+        return new ResponseEntity<>(maintenanceService.getAllMaintenance(), HttpStatus.OK);
+ }
+
+    // Update maintenance
+ @PutMapping("/api/technician/maintenance/update/{maintenanceId}")
+    public ResponseEntity<Maintenance> updateMaintenance(
+ @PathVariable Long maintenanceId,
+ @RequestBody Maintenance maintenance) {
+
+        Maintenance updated = maintenanceService.updateMaintenance(maintenanceId, maintenance);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+ }
+   
+   
+
+    
 }

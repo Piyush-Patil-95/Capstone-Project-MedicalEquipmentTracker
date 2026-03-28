@@ -10,6 +10,8 @@ import com.edutech.medicalequipmentandtrackingsystem.repository.EquipmentReposit
 import com.edutech.medicalequipmentandtrackingsystem.repository.OrderRepository;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.io.ObjectInputFilter.Status;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +23,25 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private EquipmentRepository equipmentRepository;
+  
+    public Order placeOrder(Long equipmentId, Order order) {
+        Equipment equipment = equipmentRepository.findById(equipmentId)
+                .orElseThrow(() -> new RuntimeException("Equipment not found"));
 
-    
+        order.setEquipment(equipment);
+        return orderRepository.save(order);
+ }
+
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+ }
+
+    public Order updateOrderStatus(Long orderId, String newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(newStatus);
+        return orderRepository.save(order);
+ }
 
 }

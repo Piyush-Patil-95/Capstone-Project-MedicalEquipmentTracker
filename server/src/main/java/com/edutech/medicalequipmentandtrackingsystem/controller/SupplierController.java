@@ -10,13 +10,27 @@ import com.edutech.medicalequipmentandtrackingsystem.service.OrderService;
 
 import java.util.List;
 
-
+@RestController
 public class SupplierController {
 
-   
-        // get all order and return it status code 200 OK
-    
-  
-        // update order status and return updated order with status code 200 OK
+   @Autowired
+    private OrderService orderService;
+
+    // Get all orders
+ @GetMapping("/api/supplier/orders")
+    public ResponseEntity<List<Order>> getOrders() {
+        return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
+ }
+
+    // Update order status
+ @PutMapping("/api/supplier/order/update/{orderId}")
+    public ResponseEntity<Order> updateOrder(
+ @PathVariable Long orderId,
+ @RequestParam String newStatus) {
+
+        Order updated = orderService.updateOrderStatus(orderId, newStatus);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+ }
+       
   
 }

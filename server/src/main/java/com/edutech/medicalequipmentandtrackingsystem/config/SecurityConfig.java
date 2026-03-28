@@ -17,8 +17,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.edutech.medicalequipmentandtrackingsystem.jwt.JwtRequestFilter;
 
-
-public class SecurityConfig {
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
 private final JwtRequestFilter jwtRequestFilter;
 private final PasswordEncoder passwordEncoder;
@@ -54,8 +55,10 @@ protected void configure(HttpSecurity http) throws Exception {
     // Add JWT Filter
     http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 }
+@Bean
+@Override
  public AuthenticationManager authenticationManagerBean() throws Exception{
-    return authenticationManagerBean();
+    return super. authenticationManagerBean();
  }
 
 }
