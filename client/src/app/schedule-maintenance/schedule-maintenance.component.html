@@ -1,1 +1,99 @@
-//todo: complete missing code..
+<!-- //todo: complete missing code.. -->
+ <div class="container">
+
+    <h2 class="title">Scheduled Maintenance</h2>
+
+    <div class="card">
+        <div class="card-header">
+            Scheduled Maintenance of Equipment
+        </div>
+
+        <div class="card-body">
+            <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+
+                <div class="row">
+
+                    <!-- Hospital -->
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Hospitals</label>
+                        <select class="form-control"
+                                formControlName="hospitalId"
+                                (change)="onHospitalSelect($event)">
+                            <option value="">Select Hospital</option>
+                            <option *ngFor="let h of hospitalList" [value]="h.id">
+                                {{ h.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Scheduled Date -->
+                    <div class="col-3 mb-3">
+                        <label class="form-label">Scheduled Date</label>
+                        <input type="date"
+                               class="form-control"
+                               formControlName="scheduledDate">
+                    </div>
+
+                    <!-- Completed Date -->
+                    <div class="col-3 mb-3">
+                        <label class="form-label">Completed Date</label>
+                        <input type="date"
+                               class="form-control"
+                               formControlName="completedDate">
+                    </div>
+
+                    <!-- Equipment -->
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Equipment</label>
+                        <select class="form-control" formControlName="equipmentId">
+                            <option value="">Select Equipment</option>
+                            <option *ngFor="let eq of equipmentList" [value]="eq.id">
+                                {{ eq.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea rows="2"
+                                  class="form-control"
+                                  formControlName="description"
+                                  placeholder="Enter maintenance description"></textarea>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-6 mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" formControlName="status">
+                            <option value="">Select Status</option>
+                            <option>Pending</option>
+                            <option>In Progress</option>
+                            <option>Complete</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 mt-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            Submit
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+
+            <!-- SUCCESS MESSAGE -->
+            <div *ngIf="showMessage" class="alert alert-success mt-3">
+                {{ responseMessage }}
+            </div>
+
+            <!-- ERROR MESSAGE -->
+            <div *ngIf="showError" class="alert alert-danger mt-3">
+                {{ errorMessage }}
+            </div>
+
+        </div>
+    </div>
+
+</div>
