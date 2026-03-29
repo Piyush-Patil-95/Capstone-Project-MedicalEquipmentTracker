@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LoginRequest {
-private String username;
+    private String username;
     private String password;
 
  @JsonCreator
-    public LoginRequest(
+ public LoginRequest(
  @JsonProperty("username") String username,
  @JsonProperty("password") String password
  ) {

@@ -1,7 +1,9 @@
 package com.edutech.medicalequipmentandtrackingsystem.controller;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,9 +38,10 @@ import com.edutech.medicalequipmentandtrackingsystem.service.OrderService;
 import com.edutech.medicalequipmentandtrackingsystem.service.UserService;
 
 @RestController
-@CrossOrigin("*")
+
+@RequestMapping
 public class RegisterAndLoginController {
-    @Autowired    
+  @Autowired    
    private UserService userService;
    @Autowired
    private JwtUtil jwtUtil;
@@ -45,12 +49,27 @@ public class RegisterAndLoginController {
    private AuthenticationManager authenticationManager;
 
      @PostMapping("/api/user/register")
-    public ResponseEntity<User>registerUser(@RequestBody User user){
-     User registerUser= userService.registerUser(user);
-     return new ResponseEntity<>(registerUser,HttpStatus.CREATED);
+    public ResponseEntity<User> registerUser(@RequestBody User user){
+     User savedUser= userService.registerUser(user);
+     return new ResponseEntity<>(savedUser,HttpStatus.CREATED);
+     
     }
-     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest req){
-      return null;
+      @PostMapping("/api/user/login")
+     public ResponseEntity<?> loginUser(@RequestBody LoginRequest request){
+      try{
+        authenticationManager.authenticate(
+         new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword())
+        );
+      }
+      catch (Exception e){
+       
+       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      }
+        User user=userService.getUserByUsername(request.getUsername());//fetching user bro
+        String token=jwtUtil.generateToken(user.getUsername());//generating 
+         LoginResponse response=new LoginResponse(token, user.getUsername(), user.getEmail(), user.getRole());
+        return new ResponseEntity<>(response,HttpStatus.OK);
+     
      }
         
     }
