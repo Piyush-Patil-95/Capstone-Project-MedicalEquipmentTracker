@@ -29,6 +29,9 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Equipment not found"));
 
         order.setEquipment(equipment);
+        if(order.getStatus()==null||order.getStatus().isEmpty()){
+            order.setStatus("Initiated");
+        }
         return orderRepository.save(order);
  }
 
