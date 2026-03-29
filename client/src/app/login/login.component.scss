@@ -1,3 +1,105 @@
 a{
     cursor: pointer;
 }
+
+.page-wrapper {
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+background-color: #F8F9FA;
+font-family: sans-serif;
+}
+
+.login-card {
+background: #fff;
+width: 100%;
+max-width: 500px;
+border: 1px solid #eee;
+box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+.top-accent-bar {
+height: 4px;
+background-color: #0056B3; // Blue bar from top of image
+}
+
+.content {
+padding: 40px;
+
+h1 {
+font-size: 1.8rem;
+font-weight: 800;
+color: #1A1A1A;
+margin-bottom: 8px;
+line-height: 1.2;
+}
+
+.subtitle {
+color: #666;
+margin-bottom: 30px;
+}
+}
+}
+
+.form-group {
+margin-bottom: 20px;
+
+label {
+display: block;
+font-weight: 600;
+margin-bottom: 8px;
+color: #333;
+}
+
+input {
+width: 100%;
+padding: 10px 12px;
+border: 1px solid #ddd;
+border-radius: 4px;
+box-sizing: border-box;
+font-size: 14px;
+
+&::placeholder { color: #ccc; }
+}
+}
+
+.login-btn {
+width: 100%;
+padding: 12px;
+background: transparent;
+border: 1px solid #333;
+border-radius: 4px;
+cursor: pointer;
+font-size: 14px;
+margin-top: 10px;
+transition: background 0.2s;
+
+&:hover { background: #F0F0F0; }
+}
+
+.footer-text {
+text-align: center;
+margin-top: 20px;
+font-size: 14px;
+
+a {
+color: #0056B3;
+font-weight: bold;
+text-decoration: none;
+cursor: pointer;
+&:hover { text-decoration: underline; }
+}
+}
+
+.error-msg {
+color: #D93025;
+font-size: 13px;
+margin-bottom: 10px;
+}
+
+.error-text {
+color: #FF4D4D;
+font-size: 12px;
+margin-top: 5px;
+display: block;
+}
