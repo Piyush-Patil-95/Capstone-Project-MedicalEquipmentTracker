@@ -10,87 +10,79 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './createhospital.component.html',
   styleUrls: ['./createhospital.component.scss']
 })
+// ... imports stay the same
+
 export class CreatehospitalComponent implements OnInit {
   itemForm!: FormGroup;
   equipmentForm!: FormGroup;
-  formModel:any={status:null};
-  showError:boolean=false;
-  errorMessage:any;
-  hospitalList:any=[
-    {name:"Taj hospital", location:"mumbai"},
-    {name:"Oberoy hospital", location:"mumbai"},
-  ]; 
-  assignModel: any={};
+  formModel: any = { status: null };
+  showError: boolean = false;
+  errorMessage: any;
+  hospitalList: any = []; 
+  assignModel: any = {};
   showMessage: any;
-  responseMessage: any
- 
-  //todo: Complete missing code..
-  
-  constructor(private fb:FormBuilder, private service:HttpService, private router:Router){
-    this.itemForm = this.fb.group({
-      name:['', Validators.required],
-      location:['', Validators.required]
-    })
+  responseMessage: any;
 
-    this.equipmentForm = this.fb.group({
-      name:['', Validators.required],
-      description:['', Validators.required],
-      hospitalId:['', Validators.required]
-    })
-  }
+  constructor(
+    private fb: FormBuilder, 
+    private service: HttpService, 
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.itemForm = this.fb.group({
+      name: ['', Validators.required],
+      location: ['', Validators.required]
+    });
+
+    this.equipmentForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      hospitalId: ['', Validators.required]
+    });
+
     this.getHospital();
   }
 
-  getHospital(){
-    this.service.getHospital().subscribe(data=>{
-      this.hospitalList = data
-    })
+  getHospital() {
+    this.service.getHospital().subscribe(data => {
+      this.hospitalList = data;
+    });
   }
 
-  onSubmit(){
-    if(this.itemForm.invalid){
-      this.itemForm.markAllAsTouched()
+  onSubmit() {
+    if (this.itemForm.invalid) {
+      this.itemForm.markAllAsTouched();
       this.showError = true;
-      this.errorMessage = "Please find all required hospital fields"
-    }
-    if(this.itemForm.valid){
-      this.service.createHospital(this.itemForm.value).subscribe(()=>{
-        this.router.navigate(['/dashboard'])
-      })
+      this.errorMessage = "Please find all required hospital fields";
+      return;
     }
     
-
+    this.service.createHospital(this.itemForm.value).subscribe(() => {
+      this.router.navigate(['/dashboard']);
+    });
   }
 
-  addEquipment(equipment:any){
-    this.service.addEquipment(equipment).subscribe(()=>{
-      this.router.navigate(['/dashboard'])
-    })
+  addEquipment(value: any) {
+    const hospitalId = value.hospitalId; 
+    this.service.addEquipment(value, hospitalId).subscribe(() => {
+      this.router.navigate(['/dashboard']);
+    });
   }
 
-  submitEquipment(){
-    if(this.equipmentForm.invalid){
-      this.equipmentForm.markAllAsTouched()
+  submitEquipment() {
+    if (this.equipmentForm.invalid) {
+      this.equipmentForm.markAllAsTouched();
       this.showError = true;
-      this.errorMessage = "Please find all required equipment fields"
+      this.errorMessage = "Please find all required equipment fields";
+      return;
     }
 
-    const payload = {
-      name:this.equipmentForm.value.name,
-      description: this.equipmentForm.value.description,
-      hospitalId: this.equipmentForm.value.hospitalI
-      
-    }
+    const equipmentData = this.equipmentForm.value;
+    const hospitalId = equipmentData.hospitalId;
 
-    this.service.addEquipment(payload).subscribe(()=>{
-      this.router.navigate(['/dashboard'])
-    })
+    this.service.addEquipment(equipmentData, hospitalId).subscribe(() => {
+      this.router.navigate(['/dashboard']);
+    });
   }
-
-
-
-
-  
 }
