@@ -12,7 +12,6 @@ export class HttpService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  
   private getHttpOptions() {
     return {
       headers: new HttpHeaders({
@@ -22,7 +21,6 @@ export class HttpService {
     };
   }
 
-  
   Login(data: any): Observable<any> {
     return this.http.post(`${this.serverName}/login`, data);
   }
@@ -31,17 +29,18 @@ export class HttpService {
     return this.http.post(`${this.serverName}/register`, data);
   }
 
-  
-  addEquipment(data: any): Observable<any> {
-    return this.http.post(`${this.serverName}/equipment`, data, this.getHttpOptions());
+  // FIXED: Added hospitalId to match test "Expected 1 arguments, but got 2"
+  addEquipment(data: any, hospitalId: any): Observable<any> {
+    return this.http.post(`${this.serverName}/equipment/${hospitalId}`, data, this.getHttpOptions());
   }
 
   getEquipmentById(id: any): Observable<any> {
     return this.http.get(`${this.serverName}/equipment/${id}`, this.getHttpOptions());
   }
 
-  orderEquipment(data: any): Observable<any> {
-    return this.http.post(`${this.serverName}/orders`, data, this.getHttpOptions());
+  // FIXED: Added equipmentId to match test "Expected 1 arguments, but got 2"
+  orderEquipment(data: any, equipmentId: any): Observable<any> {
+    return this.http.post(`${this.serverName}/orders/${equipmentId}`, data, this.getHttpOptions());
   }
 
   getorders(): Observable<any> {
@@ -52,9 +51,9 @@ export class HttpService {
     return this.http.put(`${this.serverName}/orders/${orderId}`, { status }, this.getHttpOptions());
   }
 
-
-  scheduleMaintenance(data: any): Observable<any> {
-    return this.http.post(`${this.serverName}/maintenance`, data, this.getHttpOptions());
+  // FIXED: Added equipmentId to match test "Expected 1 arguments, but got 2"
+  scheduleMaintenance(data: any, equipmentId: any): Observable<any> {
+    return this.http.post(`${this.serverName}/maintenance/${equipmentId}`, data, this.getHttpOptions());
   }
 
   getMaintenance(): Observable<any> {
@@ -65,7 +64,6 @@ export class HttpService {
     return this.http.put(`${this.serverName}/maintenance/${id}`, data, this.getHttpOptions());
   }
 
- 
   createHospital(data: any): Observable<any> {
     return this.http.post(`${this.serverName}/hospitals`, data, this.getHttpOptions());
   }

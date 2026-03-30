@@ -97,37 +97,37 @@ export class ScheduleMaintenanceComponent {
 
 
   onSubmit() {
-    if (this.itemForm.invalid) {
-      this.showError = true;
-      this.errorMessage = "Please fill all required fields correctly.";
-      return;
-    }
-
-    const formValue = this.itemForm.value;
-    const equipmentId = formValue.equipmentId;
-
-
-
-    const payload = {
-      scheduledDate: formValue.scheduledDate,
-      completedDate: formValue.completedDate,
-      description: formValue.description,
-      status: formValue.status
-    };
-
-
-    this.http.scheduleMaintenance(equipmentId).subscribe(
-      (res: any) => {
-        this.showMessage = true;
-        this.responseMessage = "Saved Successfully";
-        this.itemForm.reset();
-      },
-      (err) => {
-        this.showError = true;
-        this.errorMessage = "Error scheduling maintenance.";
-      }
-    );
+  if (this.itemForm.invalid) {
+    this.showError = true;
+    this.errorMessage = "Please fill all required fields correctly.";
+    return;
   }
 
-}
+  const formValue = this.itemForm.value;
+  const id = formValue.equipmentId; 
 
+ 
+  const payload = {
+    scheduledDate: formValue.scheduledDate,
+    completedDate: formValue.completedDate,
+    description: formValue.description,
+    status: formValue.status,
+    hospitalId: formValue.hospitalId,
+    equipmentId: formValue.equipmentId
+  };
+
+  
+  this.http.scheduleMaintenance(payload, id).subscribe(
+    (res: any) => {
+      this.showMessage = true;
+      this.responseMessage = "Saved Successfully";
+      this.showError = false;
+      this.itemForm.reset();
+    },
+    (err) => {
+      this.showError = true;
+      this.errorMessage = "Error scheduling maintenance.";
+    }
+  );
+}
+}
