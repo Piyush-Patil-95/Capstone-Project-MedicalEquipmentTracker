@@ -26,43 +26,31 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onLogin() {
-  this.showError = false;
-  if (this.itemForm.invalid) {
-    this.itemForm.markAllAsTouched();
-    return;
-  }
-
-  this.isLoading = true;
+ // login.component.ts
+onLogin() {
+  if (this.itemForm.invalid) return;
 
   this.httpService.Login(this.itemForm.value).subscribe({
     next: (response: any) => {
-      this.isLoading = false;
-      
-      // Use the keys from your JSON: "token" and "role"
-      if (response && response.token) {
+      // 1. Save Token (Crucial for JWT/Bcrypt flow)
+      if (response.token) {
         this.authService.saveToken(response.token);
       }
       
-      if (response && response.role) {
+      // 2. Save Role if your app uses role-based access
+      if (response.role) {
         this.authService.SetRole(response.role);
       }
 
-      // Final Step: Navigate to dashboard
-      console.log("Login successful, navigating to dashboard...");
-      this.router.navigate(['/createhospital']).then(success => {
-        if (!success) {
-          console.error("Navigation failed! Check your AppRoutingModule.");
-        }
-      });
+      // 3. Navigate to createhospital
+      this.router.navigate(['/createhospital']);
     },
     error: (err) => {
-      this.isLoading = false;
-      this.showError = true;
-      this.errorMessage = err.error?.message || "Login failed. Check your credentials.";
+      this.errorMessage = "Invalid credentials";
     }
   });
 }
+
 
 
 
