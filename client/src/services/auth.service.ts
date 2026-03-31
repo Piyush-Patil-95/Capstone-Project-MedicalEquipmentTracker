@@ -6,38 +6,40 @@ import { Injectable } from '@angular/core';
 export class AuthService {
 
   private token: string | null = null;
-  private isLoggedIn: boolean = true;
+  private isLoggedIn: boolean = false; // 1. Default to false
 
   constructor() {
-    this.token=localStorage.getItem('token')
-    this.isLoggedIn=!this.token;
+    this.token = localStorage.getItem('token');
+    // 2. FIX: If token exists, isLoggedIn should be TRUE
+    this.isLoggedIn = !!this.token; 
   }
 
-  
   saveToken(token: string) {
-  this.token=token;
-  this.isLoggedIn=true;
-  localStorage.setItem('token',token);
+    this.token = token;
+    this.isLoggedIn = true;
+    localStorage.setItem('token', token);
   }
-   SetRole(role:any)
-  {
-     localStorage.setItem('role',role);
+
+  SetRole(role: any) {
+    localStorage.setItem('role', role);
   }
-  get getRole ():string|null
-  {
+
+  get getRole(): string | null {
     return localStorage.getItem('role');
   }
-  // Method to retrieve login status
+
+  // 3. Simplified login status check
   get getLoginStatus(): boolean {
-   return !!localStorage.getItem('token') || this.isLoggedIn;
-   
+    return !!localStorage.getItem('token');
   }
+
   getToken(): string | null {
-   return this.token;
+    return this.token || localStorage.getItem('token');
   }
-  logout(){
-    this.isLoggedIn=false;
-    this.token=null;
-    localStorage.clear()
-   }
+
+  logout() {
+    this.isLoggedIn = false;
+    this.token = null;
+    localStorage.clear();
+  }
 }
