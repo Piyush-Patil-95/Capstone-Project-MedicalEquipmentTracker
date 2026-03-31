@@ -23,11 +23,11 @@ export class HttpService {
   }
 
   Login(data: any): Observable<any> {
-    return this.http.post(`${this.serverName}/login`, data);
+    return this.http.post(`${this.serverName}/api/user/login`, data);
   }
 
   registerUser(data: any): Observable<any> {
-    return this.http.post(`${this.serverName}/register`, data);
+    return this.http.post(`${this.serverName}/api/user/register`, data);
   }
 
   // :white_check_mark: FIXED
