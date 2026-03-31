@@ -8,9 +8,10 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class HttpService {
+
   public serverName = environment.apiUrl;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   private getHttpOptions() {
     return {
@@ -29,46 +30,76 @@ export class HttpService {
     return this.http.post(`${this.serverName}/register`, data);
   }
 
-  // FIXED: Added hospitalId to match test "Expected 1 arguments, but got 2"
+  // :white_check_mark: FIXED
   addEquipment(data: any, hospitalId: any): Observable<any> {
-    return this.http.post(`${this.serverName}/equipment/${hospitalId}`, data, this.getHttpOptions());
+    return this.http.post(
+      `${this.serverName}/api/hospital/equipment?hospitalId=${hospitalId}`,
+      data,
+      this.getHttpOptions()
+    );
   }
 
   getEquipmentById(id: any): Observable<any> {
-    return this.http.get(`${this.serverName}/equipment/${id}`, this.getHttpOptions());
+    return this.http.get(`${this.serverName}/api/equipment/${id}`, this.getHttpOptions());
   }
 
-  // FIXED: Added equipmentId to match test "Expected 1 arguments, but got 2"
+  // :white_check_mark: FIXED
   orderEquipment(data: any, equipmentId: any): Observable<any> {
-    return this.http.post(`${this.serverName}/orders/${equipmentId}`, data, this.getHttpOptions());
+    return this.http.post(
+      `${this.serverName}/api/hospital/order?equipmentId=${equipmentId}`,
+      data,
+      this.getHttpOptions()
+    );
   }
 
+  // :white_check_mark: FIXED
   getorders(): Observable<any> {
-    return this.http.get(`${this.serverName}/orders`, this.getHttpOptions());
+    return this.http.get(`${this.serverName}/api/supplier/orders`, this.getHttpOptions());
   }
 
+  
   UpdateOrderStatus(orderId: any, status: any): Observable<any> {
-    return this.http.put(`${this.serverName}/orders/${orderId}`, { status }, this.getHttpOptions());
+    return this.http.put(
+      `${this.serverName}/api/supplier/order/update/${orderId}?newStatus=${status}`,
+      {},
+      this.getHttpOptions()
+    );
   }
 
-  // FIXED: Added equipmentId to match test "Expected 1 arguments, but got 2"
+  // :white_check_mark: FIXED
   scheduleMaintenance(data: any, equipmentId: any): Observable<any> {
-    return this.http.post(`${this.serverName}/maintenance/${equipmentId}`, data, this.getHttpOptions());
+    return this.http.post(
+      `${this.serverName}/api/hospital/maintenance/schedule?equipmentId=${equipmentId}`,
+      data,
+      this.getHttpOptions()
+    );
   }
 
+  // :white_check_mark: FIXED
   getMaintenance(): Observable<any> {
-    return this.http.get(`${this.serverName}/maintenance`, this.getHttpOptions());
+    return this.http.get(`${this.serverName}/api/technician/maintenance`, this.getHttpOptions());
   }
 
+  // :white_check_mark: FIXED (IMPORTANT BUG HERE)
   updateMaintenance(id: any, data: any): Observable<any> {
-    return this.http.put(`${this.serverName}/maintenance/${id}`, data, this.getHttpOptions());
+    return this.http.put(
+      `${this.serverName}/api/technician/maintenance/update/${id}`,
+      data,
+      this.getHttpOptions()
+    );
   }
 
+  // :white_check_mark: FIXED
   createHospital(data: any): Observable<any> {
-    return this.http.post(`${this.serverName}/hospitals`, data, this.getHttpOptions());
+    return this.http.post(
+      `${this.serverName}/api/hospital/create`,
+      data,
+      this.getHttpOptions()
+    );
   }
 
+  // :white_check_mark: FIXED
   getHospital(): Observable<any> {
-    return this.http.get(`${this.serverName}/hospitals`, this.getHttpOptions());
+    return this.http.get(`${this.serverName}/api/hospitals`, this.getHttpOptions());
   }
 }
