@@ -58,7 +58,7 @@ export class HttpService {
   }
 
   
-  UpdateOrderStatus(orderId: any, status: any): Observable<any> {
+  UpdateOrderStatus( status: any,orderId: any): Observable<any> {
     return this.http.put(
       `${this.serverName}/api/supplier/order/update/${orderId}?newStatus=${status}`,
       {},
@@ -81,7 +81,7 @@ export class HttpService {
   }
 
   // :white_check_mark: FIXED (IMPORTANT BUG HERE)
-  updateMaintenance(id: any, data: any): Observable<any> {
+  updateMaintenance(data: any,id: any): Observable<any> {
     return this.http.put(
       `${this.serverName}/api/technician/maintenance/update/${id}`,
       data,
