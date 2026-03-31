@@ -34,28 +34,21 @@ export class RegistrationComponent implements OnInit {
     });
   }
 
-  onRegister(): void {
-    this.showMessage = false;
-
-    if (this.itemForm.valid) {
-      // Mapping form values to your model for the API call
-      this.httpService.registerUser(this.itemForm.value).subscribe({
-        next: (res: any) => {
-          this.showMessage = true;
-          this.responseMessage = "Registration Successful!";
-          // Redirect to login after a brief delay
-          setTimeout(() => this.router.navigate(['/login']), 2000);
-        },
-        error: (err: any) => {
-          this.showMessage = true;
-          console.log('Full error details', err)
-          this.responseMessage = err.error?.message || "Registration failed. Please try again.";
-        }
-      });
-    } else {
-      this.itemForm.markAllAsTouched();
-    }
+  // registration.component.ts
+onRegister(): void {
+  if (this.itemForm.valid) {
+    this.httpService.registerUser(this.itemForm.value).subscribe({
+      next: (res: any) => {
+        // Registration successful, now move to login
+        this.router.navigate(['/login']);
+      },
+      error: (err: any) => {
+        this.responseMessage = err.error?.message || "Registration failed";
+      }
+    });
   }
+}
+
 
   goToLogin(): void {
     this.router.navigate(['/login']);

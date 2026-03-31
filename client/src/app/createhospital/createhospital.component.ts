@@ -59,7 +59,11 @@ export class CreatehospitalComponent implements OnInit {
     }
     
     this.service.createHospital(this.itemForm.value).subscribe(() => {
-      this.router.navigate(['/dashboard']);
+      this.getHospital()
+      this.itemForm.reset();
+      this.showError = false
+      alert('Hospital Added !')
+      this.router.navigate(['/createhospital']);
     });
   }
 
