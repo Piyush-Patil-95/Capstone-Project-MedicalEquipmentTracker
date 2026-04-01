@@ -121,11 +121,12 @@ export class RequestequipmentComponent implements OnInit {
       status: formValue.status
     };
 
-    this.http.orderEquipment(formValue.equipmentId, payload).subscribe({
+    this.http.orderEquipment(payload,formValue.equipmentId ).subscribe({
       next: () => {
         this.showMessage = true;
         this.responseMessage = 'Save Successfully';
         this.itemForm.reset();
+        this.router.navigate(['/createhospital'])
       },
       error: () => {
         this.showError = true;
