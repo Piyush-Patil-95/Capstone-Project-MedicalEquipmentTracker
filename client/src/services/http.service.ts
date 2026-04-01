@@ -40,7 +40,7 @@ export class HttpService {
   }
 
   getEquipmentById(id: any): Observable<any> {
-    return this.http.get(`${this.serverName}/api/equipment/${id}`, this.getHttpOptions());
+    return this.http.get(`${this.serverName}/api/hospital/equipment/${id}`, this.getHttpOptions());
   }
 
   // :white_check_mark: FIXED
