@@ -1,1 +1,89 @@
-//todo: complete missing code..
+<div class="container mt-4">
+
+  <h2 class="title">Request Equipment</h2>
+
+  <div class="card">
+    <div class="card-header">
+      Order Equipment
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+
+        <div class="row">
+
+          <!-- Hospitals -->
+          <div class="col-6 mb-3">
+            <label class="form-label">Hospitals</label>
+            <select class="form-control"
+                    formControlName="hospitalId"
+                    (change)="onHospitalSelect($event)">
+              <option value="">Please Choose</option>
+              <option *ngFor="let h of hospitalList" [value]="h.id">
+                {{ h.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Quantity -->
+          <div class="col-6 mb-3">
+            <label class="form-label">Quantity</label>
+            <input type="number"
+                   class="form-control"
+                   placeholder="Quantity"
+                   formControlName="quantity">
+          </div>
+
+          <!-- Equipment -->
+          <div class="col-6 mb-3">
+            <label class="form-label">Equipment</label>
+            <select class="form-control" formControlName="equipmentId">
+              <option value="">Please Choose</option>
+              <option *ngFor="let eq of equipmentList" [value]="eq.id">
+                {{ eq.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Status -->
+          <div class="col-6 mb-3">
+            <label class="form-label">Status</label>
+            <select class="form-control" formControlName="status">
+              <option value="">Choose Status</option>
+              <option>Initiated</option>
+              <option>Pending</option>
+              <option>Approved</option>
+              <option>Delivered</option>
+            </select>
+          </div>
+
+          <!-- Order Date -->
+          <div class="col-6 mb-3">
+            <label class="form-label">Order Date</label>
+            <input type="date"
+                   class="form-control"
+                   formControlName="orderDate">
+          </div>
+
+        </div>
+
+        <!-- SUCCESS MESSAGE -->
+        <div *ngIf="showMessage" class="alert alert-success mt-3">
+          {{ responseMessage }}
+        </div>
+
+        <!-- ERROR MESSAGE -->
+        <div *ngIf="showError" class="alert alert-danger mt-3">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+                class="btn btn-primary w-100 mt-3">
+          Submit
+        </button>
+
+      </form>
+    </div>
+  </div>
+</div>
