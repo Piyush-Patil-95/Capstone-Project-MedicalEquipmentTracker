@@ -75,8 +75,12 @@
             <td>{{ hospital.name }}</td>
             <td>{{ hospital.location }}</td>
             <td>
-              <button onclick="" class="btn btn-sm btn-outline-primary">
-                View
+              <button 
+                class="btn btn-sm btn-outline-primary" 
+                data-bs-toggle="modal" 
+                data-bs-target="#equipmentModal"
+                (click)="openModal(hospital)">
+                Assign Equipments
               </button>
             </td>
           </tr>
@@ -91,4 +95,36 @@
     </div>
   </div>
 
+</div>
+
+<div class="modal fade" id="equipmentModal" tabindex="-1" aria-labelledby="equipmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="equipmentModalLabel">Assign Equipment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="equipmentForm">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" formControlName="name" placeholder="Equipment Name">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" formControlName="description" placeholder="Equipment Description"></textarea>
+          </div>
+          
+          <!-- Success Message shown in 3rd image -->
+          <div *ngIf="showMessage" class="alert alert-success mt-2">
+            Equipment added successfully
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="submitEquipment()">Save</button>
+      </div>
+    </div>
+  </div>
 </div>
