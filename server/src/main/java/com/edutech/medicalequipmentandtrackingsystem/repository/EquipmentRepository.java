@@ -13,5 +13,5 @@ import java.util.List;
 @Repository
 public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
     @Query("select e from Equipment e where e.hospital.id=?1")
-     List<Equipment>findByHospitalId(Long hospitalId);
+     List<Equipment> findByHospitalId(Long hospitalId);
 }

@@ -74,19 +74,54 @@ export class CreatehospitalComponent implements OnInit {
     });
   }
 
-  submitEquipment() {
-    if (this.equipmentForm.invalid) {
-      this.equipmentForm.markAllAsTouched();
-      this.showError = true;
-      this.errorMessage = "Please find all required equipment fields";
-      return;
-    }
+  // submitEquipment() {
+  //   if (this.equipmentForm.invalid) {
+  //     this.equipmentForm.markAllAsTouched();
+  //     this.showError = true;
+  //     this.errorMessage = "Please find all required equipment fields";
+  //     return;
+  //   }
 
-    const equipmentData = this.equipmentForm.value;
-    const hospitalId = equipmentData.hospitalId;
+  //   const equipmentData = this.equipmentForm.value;
+  //   const hospitalId = equipmentData.hospitalId;
 
-    this.service.addEquipment(equipmentData, hospitalId).subscribe(() => {
-      this.router.navigate(['/dashboard']);
-    });
+  //   this.service.addEquipment(equipmentData, hospitalId).subscribe(() => {
+  //     this.router.navigate(['/dashboard']);
+  //   });
+  // }
+
+  // Inside CreatehospitalComponent class
+
+openModal(hospital: any) {
+  this.equipmentForm.reset();
+  this.showMessage = false;
+  // Set the hospitalId in the hidden form control
+  this.equipmentForm.patchValue({
+    hospitalId: hospital.id // Ensure your hospital object has an 'id' field
+  });
+}
+
+submitEquipment() {
+  if (this.equipmentForm.invalid) {
+    this.equipmentForm.markAllAsTouched();
+    return;
   }
+
+  const equipmentData = this.equipmentForm.value;
+  const hospitalId = equipmentData.hospitalId;
+
+  this.service.addEquipment(equipmentData, hospitalId).subscribe({
+    next: () => {
+      this.showMessage = true; // Shows the green alert in the modal
+      setTimeout(() => {
+        // Optional: Auto-close or redirect after success
+        // this.router.navigate(['/dashboard']); 
+      }, 2000);
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+}
+
 }
