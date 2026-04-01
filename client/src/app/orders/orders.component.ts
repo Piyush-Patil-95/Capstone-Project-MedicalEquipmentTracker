@@ -19,7 +19,7 @@ export class OrdersComponent  {
   responseMessage: any;
   orderList: any = [];
   statusModel: any = { newStatus: null };
-  orderObj: any = {}; // Used to track the order being edited
+  orderObj: any = {}; 
 
   constructor(private httpService: HttpService) {}
 
@@ -45,7 +45,7 @@ export class OrdersComponent  {
 
   edit(order: any): void {
     this.orderObj = order;
-    // Pre-populate the status model if needed
+   
     this.statusModel.newStatus = order.status;
   }
 
@@ -55,8 +55,8 @@ export class OrdersComponent  {
         next: (res) => {
           this.showMessage = true;
           this.responseMessage = "Order status updated successfully!";
-          this.getOrders(); // Refresh table
-          this.orderObj = {}; // Close modal/form
+          this.getOrders(); 
+          this.orderObj = {}; 
           setTimeout(() => this.showMessage = false, 3000);
         },
         error: (err) => {
@@ -66,6 +66,6 @@ export class OrdersComponent  {
       });
     }
 }
- //todo: complete missing code..
+
  
 }

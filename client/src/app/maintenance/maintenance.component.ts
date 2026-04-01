@@ -21,7 +21,7 @@ export class MaintenanceComponent implements OnInit {
   errorMessage: any;
   hospitalList: any = [];
   assignModel: any = {};
-  itemForm!: FormGroup; // Declared as itemForm per requirements
+  itemForm!: FormGroup; 
   showMessage: any;
   responseMessage: any;
   maintenanceList: any = [];
@@ -60,24 +60,23 @@ export class MaintenanceComponent implements OnInit {
     });
   }
 
-  // View details of a specific record (logic can be expanded based on UI needs)
+ 
   viewDetails(details: any): void {
     this.maintenanceObj = details;
   }
 
-  // Populate the form for editing
   edit(maintenance: any): void {
-    this.maintenanceObj = { ...maintenance }; // Use spread to avoid direct mutation
+    this.maintenanceObj = { ...maintenance }; 
     this.itemForm.patchValue({
       maintenanceId: maintenance.id,
-      scheduledDate: maintenance.scheduledDate,
-      completedDate: maintenance.completedDate,
+      scheduledDate: maintenance.scheduled_date,
+      completedDate: maintenance.completed_date,
       description: maintenance.description,
       status: maintenance.status
     });
   }
 
-  // Submit the updated data
+ 
   update(): void {
     if (this.itemForm.valid) {
       const updatedData = this.itemForm.value;
@@ -87,9 +86,9 @@ export class MaintenanceComponent implements OnInit {
         next: (response) => {
           this.showMessage = true;
           this.responseMessage = "Maintenance updated successfully!";
-          this.maintenanceObj = {}; // CRITICAL: Clear object to close modal
+          this.maintenanceObj = {}; 
           this.itemForm.reset();
-          this.getMaintenance(); // Refresh the table
+          this.getMaintenance(); 
         },
         error: (err) => {
           this.showError = true;
