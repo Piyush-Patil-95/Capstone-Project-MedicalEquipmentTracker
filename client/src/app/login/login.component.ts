@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
     this.itemForm.markAllAsTouched();
     return;
   }
-
+  console.log('sending payload', this.itemForm.value)
   this.isLoading = true;
 
   this.httpService.Login(this.itemForm.value).subscribe({
