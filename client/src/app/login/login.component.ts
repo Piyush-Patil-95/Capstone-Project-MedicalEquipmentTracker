@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
 import { AuthService } from '../../services/auth.service';
-
+import { AppComponent } from '../app.component';
 
 
 @Component({
@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
  // login.component.ts
 onLogin() {
   if (this.itemForm.invalid) return;
+ 
 
   this.httpService.Login(this.itemForm.value).subscribe({
     next: (response: any) => {
@@ -39,11 +40,22 @@ onLogin() {
       
       // 2. Save Role if your app uses role-based access
       if (response.role) {
+      
         this.authService.SetRole(response.role);
+        if(response.role==='TECHNICIAN'){
+        this.router.navigate(['/maintenance']);
       }
+      if(response.role === 'HOSPITAL'){
+        this.router.navigate(['/createhospital']);
+      }
+      if(response.role ==='SUPPLIER'){
+        this.router.navigate(['/orders']);
+      }
+      }
+      
 
       // 3. Navigate to createhospital
-      this.router.navigate(['/createhospital']);
+      
     },
     error: (err) => {
       this.errorMessage = "Invalid credentials";
