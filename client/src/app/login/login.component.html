@@ -1,36 +1,116 @@
-<div class="page-wrapper">
-  <div class="login-card animated">
+<div class="login-container">
+  <!-- Particles -->
+  <div class="particles-container">
+    <div class="particle" *ngFor="let p of particles; let i = index" [style.--delay]="i * 0.1 + 's'"></div>
+  </div>
 
-    <div class="top-accent-bar"></div>
-
-    <div class="content">
-      <h1>MEDICAL EQUIPMENT & TRACKING SYSTEM</h1>
-      <p class="subtitle">Login to continue</p>
-
-      <form [formGroup]="itemForm" (ngSubmit)="onLogin()">
-
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" formControlName="username" placeholder="name@example.com">
+  <div class="login-card">
+    <!-- Logo with Rays -->
+    <div class="logo-section">
+      <div class="logo-container">
+        <div class="logo-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
         </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" formControlName="password" placeholder="*******">
+        <!-- Rays -->
+        <div class="rays">
+          <div class="ray ray-1"></div>
+          <div class="ray ray-2"></div>
+          <div class="ray ray-3"></div>
+          <div class="ray ray-4"></div>
+          <div class="ray ray-5"></div>
+          <div class="ray ray-6"></div>
+          <div class="ray ray-7"></div>
+          <div class="ray ray-8"></div>
         </div>
-
-        <div class="error-msg" *ngIf="showError">
-          {{ errorMessage }}
-        </div>
-
-        <button type="submit" class="login-btn">Login</button>
-      </form>
-
-      <p class="footer-text">
-        Don't have an account?
-        <a (click)="registration()">Register</a>
-      </p>
+      </div>
+      <h1>Medical Tracking</h1>
+      <p class="subtitle">Secure login</p>
     </div>
 
+    <!-- Form -->
+    <form [formGroup]="itemForm" (ngSubmit)="onLogin()">
+      <!-- USERNAME - FIXED: Added placeholder=" " -->
+      <div class="input-group" [class.error]="itemForm.get('username')?.invalid && itemForm.get('username')?.touched">
+        <input type="email" formControlName="username" id="username" placeholder=" ">
+        <label for="username">Username</label>
+        <div class="input-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          </svg>
+        </div>
+        <div class="input-highlight"></div>
+      </div>
+
+      <!-- PASSWORD - FIXED: Added placeholder=" " -->
+      <div class="input-group" [class.error]="itemForm.get('password')?.invalid && itemForm.get('password')?.touched">
+        <input [type]="showPassword ? 'text' : 'password'" formControlName="password" id="password" placeholder=" ">
+        <label for="password">Password</label>
+        <div class="input-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          </svg>
+        </div>
+        <button type="button" class="eye-toggle" (click)="togglePassword()" [class.active]="showPassword">
+          <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <path
+              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+            </path>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+          </svg>
+        </button>
+        <div class="input-highlight"></div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-msg" *ngIf="showError">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        {{ errorMessage }}
+      </div>
+
+
+      <div class="form-group captcha-group">
+        <label>Captcha</label>
+        <div class="captcha-question">
+          {{ captchaQuestion }}
+        </div>
+        <input type="text" formControlName="captchaAnswer" placeholder="Enter captcha answer">
+      </div>
+
+      <div class="error-msg" *ngIf="showError">
+        {{ errorMessage }}
+      </div>
+
+
+
+      <!-- Login Button -->
+      <button type="submit" [disabled]="isLoading" class="login-btn">
+        <span *ngIf="!isLoading">Login</span>
+        <div class="loader" *ngIf="isLoading">
+          <span></span><span></span><span></span>
+        </div>
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <p class="footer-text">
+      New here? <a (click)="registration()">Create account</a>
+    </p>
   </div>
 </div>
