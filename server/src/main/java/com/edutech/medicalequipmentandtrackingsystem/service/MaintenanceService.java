@@ -29,19 +29,22 @@ public class MaintenanceService {
 
     }
 
-    public Maintenance updateMaintenance(Long maintenanceId, Maintenance updatedMaintenance){
-        Optional<Maintenance> op = maintenanceRepository.findById(maintenanceId);
-        if(op.isPresent()){
-            Maintenance old = op.get();
-            old.setScheduledDate(updatedMaintenance.getScheduledDate());
-            old.setCompletedDate(updatedMaintenance.getCompletedDate());
-            old.setDescription(updatedMaintenance.getDescription());
-            old.setEquipment(updatedMaintenance.getEquipment());
-            old.setStatus(updatedMaintenance.getStatus());
-            return maintenanceRepository.save(old);
-        }
-        return null;
-    }
+   public Maintenance updateMaintenance(Long id, Maintenance updatedData) {
+
+    Maintenance existing = maintenanceRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Maintenance not found"));
+
+    // ✅ update only fields
+    existing.setScheduledDate(updatedData.getScheduledDate());
+    existing.setCompletedDate(updatedData.getCompletedDate());
+    existing.setDescription(updatedData.getDescription());
+    existing.setStatus(updatedData.getStatus());
+
+    // ❌ DO NOT TOUCH EQUIPMENT
+    // existing.setEquipment(updatedData.getEquipment());
+
+    return maintenanceRepository.save(existing);
+}
 
 
 }

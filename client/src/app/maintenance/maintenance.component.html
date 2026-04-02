@@ -32,11 +32,11 @@
             <div class="nested-info text-muted">Description:{{ item.equipment?.description }}</div>
           </td>
         
-          <td>
-            <div class="nested-info">Id:{{ item.equipment?.hospital?.id || item.equipment?.hospital_id || "N/A"}}</div>
-            <div class="nested-info">Name:{{ item.equipment?.hospital?.name }}</div>
-            <div class="nested-info text-muted">Description:{{ item.equipment?.description }}</div>
-          </td>
+         <td>
+  <div>Id: {{ item.equipment?.hospital?.id || 'N/A' }}</div>
+  <div>Name: {{ item.equipment?.hospital?.name || 'N/A' }}</div>
+  <div>Location: {{ item.equipment?.hospital?.location || 'N/A' }}</div>
+</td>
           <td>
             <button class="btn btn-warning btn-sm edit-btn" (click)="edit(item)">Edit</button>
           </td>
