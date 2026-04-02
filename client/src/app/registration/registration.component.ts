@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
-
+ 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
@@ -14,16 +14,17 @@ export class RegistrationComponent implements OnInit {
   formModel: any = { role: null, email: '', password: '', username: '' }; 
   showMessage: boolean = false; 
   responseMessage: any; 
-  
+    particles: number[] = Array(50).fill(0);
+     showPassword: boolean = false;
   // Array for the dropdown options
   roles: string[] = ['HOSPITAL', 'SUPPLIER', 'TECHNICIAN'];
-
+ 
   constructor(
     private fb: FormBuilder, 
     private router: Router, 
     private httpService: HttpService
   ) {}
-
+ 
   ngOnInit(): void {
     // Initialize form with your formModel values
     this.itemForm = this.fb.group({
@@ -33,7 +34,7 @@ export class RegistrationComponent implements OnInit {
       role: [this.formModel.role, Validators.required]
     });
   }
-
+ 
   // registration.component.ts
 onRegister(): void {
   if (this.itemForm.valid) {
@@ -48,9 +49,14 @@ onRegister(): void {
     });
   }
 }
-
-
+ 
+ 
   goToLogin(): void {
     this.router.navigate(['/login']);
+  }
+  togglePassword(): void {
+ 
+    this.showPassword = !this.showPassword;
+ 
   }
 }
