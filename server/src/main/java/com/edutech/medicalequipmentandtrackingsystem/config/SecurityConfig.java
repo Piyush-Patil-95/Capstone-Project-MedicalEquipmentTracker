@@ -49,7 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(
                 "/api/user/register/**",
                 "/api/user/login/**",
-                "/api/captcha/**"          // 🔥 REQUIRED FIX
+                "/api/captcha/**" ,
+                "/",
+                "/api/user/dashboard"         // 🔥 REQUIRED FIX
             ).permitAll()
 
             // ✅ ROLE BASED APIs

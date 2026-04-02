@@ -30,7 +30,7 @@ body {
 
 /* Main Header */
 .main-heading {
-    font-size: 12vw;
+    font-size: 10vw;
     font-weight: 650;
     color: #1a1a1a;
     letter-spacing: -4px;
@@ -38,6 +38,7 @@ body {
     top: -2vw;
     left: 20px;
     white-space: nowrap;
+    margin: 10px;
 }
 
 /* Microscope Positioning */
@@ -199,7 +200,7 @@ body {
 .card img {
   width: 100%;
   height: auto;
-  align-self: flex-end;
+  align-self: center;
   /* Adjust based on your specific image shapes */
   max-height: 70%;
   object-fit: contain;
