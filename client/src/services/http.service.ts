@@ -85,7 +85,8 @@ export class HttpService {
     return this.http.put(
       `${this.serverName}/api/technician/maintenance/update/${id}`,
       data,
-      this.getHttpOptions()
+      {responseType:'text'},
+      
     );
   }
 

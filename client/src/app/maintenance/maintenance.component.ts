@@ -69,8 +69,8 @@ export class MaintenanceComponent implements OnInit {
     this.maintenanceObj = { ...maintenance }; 
     this.itemForm.patchValue({
       maintenanceId: maintenance.id,
-      scheduledDate: maintenance.scheduled_date,
-      completedDate: maintenance.completed_date,
+      scheduledDate: maintenance.scheduledDate ? maintenance.scheduledDate.split('T')[0] : '',
+      completedDate: maintenance.completedDate ? maintenance.completedDate.split('T')[0] : '',
       description: maintenance.description,
       status: maintenance.status
     });
@@ -79,6 +79,7 @@ export class MaintenanceComponent implements OnInit {
  
   update(): void {
     if (this.itemForm.valid) {
+      console.log('clicked')
       const updatedData = this.itemForm.value;
       const maintenanceId = updatedData.maintenanceId;
 

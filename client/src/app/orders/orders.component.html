@@ -22,16 +22,16 @@
         <tr *ngFor="let order of orderList; let i = index">
           <td>{{ i + 1 }}</td>
           <td>{{ order.orderDate | date:'dd-MMM-yyyy' }}</td>
-          <td>{{ order.quality }}</td>
+          <td>{{ order.quantity }}</td>
           <td>{{ order.status }}</td>
           <td>
-            <div class="nested-row">Id:{{ order.equipmentId }}</div>
-            <div class="nested-row">Name:{{ order.equipmentName }}</div>
-            <div class="nested-row text-muted">Description:{{ order.equipmentDescription }}</div>
+            <div class="nested-row">Id:{{ order.equipment.id }}</div>
+            <div class="nested-row">Name:{{ order.equipment.name }}</div>
+            <div class="nested-row text-muted">Description:{{ order.equipment.description }}</div>
           </td>
           <td>
-            <div class="nested-row">Id:{{ order.hospitalId }}</div>
-            <div class="nested-row">Name:{{ order.hospitalName }}</div>
+            <div class="nested-row">Id:{{ order.equipment.hospital.id }}</div>
+            <div class="nested-row">Name:{{ order.equipment.hospital.name }}</div>
             <div class="nested-row text-muted">Description:</div>
           </td>
           <td>
