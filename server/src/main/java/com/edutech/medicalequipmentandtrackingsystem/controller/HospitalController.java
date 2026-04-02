@@ -16,6 +16,8 @@ import com.edutech.medicalequipmentandtrackingsystem.service.OrderService;
 
 import java.util.List;
 
+
+//controller for hospital
 @RestController
 public class HospitalController {
    @Autowired
@@ -76,5 +78,7 @@ public class HospitalController {
       Order placedOrder = orderService.placeOrder(equipmentId, order);
       return new ResponseEntity<>(placedOrder, HttpStatus.CREATED);
    }
+
+
 
 }
