@@ -1,0 +1,748 @@
+// ============================================
+// CUSTOM VARIABLES
+// ============================================
+$primary-color: #c2edff;
+$primary-gradient:$primary-color;
+$secondary-gradient: $primary-color;
+$success-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+$card-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.15);
+$hover-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
+
+// ============================================
+// ANIMATIONS
+// ============================================
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(400%) rotate(45deg); }
+}
+
+@keyframes checkmark {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+// ============================================
+// NAVIGATION BAR
+// ============================================
+.glass-nav {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  padding: 1rem 0;
+
+  .brand-icon-wrapper {
+    width: 45px;
+    height: 45px;
+    background: $primary-gradient;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+
+    i { color: white; font-size: 1.5rem; }
+  }
+
+  .brand-text {
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 1.4rem;
+
+    .text-gradient {
+      background: $primary-gradient;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .stats-badge {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6366f1;
+    display: flex;
+    align-items: center;
+  }
+
+  .notification-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.2);
+      transform: scale(1.05);
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 10px; height: 10px;
+      background: #ef4444;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+  }
+}
+
+// ============================================
+// PAGE HEADER
+// ============================================
+.page-header {
+  .page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+
+    i {
+      background: $primary-gradient;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .page-subtitle {
+    color: #64748b;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .header-decoration {
+    height: 4px;
+    width: 80px;
+    background: $primary-gradient;
+    border-radius: 2px;
+    margin-top: 1rem;
+  }
+}
+
+// ============================================
+// ADD HOSPITAL CARD
+// ============================================
+.modern-card {
+  border: none;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: $card-shadow;
+  transition: all 0.4s ease;
+
+  &:hover { box-shadow: $hover-shadow; }
+}
+
+.add-hospital-card {
+  .card-header-gradient {
+    background: $primary-gradient;
+    background-size: 200% auto;
+    animation: gradient-shift 5s ease infinite;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    .header-icon-circle {
+      width: 70px; height: 70px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      backdrop-filter: blur(10px);
+
+      i { color: white; font-size: 2rem; }
+    }
+
+    .card-header-title {
+      color: black;
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin: 0;
+      position: relative;
+    }
+
+    .card-header-subtitle {
+      color: black;
+      margin: 0.5rem 0 0;
+      font-size: 0.95rem;
+      position: relative;
+    }
+  }
+
+  .form-floating-group {
+    .form-label-custom {
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+
+      i { color: #6366f1; }
+    }
+
+    .input-wrapper {
+      position: relative;
+
+      .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1.1rem;
+        z-index: 2;
+        transition: color 0.3s ease;
+      }
+
+      .modern-input {
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 0.875rem 1rem 0.875rem 2.75rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+
+        &:focus {
+          border-color: #6366f1;
+          background: white;
+          box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+          outline: none;
+        }
+
+        &.is-invalid {
+          border-color: #ef4444;
+          background: #fef2f2;
+
+          &:focus {
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+          }
+        }
+      }
+    }
+
+    .invalid-feedback-custom {
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .btn-submit-gradient {
+    background: $primary-gradient;
+    background-size: 200% auto;
+    border: none;
+    border-radius: 14px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    color: black;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+
+    &:hover:not(:disabled) {
+      background-position: right center;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+
+      .btn-shine { animation: shine 0.8s ease; }
+    }
+
+    &:active:not(:disabled) { transform: translateY(0); }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn-shine {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+      transform: translateX(-100%) rotate(45deg);
+    }
+  }
+}
+
+// ============================================
+// HOSPITAL GRID & CARDS
+// ============================================
+.hospital-grid {
+  padding: 1rem 0;
+
+  .hospital-card-premium {
+    border: none;
+    border-radius: 24px;
+    overflow: hidden;
+    background: white;
+    box-shadow: $card-shadow;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    height: 100%;
+
+    &:hover {
+      transform: translateY(-15px) scale(1.02);
+      box-shadow: $hover-shadow;
+
+      .card-header-visual-premium { transform: scale(1.05); }
+      .hospital-icon-container { transform: scale(1.15) rotate(5deg); }
+      .btn-assign-premium .btn-icon-wrapper { transform: translateX(5px); }
+    }
+
+    .card-header-visual-premium {
+      background: $primary-gradient;
+      background-size: 200% auto;
+      animation: gradient-shift 8s ease infinite;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.5s ease;
+
+      .visual-pattern {
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23ffffff' fill-opacity='0.08' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.5;
+      }
+
+      .hospital-icon-container {
+        width: 90px; height: 90px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        transition: transform 0.5s ease;
+        z-index: 2;
+
+        .hospital-icon {
+          font-size: 3rem;
+          color: white;
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+      }
+
+      .card-badge {
+        position: absolute;
+        top: 15px; right: 15px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        padding: 6px 14px;
+        border-radius: 50px;
+        color: white;
+        font-weight: 700;
+        font-size: 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    .card-body-premium {
+      padding: 1.5rem;
+      text-align: center;
+
+      .hospital-info-wrapper {
+        margin-bottom: 1.5rem;
+
+        .entry-label {
+          color: #94a3b8;
+          font-size: 0.75rem;
+          letter-spacing: 1px;
+
+          .label-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: $primary-gradient;
+            border-radius: 50%;
+            margin-right: 6px;
+          }
+        }
+
+        .hospital-name-premium {
+          font-weight: 800;
+          color: #1e293b;
+          font-size: 1.25rem;
+          margin: 0.5rem 0;
+          text-transform: capitalize;
+          line-height: 1.3;
+        }
+
+        .location-badge-premium {
+          background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+          color: #475569;
+          padding: 8px 18px;
+          border-radius: 50px;
+          font-size: 0.85rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 500;
+          border: 1px solid #cbd5e1;
+
+          i { color: #ef4444; }
+        }
+      }
+    }
+
+    .btn-assign-premium {
+      background: $primary-gradient;
+      background-size: 200% auto;
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-weight: 600;
+      width: 100%;
+      transition: all 0.4s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      &:hover {
+        background-position: right center;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
+        transform: scale(1.03);
+      }
+
+      &:active { transform: scale(0.97); }
+
+      .btn-text {
+        display: flex;
+        align-items: center;
+        color: black;
+      }
+
+      .btn-icon-wrapper {
+        width: 32px; height: 32px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+
+        i { font-size: 0.9rem; }
+      }
+    }
+  }
+}
+
+// ============================================
+// ANIMATION CLASSES
+// ============================================
+.animate-fade-in { animation: fadeInUp 0.8s ease-out both; }
+.animate-slide-up { animation: fadeInUp 0.8s ease-out 0.2s both; }
+.animate-card-in { animation: fadeInUp 0.6s ease-out both; }
+
+// ============================================
+// EMPTY STATE
+// ============================================
+.empty-state-container {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+
+  .empty-state-content {
+    text-align: center;
+    max-width: 400px;
+
+    .empty-icon-wrapper {
+      width: 120px; height: 120px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      animation: float 3s ease-in-out infinite;
+
+      .empty-icon {
+        font-size: 3.5rem;
+        background: $primary-gradient;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+
+    .empty-title { font-weight: 700; color: #475569; margin-bottom: 0.5rem; }
+    .empty-subtitle { color: #94a3b8; font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+    .empty-decoration {
+      width: 60px; height: 4px;
+      background: $primary-gradient;
+      border-radius: 2px;
+      margin: 0 auto;
+    }
+  }
+}
+
+// ============================================
+// MODAL STYLES (uses standard .modal-content)
+// ============================================
+.modal-content-premium {
+  border: none !important;
+  border-radius: 24px !important;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15) !important;
+}
+
+.modal-header-premium {
+  background: $primary-gradient !important;
+  background-size: 200% auto;
+  padding: 1.75rem 2rem !important;
+  border-bottom: none !important;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .modal-header-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .modal-icon-circle {
+    width: 55px; height: 55px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+
+    i { color: white; font-size: 1.5rem; }
+  }
+
+  .modal-title-premium {
+    color: white !important;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin: 0;
+  }
+
+  .modal-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    margin: 0.25rem 0 0;
+  }
+
+  .btn-close {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.modal-body-premium {
+  padding: 2rem !important;
+  background: #f8fafc;
+
+  .form-group-premium {
+    .form-label-premium {
+      font-weight: 600;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+
+      i { color: #6366f1; }
+    }
+
+    .input-group-premium {
+      position: relative;
+
+      .input-icon-premium {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1.1rem;
+        z-index: 2;
+
+        &.textarea-icon {
+          top: 1.25rem;
+          transform: none;
+        }
+      }
+
+      .form-control-premium {
+        border: 2px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 0.875rem 1rem 0.875rem 2.75rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+
+        &:focus {
+          border-color: #6366f1;
+          box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+          outline: none;
+        }
+      }
+
+      .textarea-premium {
+        min-height: 120px;
+        resize: vertical;
+      }
+    }
+  }
+
+  .success-message-container {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1)) !important;
+    border: 2px solid rgba(16, 185, 129, 0.2) !important;
+    border-radius: 16px;
+    padding: 1.25rem !important;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: checkmark 0.5s ease-out;
+    color: inherit !important;
+
+    .success-checkmark {
+      width: 50px; height: 50px;
+      background: $success-gradient;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      i { color: white; font-size: 1.5rem; }
+    }
+
+    .success-content {
+      .success-title { color: #059669; font-weight: 700; margin: 0; font-size: 1rem; }
+      .success-text { color: #6b7280; font-size: 0.875rem; margin: 0; }
+    }
+  }
+}
+
+.modal-footer-premium {
+  padding: 1.25rem 2rem !important;
+  background: white;
+  border-top: 1px solid #e2e8f0 !important;
+
+  .btn-cancel-premium {
+    background: #f1f5f9;
+    color: #64748b;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &:hover { background: #e2e8f0; color: #475569; }
+  }
+
+  .btn-save-premium {
+    background: $primary-gradient;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+  }
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+@media (max-width: 768px) {
+  .glass-nav {
+    .brand-text { font-size: 1.1rem; }
+    .brand-icon-wrapper { width: 38px; height: 38px; i { font-size: 1.2rem; } }
+    .stats-badge { font-size: 0.75rem; padding: 6px 12px; }
+    .notification-btn { width: 40px; height: 40px; }
+  }
+
+  .page-header .page-title { font-size: 1.5rem; }
+  .page-header .page-subtitle { font-size: 0.875rem; }
+
+  .add-hospital-card .card-header-gradient {
+    padding: 1.5rem;
+    .header-icon-circle { width: 55px; height: 55px; i { font-size: 1.5rem; } }
+    .card-header-title { font-size: 1.2rem; }
+  }
+
+  .hospital-grid .hospital-card-premium {
+    .card-header-visual-premium {
+      height: 100px;
+      .hospital-icon-container { width: 70px; height: 70px; .hospital-icon { font-size: 2.2rem; } }
+    }
+    .card-body-premium { padding: 1.25rem; .hospital-name-premium { font-size: 1.1rem; } }
+  }
+
+  .modal-header-premium { padding: 1.25rem 1.5rem !important; }
+  .modal-body-premium { padding: 1.5rem !important; }
+
+  .modal-footer-premium {
+    padding: 1rem 1.5rem !important;
+    flex-direction: column-reverse;
+    .btn-cancel-premium, .btn-save-premium { width: 100%; }
+  }
+}
+
+@media (max-width: 576px) {
+  .container-fluid { padding-left: 1rem !important; padding-right: 1rem !important; }
+}
