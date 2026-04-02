@@ -30,7 +30,6 @@ export class HttpService {
     return this.http.post(`${this.serverName}/api/user/register`, data);
   }
 
-  // :white_check_mark: FIXED
   addEquipment(data: any, hospitalId: any): Observable<any> {
     return this.http.post(
       `${this.serverName}/api/hospital/equipment?hospitalId=${hospitalId}`,
@@ -40,10 +39,12 @@ export class HttpService {
   }
 
   getEquipmentById(id: any): Observable<any> {
-    return this.http.get(`${this.serverName}/api/hospital/equipment/${id}`, this.getHttpOptions());
+    return this.http.get(
+      `${this.serverName}/api/hospital/equipment/${id}`,
+      this.getHttpOptions()
+    );
   }
 
-  // :white_check_mark: FIXED
   orderEquipment(data: any, equipmentId: any): Observable<any> {
     return this.http.post(
       `${this.serverName}/api/hospital/order?equipmentId=${equipmentId}`,
@@ -52,13 +53,14 @@ export class HttpService {
     );
   }
 
-  // :white_check_mark: FIXED
   getorders(): Observable<any> {
-    return this.http.get(`${this.serverName}/api/supplier/orders`, this.getHttpOptions());
+    return this.http.get(
+      `${this.serverName}/api/supplier/orders`,
+      this.getHttpOptions()
+    );
   }
 
-  
-  UpdateOrderStatus( status: any,orderId: any): Observable<any> {
+  UpdateOrderStatus(status: any, orderId: any): Observable<any> {
     return this.http.put(
       `${this.serverName}/api/supplier/order/update/${orderId}?newStatus=${status}`,
       {},
@@ -66,7 +68,6 @@ export class HttpService {
     );
   }
 
-  // :white_check_mark: FIXED
   scheduleMaintenance(data: any, equipmentId: any): Observable<any> {
     return this.http.post(
       `${this.serverName}/api/hospital/maintenance/schedule?equipmentId=${equipmentId}`,
@@ -75,13 +76,14 @@ export class HttpService {
     );
   }
 
-  // :white_check_mark: FIXED
   getMaintenance(): Observable<any> {
-    return this.http.get(`${this.serverName}/api/technician/maintenance`, this.getHttpOptions());
+    return this.http.get(
+      `${this.serverName}/api/technician/maintenance`,
+      this.getHttpOptions()
+    );
   }
 
-  // :white_check_mark: FIXED (IMPORTANT BUG HERE)
-  updateMaintenance(data: any,id: any): Observable<any> {
+  updateMaintenance(data: any, id: any): Observable<any> {
     return this.http.put(
       `${this.serverName}/api/technician/maintenance/update/${id}`,
       data,
@@ -89,7 +91,6 @@ export class HttpService {
     );
   }
 
-  // :white_check_mark: FIXED
   createHospital(data: any): Observable<any> {
     return this.http.post(
       `${this.serverName}/api/hospital/create`,
@@ -98,8 +99,15 @@ export class HttpService {
     );
   }
 
-  // :white_check_mark: FIXED
   getHospital(): Observable<any> {
-    return this.http.get(`${this.serverName}/api/hospitals`, this.getHttpOptions());
+    return this.http.get(
+      `${this.serverName}/api/hospitals`,
+      this.getHttpOptions()
+    );
+  }
+
+  // ✅ CAPTCHA (FIXED)
+  getCaptcha(): Observable<any> {
+    return this.http.get(`${this.serverName}/api/captcha/generate`);
   }
 }
