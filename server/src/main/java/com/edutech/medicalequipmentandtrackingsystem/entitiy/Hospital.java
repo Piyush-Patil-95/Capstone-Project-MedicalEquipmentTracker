@@ -18,6 +18,7 @@ public class Hospital {
     private List<Equipment> equipmentList;
 
     public Hospital() {
+        
     }
 
     public Hospital(String name, String location) {
