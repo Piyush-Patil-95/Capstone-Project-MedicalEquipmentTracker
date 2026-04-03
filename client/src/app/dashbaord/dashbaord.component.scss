@@ -150,8 +150,9 @@ html {
   z-index: 2;
 
   img {
-    width: 450px;
-    animation: float 5s ease-in-out infinite;
+    width: 600px;
+    height: 400px;
+    // animation: float 5s ease-in-out infinite;
   }
 }
 
@@ -223,4 +224,35 @@ html {
     flex-direction: column;
     align-items: center;
   }
+}
+
+.hero-section {
+height: 90vh;
+display: flex;
+align-items: center;
+padding: 40px;
+
+/* :fire: YOUR IMAGE HERE */
+background-image: url('/home/coder/app/client/src/assets/images/logo.png'); 
+background-repeat: no-repeat;
+background-position: right center; /* :point_right: RIGHT SIDE */
+background-size: contain; /* :point_right: keeps vertical image perfect */
+}
+
+.left-content {
+max-width: 500px;
+}
+
+.left-content h1 {
+font-size: 48px;
+font-weight: 700;
+}
+
+.left-content p {
+margin: 20px 0;
+color: #555;
+}
+
+.btn {
+margin-right: 10px;
 }
