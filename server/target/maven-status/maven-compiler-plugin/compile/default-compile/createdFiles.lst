@@ -22,6 +22,7 @@ com/edutech/medicalequipmentandtrackingsystem/service/HospitalService.class
 com/edutech/medicalequipmentandtrackingsystem/controller/TechnicianController.class
 com/edutech/medicalequipmentandtrackingsystem/dto/LoginResponse.class
 com/edutech/medicalequipmentandtrackingsystem/repository/HospitalRepository.class
+com/edutech/medicalequipmentandtrackingsystem/controller/UserController.class
 com/edutech/medicalequipmentandtrackingsystem/service/EquipmentService.class
 com/edutech/medicalequipmentandtrackingsystem/jwt/JwtRequestFilter.class
 com/edutech/medicalequipmentandtrackingsystem/controller/SupplierController.class

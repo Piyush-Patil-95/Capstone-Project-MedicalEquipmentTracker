@@ -19,14 +19,15 @@ export class CreatehospitalComponent implements OnInit {
 
   showMessage: boolean = false;
   responseMessage: any = null;
-  searchText: string = ''; // Changed to lowercase string
-  filteredHospitals: any[] = []
+
+  searchText: string = '';
+  filteredHospitals: any[] = [];
 
   hospitalList: any[] = [];
-
-  // ✅ OLD FEATURES BACK
   orders: any[] = [];
   maintenance: any[] = [];
+
+  supplierList: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -44,23 +45,22 @@ export class CreatehospitalComponent implements OnInit {
     this.equipmentForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      hospitalId: ['', Validators.required]
+      hospitalId: ['', Validators.required],
+      supplierId: ['', Validators.required],
+      quantity: [1, [Validators.required, Validators.min(1)]]
     });
 
-    // ✅ Load everything
     this.getHospital();
     this.getOrders();
     this.getMaintenance();
+    this.getSuppliers();
   }
 
-  // ================================================
-  // GET ALL HOSPITALS
-  // ================================================
   getHospital() {
     this.service.getHospital().subscribe({
       next: (data: any) => {
         this.hospitalList = data || [];
-        this.mapData(); 
+        this.mapData();
       },
       error: () => {
         this.showError = true;
@@ -69,13 +69,16 @@ export class CreatehospitalComponent implements OnInit {
     });
   }
 
+  // ✅ FIX: Get ALL orders (not supplier-specific)
   getOrders() {
-    this.service.getorders().subscribe({
+    this.service.getAllOrders().subscribe({
       next: (data: any) => {
         this.orders = data || [];
         this.mapData();
       },
-      error: () => {}
+      error: () => {
+        this.orders = [];
+      }
     });
   }
 
@@ -89,9 +92,21 @@ export class CreatehospitalComponent implements OnInit {
     });
   }
 
-  // ================================================
-  // MAP DATA & INITIALIZE FILTERED LIST
-  // ================================================
+  getSuppliers() {
+    this.service.getAllUsers().subscribe({
+      next: (data: any) => {
+        this.supplierList = (data || []).filter(
+          (user: any) =>
+            user.role &&
+            user.role.toLowerCase().includes('supplier')
+        );
+      },
+      error: () => {
+        this.supplierList = [];
+      }
+    });
+  }
+
   mapData() {
     if (!this.hospitalList || this.hospitalList.length === 0) {
       this.filteredHospitals = [];
@@ -114,18 +129,12 @@ export class CreatehospitalComponent implements OnInit {
       };
     });
 
-    // ✅ FIX: Ensure the view updates whenever data is mapped/loaded
     this.onSearch();
   }
 
-  // ================================================
-  // SEARCH LOGIC (FIXED)
-  // ================================================
   onSearch() {
     const search = this.searchText.toLowerCase().trim();
- 
     if (!search) {
-      // ✅ FIX: If search is empty, show everything
       this.filteredHospitals = [...this.hospitalList];
     } else {
       this.filteredHospitals = this.hospitalList.filter(h =>
@@ -135,9 +144,6 @@ export class CreatehospitalComponent implements OnInit {
     }
   }
 
-  // ================================================
-  // ADD HOSPITAL
-  // ================================================
   onSubmit() {
     this.showError = false;
     this.errorMessage = null;
@@ -145,38 +151,34 @@ export class CreatehospitalComponent implements OnInit {
     if (this.itemForm.invalid) {
       this.itemForm.markAllAsTouched();
       this.showError = true;
-      this.errorMessage = "Please find all required hospital fields";
+      this.errorMessage = 'Please fill all required hospital fields';
       return;
     }
 
     this.service.createHospital(this.itemForm.value).subscribe({
       next: () => {
         this.itemForm.reset();
-        this.showError = false;
-        alert('Hospital Added !');
-        this.getHospital(); // Re-fetches and triggers mapData -> onSearch
+        alert('Hospital Added!');
+        this.getHospital();
       },
       error: () => {
         this.showError = true;
-        this.errorMessage = "Failed to add hospital";
+        this.errorMessage = 'Failed to add hospital';
       }
     });
   }
 
-  // ================================================
-  // DELETE HOSPITAL
-  // ================================================
   deleteHospital(id: number) {
     if (!confirm('Are you sure you want to delete this hospital?')) return;
 
     this.service.deleteHospital(id).subscribe({
       next: () => {
         this.hospitalList = this.hospitalList.filter((h: any) => h.id !== id);
-        this.onSearch(); // ✅ FIX: Update the display immediately
+        this.onSearch();
       },
       error: () => {
         this.hospitalList = this.hospitalList.filter((h: any) => h.id !== id);
-        this.onSearch(); // ✅ FIX: Update the display immediately
+        this.onSearch();
       }
     });
   }
@@ -187,9 +189,13 @@ export class CreatehospitalComponent implements OnInit {
     this.showError = false;
     this.errorMessage = null;
     this.equipmentForm.reset();
-    this.equipmentForm.patchValue({ hospitalId: hospital.id });
+    this.equipmentForm.patchValue({ 
+      hospitalId: hospital.id,
+      quantity: 1  // ✅ Reset quantity to default
+    });
   }
 
+  // ✅ FIXED: Now includes quantity parameter
   submitEquipment() {
     this.showMessage = false;
     this.showError = false;
@@ -197,26 +203,39 @@ export class CreatehospitalComponent implements OnInit {
     if (this.equipmentForm.invalid) {
       this.equipmentForm.markAllAsTouched();
       this.showError = true;
-      this.errorMessage = "Please find all required equipment fields";
+      this.errorMessage = 'Please fill all required equipment fields';
       return;
     }
 
     const equipmentData = this.equipmentForm.value;
     const hospitalId = equipmentData.hospitalId;
+    const supplierId = equipmentData.supplierId;
+    const quantity = equipmentData.quantity || 1;  // ✅ GET QUANTITY
 
-    this.service.addEquipment(equipmentData, hospitalId).subscribe({
+    const body = {
+      name: equipmentData.name,
+      description: equipmentData.description
+    };
+
+    // ✅ PASS QUANTITY
+    this.service.addEquipment(body, hospitalId, supplierId, quantity).subscribe({
       next: () => {
         this.showMessage = true;
-        this.responseMessage = "Equipment added successfully";
-        this.getHospital(); // Refreshes counts and list
+        this.responseMessage = 'Equipment assigned and order created successfully!';
+        this.getHospital();
+        this.getOrders();  // ✅ Refresh orders
         setTimeout(() => {
           this.equipmentForm.reset();
-          this.equipmentForm.patchValue({ hospitalId: hospitalId });
-        }, 1200);
+          this.equipmentForm.patchValue({ 
+            hospitalId: hospitalId,
+            quantity: 1
+          });
+          this.showMessage = false;
+        }, 1500);
       },
-      error: (err) => {
+      error: () => {
         this.showError = true;
-        this.errorMessage = "Failed to add equipment";
+        this.errorMessage = 'Failed to assign equipment';
       }
     });
   }

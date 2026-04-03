@@ -26,6 +26,9 @@ private Equipment equipment;
 @JoinColumn(name="hospital_id")
 @JsonIgnoreProperties({"equipmentList"})
 private Hospital hospital;
+@ManyToOne
+@JoinColumn(name="technician_id")
+private User technician;
     
     public Long getId() {
         return id;
@@ -69,6 +72,13 @@ private Hospital hospital;
 
 public void setHospital(Hospital hospital) {
     this.hospital = hospital;
+}
+public void setTechnician(User technician) {
+    this.technician = technician;
+}
+
+public User getTechnician() {
+    return technician;
 }
 
     

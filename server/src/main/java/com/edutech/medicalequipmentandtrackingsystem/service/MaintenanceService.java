@@ -8,6 +8,8 @@ import com.edutech.medicalequipmentandtrackingsystem.entitiy.Equipment;
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.Maintenance;
 import com.edutech.medicalequipmentandtrackingsystem.repository.EquipmentRepository;
 import com.edutech.medicalequipmentandtrackingsystem.repository.MaintenanceRepository;
+import com.edutech.medicalequipmentandtrackingsystem.repository.UserRepository;
+import com.edutech.medicalequipmentandtrackingsystem.entitiy.User;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -15,6 +17,8 @@ import java.util.Optional;
 
 @Service
 public class MaintenanceService {
+    @Autowired
+private UserRepository userRepository;
     @Autowired
     private MaintenanceRepository maintenanceRepository;
     @Autowired
@@ -32,6 +36,19 @@ public class MaintenanceService {
 }
 public void deleteMaintenance(Long id) {
     maintenanceRepository.deleteById(id);
+}
+
+
+public Maintenance scheduleMaintenanceWithTechnician(Long equipmentId, Long technicianId, Maintenance maintenance) {
+
+    Equipment equipment = equipmentRepository.findById(equipmentId).get();
+    User technician = userRepository.findById(technicianId).get();
+
+    maintenance.setEquipment(equipment);
+    maintenance.setHospital(equipment.getHospital());
+    maintenance.setTechnician(technician);
+
+    return maintenanceRepository.save(maintenance);
 }
 
    public Maintenance updateMaintenance(Long id, Maintenance updatedData) {
