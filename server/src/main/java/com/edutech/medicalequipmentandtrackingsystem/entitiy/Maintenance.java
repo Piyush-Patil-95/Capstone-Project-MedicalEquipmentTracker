@@ -3,7 +3,7 @@ package com.edutech.medicalequipmentandtrackingsystem.entitiy;
 
 import javax.persistence.*;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 @Entity
@@ -16,9 +16,17 @@ public class Maintenance {
     private Date completedDate;
     private String description;
     private String status;
-    @ManyToOne
-    @JoinColumn(name="equipment_id")
-    private Equipment equipment;
+    
+  @ManyToOne
+@JoinColumn(name="equipment_id")
+@JsonIgnoreProperties({"hospital"})
+private Equipment equipment;
+
+@ManyToOne
+@JoinColumn(name="hospital_id")
+@JsonIgnoreProperties({"equipmentList"})
+private Hospital hospital;
+    
     public Long getId() {
         return id;
     }
@@ -55,6 +63,13 @@ public class Maintenance {
     public void setEquipment(Equipment equipment) {
         this.equipment = equipment;
     }
+    public Hospital getHospital() {
+    return hospital;
+}
+
+public void setHospital(Hospital hospital) {
+    this.hospital = hospital;
+}
 
     
 

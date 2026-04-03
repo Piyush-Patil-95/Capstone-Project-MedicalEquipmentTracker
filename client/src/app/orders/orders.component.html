@@ -1,91 +1,125 @@
-<div class="container-fluid mt-4">
-  <h2 class="title mb-4">Manage Orders</h2>
+<div class="page-wrapper">
 
-  <div class="info-banner mb-2">
-    Orders Information
-  </div>
+  <!-- Background -->
+  <div class="bg-blur"></div>
+  <div class="bg-blur second"></div>
 
-  <div class="table-responsive">
-    <table class="table custom-table">
-      <thead>
-        <tr>
-          <th>Sr#</th>
-          <th>Order Date</th>
-          <th>Quantity</th>
-          <th>Status</th>
-          <th>Equipment</th>
-          <th>Hospital</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+  <div class="container">
 
-      <tbody>
-        <tr *ngFor="let order of orderList; let i = index">
-          
-          <!-- Sr -->
-          <td>{{ i + 1 }}</td>
+    <!-- HEADER -->
+    <div class="top-bar">
+      <h2>Manage Orders</h2>
+      <p class="subtitle">View orders, update status, or delete orders</p>
+    </div>
 
-          <!-- Date -->
-          <td>{{ order.orderDate | date:'dd-MMM-yyyy' }}</td>
+    <!-- INFO -->
+    <div class="glass-card">
+      <div class="section-header">
+        <h4>Orders Information</h4>
+        <span class="count">{{ orderList.length }} Total</span>
+      </div>
 
-          <!-- Quantity -->
-          <td>{{ order.quantity }}</td>
+      <div class="card-grid">
 
-          <!-- Status -->
-          <td>{{ order.status }}</td>
+        <!-- CARD -->
+        <div class="order-card"
+             *ngFor="let order of orderList; let i = index">
 
-          <!-- Equipment -->
-          <td>
-            <div>Id: {{ order.equipment?.id }}</div>
-            <div>Name: {{ order.equipment?.name }}</div>
-            <div>Description: {{ order.equipment?.description }}</div>
-          </td>
+          <!-- CARD HEADER -->
+          <div class="card-header">
+            <span class="index">#{{ i + 1 }}</span>
 
-          <!-- Hospital (via equipment) -->
-          <td>
-            <div>Id: {{ order.equipment?.hospital?.id }}</div>
-            <div>Name: {{ order.equipment?.hospital?.name }}</div>
-            <div>Location: {{ order.equipment?.hospital?.location }}</div>
-          </td>
+            <span class="status"
+                  [ngClass]="{
+                    'initiated': order.status === 'Initiated',
+                    'complete': order.status === 'Complete',
+                    'delivered': order.status === 'Delivered'
+                  }">
+              {{ order.status }}
+            </span>
+          </div>
 
-          <!-- Action -->
-          <td>
+          <!-- DATE + QUANTITY -->
+          <div class="row-block">
+            <div>
+              <label>Order Date</label>
+              <p>{{ order.orderDate | date:'dd-MMM-yyyy' }}</p>
+            </div>
+
+            <div>
+              <label>Quantity</label>
+              <p>{{ order.quantity }}</p>
+            </div>
+          </div>
+
+          <!-- EQUIPMENT -->
+          <div class="info-block">
+            <label>Equipment</label>
+            <p><strong>Id:</strong> {{ order.equipment?.id }}</p>
+            <p><strong>Name:</strong> {{ order.equipment?.name }}</p>
+            <p class="muted"><strong>Description:</strong> {{ order.equipment?.description }}</p>
+          </div>
+
+          <!-- HOSPITAL -->
+          <div class="info-block">
+            <label>Hospital</label>
+            <p><strong>Id:</strong> {{ order.equipment?.hospital?.id }}</p>
+            <p><strong>Name:</strong> {{ order.equipment?.hospital?.name }}</p>
+            <p class="muted"><strong>Location:</strong> {{ order.equipment?.hospital?.location }}</p>
+          </div>
+
+          <!-- ACTIONS (Update + Delete like old code) -->
+          <div class="card-footer">
             <button class="btn-status" (click)="edit(order)">
               Update Status
             </button>
-          </td>
 
-        </tr>
-      </tbody>
-    </table>
+            <button class="btn-delete" (click)="deleteOrder(order.id)">
+              Delete
+            </button>
+          </div>
+
+        </div>
+
+        <!-- EMPTY -->
+        <div *ngIf="orderList.length === 0" class="empty-state">
+          <h5>No orders available</h5>
+          <p>Once orders are created, they will appear here.</p>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- Modal -->
+<!-- MODAL (UNCHANGED LOGIC) -->
 <div class="status-modal-overlay" *ngIf="orderObj?.id">
   <div class="status-modal">
+
     <div class="modal-header">
       <h5>Update Order Status</h5>
-      <button (click)="orderObj = {}">×</button>
+      <button class="modal-close" (click)="orderObj = {}">×</button>
     </div>
 
     <div class="modal-body">
       <label>New Status:</label>
 
-      <select class="form-select mb-3" [(ngModel)]="statusModel.newStatus">
+      <select [(ngModel)]="statusModel.newStatus">
         <option value="Initiated">Initiated</option>
         <option value="Complete">Complete</option>
         <option value="Delivered">Delivered</option>
       </select>
 
-      <button class="btn btn-dark" (click)="update()">
+      <button class="primary-btn" (click)="update()">
         Submit Update
       </button>
     </div>
+
   </div>
 </div>
 
-<!-- Success Message -->
-<div *ngIf="showMessage" class="alert alert-success floating">
+<!-- SUCCESS TOAST (UNCHANGED LOGIC) -->
+<div *ngIf="showMessage" class="success-toast">
   {{ responseMessage }}
 </div>

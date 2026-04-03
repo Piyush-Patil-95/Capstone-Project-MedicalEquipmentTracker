@@ -1,55 +1,61 @@
-<div class="container mt-4">
+<div class="page-wrapper">
 
-  <h2 class="title">Request Equipment</h2>
+  <!-- Background -->
+  <div class="bg-blur"></div>
+  <div class="bg-blur second"></div>
 
-  <div class="card">
-    <div class="card-header">
-      Order Equipment
+  <div class="container">
+
+    <!-- TITLE -->
+    <div class="top-bar">
+      <h2>Request Equipment</h2>
     </div>
 
-    <div class="card-body">
+    <!-- FORM CARD -->
+    <div class="glass-card">
+
+      <h4>Order Equipment</h4>
+
       <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
 
-        <div class="row">
+        <div class="form-grid">
 
-          <!-- Hospitals -->
-          <div class="col-6 mb-3">
-            <label class="form-label">Hospitals</label>
-            <select class="form-control"
-                    formControlName="hospitalId"
+          <!-- Hospital -->
+          <div class="form-group">
+            <label>Hospital</label>
+            <select formControlName="hospitalId"
                     (change)="onHospitalSelect($event)">
-              <option value="">Please Choose</option>
+              <option value="">Select Hospital</option>
               <option *ngFor="let h of hospitalList" [value]="h.id">
                 {{ h.name }}
               </option>
             </select>
           </div>
 
-          <!-- Quantity -->
-          <div class="col-6 mb-3">
-            <label class="form-label">Quantity</label>
-            <input type="number"
-                   class="form-control"
-                   placeholder="Quantity"
-                   formControlName="quantity">
-          </div>
-
           <!-- Equipment -->
-          <div class="col-6 mb-3">
-            <label class="form-label">Equipment</label>
-            <select class="form-control" formControlName="equipmentId">
-              <option value="">Please Choose</option>
+          <div class="form-group">
+            <label>Equipment</label>
+            <select formControlName="equipmentId">
+              <option value="">Select Equipment</option>
               <option *ngFor="let eq of equipmentList" [value]="eq.id">
                 {{ eq.name }}
               </option>
             </select>
           </div>
 
+          <!-- Quantity -->
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number"
+                   placeholder="Enter quantity"
+                   formControlName="quantity">
+          </div>
+
           <!-- Status -->
-          <div class="col-6 mb-3">
-            <label class="form-label">Status</label>
-            <select class="form-control" formControlName="status">
-              <option value="">Choose Status</option>
+          <div class="form-group">
+            <label>Status</label>
+            <select formControlName="status">
+              <option value="">Select Status</option>
               <option>Initiated</option>
               <option>Pending</option>
               <option>Approved</option>
@@ -58,32 +64,33 @@
           </div>
 
           <!-- Order Date -->
-          <div class="col-6 mb-3">
-            <label class="form-label">Order Date</label>
-            <input type="date"
-                   class="form-control"
-                   formControlName="orderDate">
+          <div class="form-group">
+            <label>Order Date</label>
+            <input type="date" formControlName="orderDate">
           </div>
 
         </div>
 
-        <!-- SUCCESS MESSAGE -->
-        <div *ngIf="showMessage" class="alert alert-success mt-3">
+        <!-- SUBMIT -->
+        <div class="btn-wrap">
+          <button type="submit" class="primary-btn">
+            Submit Request
+          </button>
+        </div>
+
+        <!-- SUCCESS -->
+        <div *ngIf="showMessage" class="success-msg">
           {{ responseMessage }}
         </div>
 
-        <!-- ERROR MESSAGE -->
-        <div *ngIf="showError" class="alert alert-danger mt-3">
+        <!-- ERROR -->
+        <div *ngIf="showError" class="error-msg">
           {{ errorMessage }}
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit"
-                class="btn btn-primary w-100 mt-3">
-          Submit
-        </button>
-
       </form>
+
     </div>
+
   </div>
 </div>

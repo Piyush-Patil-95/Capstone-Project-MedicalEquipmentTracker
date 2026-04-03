@@ -1,95 +1,140 @@
-<div class="container-fluid mt-3">
- 
-  <h2 class="mb-4" style="font-weight: 500;">Manage Maintenance</h2>
+<div class="page-wrapper">
 
-  <div class="info-header mb-2">
-    Maintenance Information
-  </div>
+  <!-- Background -->
+  <div class="bg-blur"></div>
+  <div class="bg-blur second"></div>
 
-  <div class="table-responsive">
-    <table class="table custom-table">
-      <thead>
-        <tr>
-          <th>Sr#</th>
-          <th>Scheduled Date</th>
-          <th>Completion Date</th>
-          <th>Status</th>
-          <th>Equipment</th>
-          <th>Hospital</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of maintenanceList; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ item.scheduledDate | date:'dd-MMM-yyyy' }}</td>
-          <td>{{ item.completedDate | date:'dd-MMM-yyyy' }}</td>
-          <td>{{ item.status }}</td>
-         
-          <td>
-            <div class="nested-info">Id:{{ item.equipment?.id || item.equipment_id }}</div>
-            <div class="nested-info">Name:{{ item.equipment?.name }}</div>
-            <div class="nested-info text-muted">Description:{{ item.equipment?.description }}</div>
-          </td>
-        
-         <td>
-  <div>Id: {{ item.equipment?.hospital?.id || 'N/A' }}</div>
-  <div>Name: {{ item.equipment?.hospital?.name || 'N/A' }}</div>
-  <div>Location: {{ item.equipment?.hospital?.location || 'N/A' }}</div>
-</td>
-          <td>
-            <button class="btn btn-warning btn-sm edit-btn" (click)="edit(item)">Edit</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="top-bar">
+      <h2>Manage Maintenance</h2>
+      <p class="subtitle">View, edit, and delete maintenance records</p>
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="glass-card">
+
+      <div class="section-header">
+        <h4>Maintenance Information</h4>
+        <span class="count">{{ maintenanceList.length }} Total</span>
+      </div>
+
+      <div class="card-grid">
+
+        <!-- CARD -->
+        <div class="maintenance-card"
+             *ngFor="let item of maintenanceList; let i = index">
+
+          <!-- HEADER -->
+          <div class="card-header">
+            <span class="index">#{{ i + 1 }}</span>
+
+            <span class="status"
+                  [ngClass]="{
+                    'pending': item.status === 'Pending' || item.status === 'Initiated',
+                    'progress': item.status === 'In Progress',
+                    'complete': item.status === 'Complete'
+                  }">
+              {{ item.status }}
+            </span>
+          </div>
+
+          <!-- DATES -->
+          <div class="row-block">
+            <div>
+              <label>Scheduled Date</label>
+              <p>{{ item.scheduledDate | date:'dd-MMM-yyyy' }}</p>
+            </div>
+
+            <div>
+              <label>Completed Date</label>
+              <p>{{ item.completedDate | date:'dd-MMM-yyyy' }}</p>
+            </div>
+          </div>
+
+          <!-- EQUIPMENT -->
+          <div class="info-block">
+            <label>Equipment</label>
+            <p><strong>Id:</strong> {{ item.equipment?.id || item.equipment_id }}</p>
+            <p><strong>Name:</strong> {{ item.equipment?.name || 'N/A' }}</p>
+            <p class="muted"><strong>Description:</strong> {{ item.equipment?.description || 'N/A' }}</p>
+          </div>
+
+          <!-- HOSPITAL (supports both item.hospital and item.equipment.hospital) -->
+          <div class="info-block">
+            <label>Hospital</label>
+            <p><strong>Id:</strong> {{ item.hospital?.id || item.equipment?.hospital?.id || 'N/A' }}</p>
+            <p><strong>Name:</strong> {{ item.hospital?.name || item.equipment?.hospital?.name || 'N/A' }}</p>
+            <p class="muted"><strong>Location:</strong> {{ item.hospital?.location || item.equipment?.hospital?.location || 'N/A' }}</p>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="card-footer">
+            <button type="button" class="edit-btn" (click)="edit(item)">
+              Edit
+            </button>
+
+            <button type="button" class="delete-btn" (click)="deleteMaintenance(item.id)">
+              Delete
+            </button>
+          </div>
+
+        </div>
+
+        <!-- EMPTY -->
+        <div *ngIf="maintenanceList.length === 0" class="empty-state">
+          <h5>No maintenance records available</h5>
+          <p>Once you add maintenance entries, they will appear here.</p>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 
-
+<!-- MODAL (UNCHANGED FUNCTIONALITY) -->
 <div class="modal-overlay" *ngIf="maintenanceObj?.id">
   <div class="modal-content">
+
     <div class="modal-header">
-      <h5 class="modal-title">Update Maintenance</h5>
-   
-      <button type="button" class="btn-close" (click)="maintenanceObj = {}">X</button>
+      <h5>Update Maintenance</h5>
+      <button type="button" class="modal-close" (click)="maintenanceObj = {}">✕</button>
     </div>
-    <div class="modal-body">
-      <form [formGroup]="itemForm" (ngSubmit)="update()">
-        <div class="mb-3">
-          <label class="form-label">Scheduled Date:</label>
-          <input type="date" class="form-control" formControlName="scheduledDate">
-        </div>
 
-        <div class="mb-3">
-          <label class="form-label">Completed Date:</label>
-          <input type="date" class="form-control" formControlName="completedDate">
-        </div>
+    <form [formGroup]="itemForm" (ngSubmit)="update()">
 
-        <div class="mb-3">
-          <label class="form-label">Description</label>
-       
-          <textarea class="form-control" formControlName="description"></textarea>
-        </div>
+      <div class="form-group">
+        <label>Scheduled Date</label>
+        <input type="date" formControlName="scheduledDate">
+      </div>
 
-        <div class="mb-3">
-          <label class="form-label">Status</label>
-          <select class="form-select" formControlName="status">
-            <option value="Initiated">Initiated</option>
-            <option value="Complete">Complete</option>
-          </select>
-        </div>
+      <div class="form-group">
+        <label>Completed Date</label>
+        <input type="date" formControlName="completedDate">
+      </div>
 
-        <div class="mt-4">
-          <button type="submit" class="btn btn-outline-dark px-4" [disabled]="itemForm.invalid">Submit</button>
-        </div>
-      </form>
-    </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea formControlName="description" placeholder="Enter details..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select formControlName="status">
+          <option value="Initiated">Initiated</option>
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Complete">Complete</option>
+        </select>
+      </div>
+
+      <button type="submit" class="primary-btn" [disabled]="itemForm.invalid">
+        Submit
+      </button>
+
+    </form>
+
   </div>
 </div>
-
-
-
-
-
-

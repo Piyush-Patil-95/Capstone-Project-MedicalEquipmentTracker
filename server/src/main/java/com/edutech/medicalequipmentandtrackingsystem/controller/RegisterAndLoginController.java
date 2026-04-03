@@ -77,42 +77,68 @@ public class RegisterAndLoginController {
     //  }
 
 
-    @PostMapping("/api/user/login")
+ @PostMapping("/api/user/login")
+
 public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
-
-    // ✅ CAPTCHA CHECK FIRST
+ 
     boolean captchaValid = captchaService.validateCaptcha(
+
             request.getCaptchaId(),
+
             request.getCaptchaAnswer()
-    );
 
+    );
+ 
     if (!captchaValid) {
+
         return new ResponseEntity<>("Invalid Captcha", HttpStatus.BAD_REQUEST);
-    }
 
+    }
+ 
     try {
+
         authenticationManager.authenticate(
+
             new UsernamePasswordAuthenticationToken(
+
                 request.getUsername(),
+
                 request.getPassword()
+
             )
+
         );
+
     } catch (AuthenticationException e) {
+
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
     }
+ 
+    // :white_check_mark: IMPORTANT CHANGE
 
+    UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
+ 
+    String token = jwtUtil.generateToken(userDetails);
+ 
     User user = userService.getUserByUsername(request.getUsername());
-    String token = jwtUtil.generateToken(user.getUsername());
-
+ 
     LoginResponse response = new LoginResponse(
-            token,
-            user.getUsername(),
-            user.getEmail(),
-            user.getRole()
-    );
 
+            token,
+
+            user.getUsername(),
+
+            user.getEmail(),
+
+            user.getRole()
+
+    );
+ 
     return new ResponseEntity<>(response, HttpStatus.OK);
+
 }
+ 
         
     }
 

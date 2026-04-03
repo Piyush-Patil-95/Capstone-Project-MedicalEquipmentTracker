@@ -19,6 +19,10 @@ public class HospitalService {
     public Hospital createHospital(Hospital hospital){
         return hospitalRepository.save(hospital);
     }
+    
+public void deleteHospital(Long id){
+    hospitalRepository.deleteById(id);
+}
 
     //Implement the required code here
 }

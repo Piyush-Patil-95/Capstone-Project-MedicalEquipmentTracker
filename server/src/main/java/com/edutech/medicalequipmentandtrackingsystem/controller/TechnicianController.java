@@ -22,6 +22,11 @@ public class TechnicianController {
     public ResponseEntity<List<Maintenance>> getMaintenance() {
         return new ResponseEntity<>(maintenanceService.getAllMaintenance(), HttpStatus.OK);
  }
+@DeleteMapping("/api/technician/maintenance/{id}")
+public ResponseEntity<?> deleteMaintenance(@PathVariable Long id) {
+    maintenanceService.deleteMaintenance(id);
+    return ResponseEntity.ok("Deleted Successfully");
+}
 
     // Update maintenance
  @PutMapping("/api/technician/maintenance/update/{maintenanceId}")

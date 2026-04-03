@@ -30,6 +30,16 @@ export class HttpService {
     return this.http.post(`${this.serverName}/api/user/register`, data);
   }
 
+ deleteHospital(id: number): Observable<any> {
+  return this.http.delete(
+    `${this.serverName}/api/hospital/${id}`,
+    {
+      ...this.getHttpOptions(),
+      responseType: 'text' as 'json'
+    }
+  );
+}
+
   addEquipment(data: any, hospitalId: any): Observable<any> {
     return this.http.post(
       `${this.serverName}/api/hospital/equipment?hospitalId=${hospitalId}`,
@@ -82,15 +92,35 @@ export class HttpService {
       this.getHttpOptions()
     );
   }
+ deleteMaintenance(id: number): Observable<any> {
+  return this.http.delete(
+    `${this.serverName}/api/technician/maintenance/${id}`,
+    {
+      ...this.getHttpOptions(),
+      responseType: 'text' as 'json'
+    }
+  );
+}
+ updateMaintenance(data: any, id: any): Observable<any> {
+  return this.http.put(
+    `${this.serverName}/api/technician/maintenance/update/${id}`,
+    data,
+    {
+      ...this.getHttpOptions(),   // ✅ ADD THIS
+      responseType: 'text' as 'json'
+    }
+  );
+}
+deleteOrder(id: number): Observable<any> {
+  return this.http.delete(
+    `${this.serverName}/api/supplier/order/${id}`,
+    {
+      ...this.getHttpOptions(),
+      responseType: 'text' as 'json'
+    }
+  );
+}
 
-  updateMaintenance(data: any, id: any): Observable<any> {
-    return this.http.put(
-      `${this.serverName}/api/technician/maintenance/update/${id}`,
-      data,
-      {responseType:'text'},
-      
-    );
-  }
 
   createHospital(data: any): Observable<any> {
     return this.http.post(

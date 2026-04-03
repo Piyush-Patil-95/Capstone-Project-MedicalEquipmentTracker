@@ -15,6 +15,7 @@ import com.edutech.medicalequipmentandtrackingsystem.service.MaintenanceService;
 import com.edutech.medicalequipmentandtrackingsystem.service.OrderService;
 
 import java.util.List;
+import java.util.Map;
 
 
 //controller for hospital
@@ -68,6 +69,12 @@ public class HospitalController {
       Maintenance scheduled = maintenanceService.scheduleMaintenance(equipmentId, maintenance);
       return new ResponseEntity<>(scheduled, HttpStatus.CREATED);
    }
+
+  @DeleteMapping("/api/hospital/{id}")
+public ResponseEntity<?> deleteHospital(@PathVariable Long id) {
+    hospitalService.deleteHospital(id);
+    return ResponseEntity.ok(Map.of("message", "Deleted Successfully"));
+}
 
    // Place Order
    @PostMapping("/api/hospital/order")

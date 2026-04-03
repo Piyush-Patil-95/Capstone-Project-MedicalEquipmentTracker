@@ -1,233 +1,185 @@
-<!-- Top Navigation Bar -->
+<div class="page-wrapper">
 
+  <!-- Animated Background -->
+  <div class="bg-blur"></div>
+  <div class="bg-blur second"></div>
 
-<!-- Main Container -->
-<div class="container-fluid px-4 py-4 main-container">
-  
-  <!-- Page Header -->
-  <div class="page-header mb-4 animate-fade-in">
-    <div class="header-content">
-      <h2 class="page-title">
-        <i class="bi bi-grid-3x3-gap-fill me-2"></i>
-        Manage Hospitals
-      </h2>
-      <p class="page-subtitle">Add, view and manage hospital locations and equipment</p>
-    </div>
-    <div class="header-decoration"></div>
-  </div>
+  <div class="container">
 
-  <!-- Add Hospital Card -->
-  <div class="card modern-card add-hospital-card mb-5 animate-slide-up">
-    <div class="card-header-gradient">
-      <!-- <div class="header-icon-circle">
-        <i class="bi bi-plus-lg"></i>
-      </div> -->
-      <h5 class="card-header-title">Add New Hospital</h5>
-      <p class="card-header-subtitle">Enter hospital details below</p>
+    <!-- HEADER -->
+    <div class="top-bar">
+      <h2>Hospital Management</h2>
+      <p class="subtitle">Add, view and manage hospital data</p>
     </div>
 
-    <div class="card-body p-4">
+    <!-- ADD HOSPITAL -->
+    <div class="glass-card add-card">
+
+      <div class="section-header">
+        <h4>Add Hospital</h4>
+        <span class="count">{{ hospitalList.length }} Total</span>
+      </div>
+
       <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
-        <div class="row g-4 align-items-end">
+        <div class="form-row">
 
-          <!-- Hospital Name -->
-          <div class="col-md-4">
-            <div class="form-floating-group">
-              <label class="form-label-custom">
-                <i class="bi bi-building me-1"></i>
-                Hospital Name
-              </label>
-              <div class="input-wrapper">
-                <i class="bi bi-hospital input-icon"></i>
-                <input 
-                  placeholder="Enter hospital name" 
-                  type="text" 
-                  class="form-control modern-input" 
-                  formControlName="name"
-                  [class.is-invalid]="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
-              </div>
-              <div class="invalid-feedback-custom" *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
-                <i class="bi bi-exclamation-circle me-1"></i>
-                Hospital name is required
-              </div>
-            </div>
+          <!-- NAME -->
+          <div class="form-group">
+            <label>Hospital Name</label>
+            <input type="text"
+                   placeholder="Enter hospital name"
+                   formControlName="name"
+                   [class.error]="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
+            <small *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
+              Hospital name is required
+            </small>
           </div>
 
-          <!-- Location -->
-          <div class="col-md-4">
-            <div class="form-floating-group">
-              <label class="form-label-custom">
-                <i class="bi bi-geo-alt me-1"></i>
-                Location
-              </label>
-              <div class="input-wrapper">
-                <i class="bi bi-geo-alt input-icon"></i>
-                <input 
-                  placeholder="Enter city or address" 
-                  type="text" 
-                  class="form-control modern-input" 
-                  formControlName="location"
-                  [class.is-invalid]="itemForm.get('location')?.invalid && itemForm.get('location')?.touched">
-              </div>
-              <div class="invalid-feedback-custom" *ngIf="itemForm.get('location')?.invalid && itemForm.get('location')?.touched">
-                <i class="bi bi-exclamation-circle me-1"></i>
-                Location is required
-              </div>
-            </div>
+          <!-- LOCATION -->
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text"
+                   placeholder="Enter location"
+                   formControlName="location"
+                   [class.error]="itemForm.get('location')?.invalid && itemForm.get('location')?.touched">
+            <small *ngIf="itemForm.get('location')?.invalid && itemForm.get('location')?.touched">
+              Location is required
+            </small>
           </div>
 
-          <!-- Submit Button -->
-          <div class="col-md-4">
-            <button 
-              class="btn btn-submit-gradient w-100" 
-              type="submit"
-              [disabled]="itemForm.invalid">
-              <i class="bi bi-send-fill me-2"></i>
-              <span>Add Hospital</span>
-              <div class="btn-shine"></div>
+          <!-- BUTTON -->
+          <div class="form-group btn-wrap">
+            <button type="submit" class="primary-btn w-100">
+              + Add Hospital
             </button>
           </div>
 
         </div>
       </form>
+
     </div>
-  </div>
 
-  <!-- Hospital Information Grid -->
-  <div class="hospital-grid">
-    <div class="row g-4">
-      
-      <!-- Card Loop -->
-      <div class="col-12 col-sm-6 col-lg-4 col-xl-3 animate-card-in" 
-           *ngFor="let hospital of hospitalList; let i = index"
-           [style.animation-delay]="i * 0.1 + 's'">
-        
-        <div class="card hospital-card-premium">
-          <!-- Visual Top Section with Pattern -->
-          <div class="card-header-visual-premium">
-            <div class="visual-pattern"></div>
-            <!-- <div class="hospital-icon-container">
-              <i class="bi bi-hospital-fill hospital-icon"></i>
-            </div> -->
-            <div class="card-badge">#{{ i + 1 }}</div>
-          </div>
+    <!-- HOSPITAL DIRECTORY -->
+    <div class="glass-card">
 
-          <div class="card-body-premium">
-            <div class="hospital-info-wrapper">
-              <small class="entry-label text-uppercase fw-bold d-block mb-2">
-                <span class="label-dot"></span>
-                Entry #{{ i + 1 }}
-              </small>
-              <h5 class="hospital-name-premium">{{ hospital.name }}</h5>
-              
-              <div class="location-badge-premium">
-                <i class="bi bi-geo-alt-fill"></i>
-                <span>{{ hospital.location }}</span>
+      <div class="section-header">
+        <h4>Hospital Directory</h4>
+        <span class="count">{{ filteredHospitals.length }} Total</span>
+      </div>
+
+      <!-- 🔍 SEARCH BAR -->
+      <div class="mb-4">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="🔍 Search hospital by name or location..."
+          [(ngModel)]="searchText"
+          (input)="onSearch()"
+        >
+      </div>
+
+      <!-- ✅ SINGLE GRID (SEARCH AWARE) -->
+      <div class="hospital-grid">
+        <div class="row g-4">
+
+          <!-- HOSPITAL CARD -->
+          <div
+            class="col-12 col-sm-6 col-lg-4 col-xl-3"
+            *ngFor="let hospital of filteredHospitals">
+
+            <div class="card p-3 shadow">
+
+              <h5>{{ hospital.name }}</h5>
+              <p><i class="bi bi-geo-alt"></i> {{ hospital.location }}</p>
+
+              <!-- STATUS -->
+              <div class="mb-2">
+                <div>🏥 Equipments: {{ hospital.equipmentList?.length || 0 }}</div>
+                <div>📦 Order: {{ hospital.orders?.length ? hospital.orders[0]?.status : 'No Orders' }}</div>
+                <div>
+                  🔧 Maintenance:
+                  <span *ngIf="hospital.maintenance?.length">
+                    {{ hospital.maintenance[0]?.status }}
+                  </span>
+                  <span *ngIf="!hospital.maintenance?.length">
+                    No Maintenance
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <button 
-              class="btn btn-assign-premium" 
-              data-bs-toggle="modal" 
-              data-bs-target="#equipmentModal"
-              (click)="openModal(hospital)">
-              <span class="btn-text">
-                <i class="bi bi-plus-lg me-2"></i>
+              <!-- ACTIONS -->
+              <button
+                class="btn btn-success w-100 mb-2"
+                data-bs-toggle="modal"
+                data-bs-target="#equipmentModal"
+                (click)="openModal(hospital)">
                 Assign Equipment
-              </span>
-              <span class="btn-icon-wrapper">
-                <i class="bi bi-arrow-right"></i>
-              </span>
-            </button>
+              </button>
+
+              <button
+                class="btn btn-danger w-100"
+                (click)="deleteHospital(hospital.id)">
+                Delete Hospital
+              </button>
+
+            </div>
           </div>
+
+          <!-- EMPTY -->
+          <div class="col-12" *ngIf="filteredHospitals.length === 0">
+            <div class="text-center mt-4">
+              <h4>No Hospitals Found 😢</h4>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- Empty State -->
-      <div class="col-12" *ngIf="hospitalList.length === 0">
-        <div class="empty-state-container">
-          <div class="empty-state-content">
-            <div class="empty-icon-wrapper">
-              <i class="bi bi-hospital empty-icon"></i>
-            </div>
-            <h4 class="empty-title">No Hospitals Found</h4>
-            <p class="empty-subtitle">Start by adding your first hospital using the form above</p>
-            <div class="empty-decoration"></div>
-          </div>
-        </div>
-      </div>
     </div>
+
   </div>
 </div>
 
-<!-- Equipment Assignment Modal -->
-<div class="modal fade" id="equipmentModal" tabindex="-1" aria-labelledby="equipmentModalLabel" aria-hidden="true">
+<!-- MODAL -->
+<div class="modal fade custom-modal" id="equipmentModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content modal-content-premium">
-      <div class="modal-header modal-header-premium">
-        <div class="modal-header-inner">
-          <div class="modal-icon-circle">
-            <i class="bi bi-cpu-fill"></i>
-          </div>
-          <div>
-            <h5 class="modal-title modal-title-premium" id="equipmentModalLabel">Assign Equipment</h5>
-            <p class="modal-subtitle">Add new equipment to this hospital</p>
-          </div>
-        </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5>Assign Equipment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body modal-body-premium">
+
+      <div class="modal-body">
+
         <form [formGroup]="equipmentForm">
-          <div class="form-group-premium mb-4">
-            <label class="form-label form-label-premium">
-              <i class="bi bi-tag me-1"></i>
-              Equipment Name
-            </label>
-            <div class="input-group-premium">
-              <i class="bi bi-tools input-icon-premium"></i>
-              <input 
-                type="text" 
-                class="form-control form-control-premium" 
-                formControlName="name" 
-                placeholder="e.g., MRI Machine, X-Ray Scanner">
-            </div>
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" formControlName="name" placeholder="Equipment Name">
           </div>
-          <div class="form-group-premium mb-4">
-            <label class="form-label form-label-premium">
-              <i class="bi bi-card-text me-1"></i>
-              Description
-            </label>
-            <div class="input-group-premium">
-              <i class="bi bi-pencil input-icon-premium textarea-icon"></i>
-              <textarea 
-                class="form-control form-control-premium textarea-premium" 
-                formControlName="description" 
-                placeholder="Describe the equipment specifications..."></textarea>
-            </div>
-          </div>
-          
-          <!-- Success Message -->
-          <div *ngIf="showMessage" class="alert alert-success success-message-container">
-            <div class="success-checkmark">
-              <i class="bi bi-check-circle-fill"></i>
-            </div>
-            <div class="success-content">
-              <h6 class="success-title">Success!</h6>
-              <p class="success-text">Equipment added successfully</p>
-            </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea formControlName="description"
+                      placeholder="Equipment Description"></textarea>
           </div>
         </form>
+
+        <div *ngIf="showMessage" class="success-msg">
+          {{ responseMessage || 'Equipment added successfully' }}
+        </div>
+
+        <div *ngIf="showError" class="error-msg">
+          {{ errorMessage }}
+        </div>
+
       </div>
-      <div class="modal-footer modal-footer-premium">
-        <button type="button" class="btn btn-cancel-premium" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle me-1"></i>
-          Close
-        </button>
-        <button type="button" class="btn btn-save-premium" (click)="submitEquipment()">
-          <i class="bi bi-check-lg me-1"></i>
-          Save Equipment
-        </button>
+
+      <div class="modal-footer">
+        <button class="secondary-btn" data-bs-dismiss="modal">Close</button>
+        <button class="primary-btn" (click)="submitEquipment()">Save</button>
       </div>
+
     </div>
   </div>
 </div>

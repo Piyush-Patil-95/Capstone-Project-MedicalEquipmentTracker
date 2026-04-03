@@ -55,9 +55,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             ).permitAll()
 
             // ✅ ROLE BASED APIs
-            .antMatchers("/api/hospital/**").hasAuthority("HOSPITAL")
-            .antMatchers("/api/technician/**").hasAuthority("TECHNICIAN")
-            .antMatchers("/api/supplier/**").hasAuthority("SUPPLIER")
+            .antMatchers("/api/hospital/**").hasAnyAuthority("HOSPITAL", "ADMIN")
+    .antMatchers("/api/technician/**").hasAnyAuthority("TECHNICIAN", "ADMIN")
+    .antMatchers("/api/supplier/**").hasAnyAuthority("SUPPLIER", "ADMIN")
+           
 
             .anyRequest().authenticated();
 
