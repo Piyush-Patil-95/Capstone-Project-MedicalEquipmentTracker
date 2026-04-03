@@ -33,6 +33,16 @@ export class AppComponent {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/dashboard']);
   }
+
+  menuOpen = false;
+
+toggleMenu() {
+this.menuOpen = !this.menuOpen;
+
+const nav = document.querySelector('.nav-links');
+nav?.classList.toggle('active');
+}
+
 }

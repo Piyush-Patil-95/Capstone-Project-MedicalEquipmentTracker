@@ -1,51 +1,51 @@
 <nav *ngIf="showNavbar" class="custom-navbar">
 
-  <!-- Logo -->
-  <div class="logo"><a style="color: black; text-decoration: none;" [routerLink]="['/dashboard']" >✱ Medcore</a></div>
+<!-- LEFT SECTION -->
+<div class="left-section">
 
-  <!-- Left Links -->
-  <ul class="nav-links">
+<!-- LOGO -->
+<div class="logo img" [routerLink]="['/dashboard']">
+<img src="assets/images/logo1.png" alt="logo">
+<!-- <span>Medcore</span> -->
+</div>
 
-    <li *ngIf="roleName === 'HOSPITAL'">
-      <a [routerLink]="['/createhospital']">Create Hospital</a>
-    </li>
+<!-- HOSPITAL LINKS (LEFT SIDE) -->
+<ul class="nav-links left-links" *ngIf="roleName === 'HOSPITAL'">
+<li><a [routerLink]="['/createhospital']">Create Hospital</a></li>
+<li><a [routerLink]="['/schedule-maintenance']">Maintenance</a></li>
+<li><a [routerLink]="['/requestequipment']">Equipment</a></li>
+</ul>
 
-    <li *ngIf="roleName === 'HOSPITAL'">
-      <a [routerLink]="['/schedule-maintenance']">Scheduled Maintenance</a>
-    </li>
+<!-- TECHNICIAN -->
+<ul class="nav-links left-links" *ngIf="roleName === 'TECHNICIAN'">
+<li><a [routerLink]="['/maintenance']" >Maintenance</a></li>
+</ul>
 
-    <li *ngIf="roleName === 'HOSPITAL'">
-      <a [routerLink]="['/requestequipment']">Request Equipment</a>
-    </li>
+<!-- SUPPLIER -->
+<ul class="nav-links left-links" *ngIf="roleName === 'SUPPLIER'">
+<li><a [routerLink]="['/orders']" >Orders</a></li>
+</ul>
 
-    <li *ngIf="roleName === 'TECHNICIAN'">
-      <a [routerLink]="['/maintenance']">Maintenance</a>
-    </li>
+</div>
 
-    <li *ngIf="roleName === 'SUPPLIER'">
-      <a [routerLink]="['/orders']">Orders</a>
-    </li>
 
-  </ul>
 
-  <!-- Right Side -->
-  <div class="right-section">
+<!-- RIGHT SECTION -->
+<div class="right-section">
 
-    <!-- Search
-    <div class="icon">:mag:</div> -->
+<!-- DASHBOARD LINKS ONLY -->
+<ul class="nav-links" *ngIf="!IsLoggin">
+<li><a href="#home">Home</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
 
-    <!-- Login/Logout -->
-    <div *ngIf="!IsLoggin" class="nav-btn">
-      <a [routerLink]="['/login']">Login</a>
-    </div>
+<!-- LOGOUT -->
+<button *ngIf="IsLoggin" class="logout-btn" (click)="logout()">
+Logout
+</button>
 
-    <div *ngIf="IsLoggin" class="nav-btn" (click)="logout()">
-      Logout
-    </div>
-
-    
-
-  </div>
+</div>
 
 </nav>
 
