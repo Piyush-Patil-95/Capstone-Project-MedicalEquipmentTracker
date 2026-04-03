@@ -1,147 +1,72 @@
-<div class="banner-container">
-        <!-- Main Large Heading -->
-        <h1 class="main-heading">Medical Equipments</h1>
+<div class="landing">
 
-        <div class="microscope-container">
-        <div class="microscope-bg-shape"></div> <!-- The rounded background shape -->
-        <img src="assets/images/microscope.png" alt="Microscope" class="microscope-img">
-    </div>
+  
 
-       
+  <!-- HERO -->
+  <section class="hero">
 
-        <!-- Center Description Text -->
-        <div class="description-text">
-            Advancing healthcare through dependable medical equipment and comprehensive solutions to enhance patient outcomes and support healthcare professionals.
+    <!-- BACKGROUND BLUR SHAPES -->
+    <div class="bg-blur"></div>
+    <div class="bg-blur second"></div>
+
+    <!-- LEFT CONTENT -->
+    <div class="hero-left">
+      <h1>Medical Equipment Tracker</h1>
+      <p>
+        A smart system to manage hospital equipment, streamline maintenance,
+        and improve operational efficiency.
+      </p>
+
+      <div class="actions">
+        <button class="btn primary" (click)="goRegister()">Register</button>
+
+        <div class="login-group">
+          <button class="btn primary" (click)="goLogin()">Login</button>
+          
         </div>
-        <div class="hero-centre">
-
-        </div>
-
-        <!-- Hand Sanitizer Product Card -->
-        <div class="product-card">
-            <div class="card-header">
-                <span class="product-label">Hand<br>Sanitizer</span>
-                <button class="shop-btn">Shop Now</button>
-            </div>
-            <div class="product-image-container">
-                <img src="assets/images/sanitizer.png" alt="Hand Sanitizer" class="product-img">
-            </div>
-        </div>
+      </div>
     </div>
 
-
-
-
-
-    
-<div class="card-container">
-  <!-- Card 1 -->
-  <div class="card card-yellow">
-    <div class="card-header">
-      <h3>Lab Face<br>Mask</h3>
-      <span class="arrow-icon">↗</span>
+    <!-- RIGHT IMAGE -->
+    <div class="hero-right">
+      <img src="assets/medical-equipment.png" alt="medical image">
     </div>
-    <img src="assets/images/mask.png" alt="Lab Face Mask">
-  </div>
 
-  <!-- Card 2 -->
-  <div class="card card-tan">
-    <div class="card-header">
-      <h3>Hand Cleaner</h3>
-      <span class="arrow-icon">↗</span>
-    </div>
-    <img src="assets/images/sanitizer.png" alt="Hand Cleaner Mask">
-  </div>
+  </section>
 
-  <!-- Card 3 -->
-  <div class="card card-green">
-    <div class="card-header">
-      <h3>Hand<br>Sanitizer</h3>
-      <span class="arrow-icon">↗</span>
+  <!-- ABOUT -->
+  <section id="about" class="about">
+    <h2>About the System</h2>
+    <p>
+      This platform helps hospitals efficiently track medical equipment,
+      assign maintenance tasks, and manage supplier operations in one place.
+    </p>
+
+    <div class="about-cards">
+      <div class="card">
+        <h3>🏥 Hospital</h3>
+        <p>Track and manage equipment efficiently</p>
+      </div>
+      <div class="card">
+        <h3>🧑‍🔧 Technician</h3>
+        <p>Handle maintenance workflows</p>
+      </div>
+      <div class="card">
+        <h3>🚚 Supplier</h3>
+        <p>Manage inventory and orders</p>
+      </div>
     </div>
-    <img src="assets/images/dettol.png" alt="Hand Sanitizer">
-  </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <h2>Contact Us</h2>
+
+    <div class="contact-box">
+      <p><strong>Email:</strong> support@medtrack.com</p>
+      <p><strong>Phone:</strong> +91 98765 43210</p>
+      <p><strong>Address:</strong> Mumbai, India</p>
+    </div>
+  </section>
+
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<section class="feature-section">
-  <div class="feature-header">
-    <p class="sub-heading">Our Features</p>
-    <h2 class="main-title">Products</h2>
-  </div>
-
-  <div class="feature-grid">
-    <!-- Card 1 -->
-    <div class="feature-card">
-      <p class="item-category">DISABLE CHAIR</p>
-      <h3 class="item-name">Wheelchair-Disables</h3>
-      <div class="item-visual">
-        <img src="assets/images/stethoscope.png" alt="Wheelchair">
-      </div>
-      <p class="item-price">$189.00</p>
-      <div class="item-action">
-        <a href="#" class="item-link">Shop Now</a>
-      </div>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="feature-card">
-      <p class="item-category">THERMOMETER</p>
-      <h3 class="item-name">Digital Thermometer</h3>
-      <div class="item-visual">
-        <img src="assets/images/stethoscope.png" alt="Thermometer">
-      </div>
-      <p class="item-price">$250.00</p>
-      <div class="item-action">
-        <a href="#" class="item-link">Shop Now</a>
-      </div>
-    </div>
-    <!-- Card 2 -->
-    <div class="feature-card">
-      <p class="item-category">THERMOMETER</p>
-      <h3 class="item-name">Digital Thermometer</h3>
-      <div class="item-visual">
-        <img src="assets/images/stethoscope.png" alt="Thermometer">
-      </div>
-      <p class="item-price">$250.00</p>
-      <div class="item-action">
-        <a href="#" class="item-link">Shop Now</a>
-      </div>
-    </div>
-    <!-- Card 2 -->
-    <div class="feature-card">
-      <p class="item-category">THERMOMETER</p>
-      <h3 class="item-name">Digital Thermometer</h3>
-      <div class="item-visual">
-        <img src="assets/images/stethoscope.png" alt="Thermometer">
-      </div>
-      <p class="item-price">$250.00</p>
-      <div class="item-action">
-        <a href="#" class="item-link">Shop Now</a>
-      </div>
-    </div>
-
-    <!-- Add more cards here following the same structure -->
-  </div>
-
-  <div class="view-more-container">
-    <button class="view-more-btn">View All Product</button>
-  </div>
-</section>

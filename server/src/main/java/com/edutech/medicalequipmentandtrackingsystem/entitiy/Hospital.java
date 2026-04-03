@@ -1,5 +1,6 @@
 package com.edutech.medicalequipmentandtrackingsystem.entitiy;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,9 +14,9 @@ public class Hospital {
     private String name;
     private String location;
 
-    @OneToMany(mappedBy = "hospital")
-    @JsonIgnore
-    private List<Equipment> equipmentList;
+   @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true)
+@JsonIgnoreProperties({"hospital"}) 
+private List<Equipment> equipmentList;
 
     public Hospital() {
         

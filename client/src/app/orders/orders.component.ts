@@ -38,6 +38,22 @@ export class OrdersComponent  {
       }
     });
   }
+  deleteOrder(id: number) {
+  if (!confirm('Are you sure you want to delete this order?')) return;
+
+  this.httpService.deleteOrder(id).subscribe({
+    next: () => {
+      // remove from UI instantly
+      this.orderList = this.orderList.filter((o: any) => o.id !== id);
+      alert('Order Deleted Successfully');
+    },
+    error: (err) => {
+      console.error(err);
+      alert('Delete failed');
+    }
+  });
+}
+
 
   viewDetails(details: any): void {
     this.orderObj = details;

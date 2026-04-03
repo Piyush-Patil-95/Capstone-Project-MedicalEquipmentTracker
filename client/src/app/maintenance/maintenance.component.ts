@@ -31,12 +31,11 @@ export class MaintenanceComponent implements OnInit {
 
   ngOnInit(): void {
     this.itemForm = this.fb.group({
-      scheduledDate: ['', Validators.required],
-      completedDate: ['', Validators.required],
-      description: ['', Validators.required],
-      status: ['', Validators.required],
-      maintenanceId: ['', Validators.required]
-    });
+  scheduledDate: ['', Validators.required],
+  completedDate: ['', Validators.required],
+  description: ['', Validators.required],
+  status: ['', Validators.required]
+});
     this.getMaintenance();
   }
 
@@ -75,31 +74,40 @@ export class MaintenanceComponent implements OnInit {
       status: maintenance.status
     });
   }
+ deleteMaintenance(id: number) {
+  if (!confirm('Are you sure you want to delete this maintenance?')) return;
 
+  this.httpService.deleteMaintenance(id).subscribe({
+    next: () => {
+      // remove from UI instantly
+      this.maintenanceList = this.maintenanceList.filter((m: any) => m.id !== id);
+      alert('Deleted successfully');
+    },
+    error: (err) => {
+      console.error(err);
+      alert('Delete failed');
+    }
+  });
+}
  
   update(): void {
-    if (this.itemForm.valid) {
-      console.log('clicked')
-      const updatedData = this.itemForm.value;
-      const maintenanceId = updatedData.maintenanceId;
+  if (this.itemForm.valid) {
+    const updatedData = this.itemForm.value;
 
-      this.httpService.updateMaintenance(updatedData, maintenanceId).subscribe({
-        next: (response) => {
-          this.showMessage = true;
-          this.responseMessage = "Maintenance updated successfully!";
-          this.maintenanceObj = {}; 
-          this.itemForm.reset();
-          this.getMaintenance(); 
-        },
-        error: (err) => {
-          this.showError = true;
-          this.errorMessage = "Update failed. Please try again.";
-        }
-      });
-    } else {
-      this.itemForm.markAllAsTouched();
-    }
+    this.httpService.updateMaintenance(updatedData, this.maintenanceObj.id).subscribe({
+      next: () => {
+        alert("Updated Successfully");
+        this.maintenanceObj = {};
+        this.itemForm.reset();
+        this.getMaintenance();
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Update failed");
+      }
+    });
   }
+}
 }
 
 

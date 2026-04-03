@@ -1,6 +1,6 @@
 package com.edutech.medicalequipmentandtrackingsystem.entitiy;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 @Entity
@@ -12,8 +12,9 @@ public class Equipment {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name="hospital_id")
-    private Hospital hospital;
+@JoinColumn(name="hospital_id")
+@JsonIgnoreProperties({"equipmentList"})
+private Hospital hospital;
 
     public Equipment() {
     }

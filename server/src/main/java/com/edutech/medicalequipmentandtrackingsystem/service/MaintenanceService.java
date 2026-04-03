@@ -23,11 +23,16 @@ public class MaintenanceService {
         return maintenanceRepository.findAll();
     }
     public Maintenance scheduleMaintenance(Long equipmentId, Maintenance maintenance){
-            Equipment equipment=equipmentRepository.findById(equipmentId).get();
-            maintenance.setEquipment(equipment);
-            return maintenanceRepository.save(maintenance);
+    Equipment equipment = equipmentRepository.findById(equipmentId).get();
 
-    }
+    maintenance.setEquipment(equipment);
+    maintenance.setHospital(equipment.getHospital()); // ✅ ADD THIS LINE
+
+    return maintenanceRepository.save(maintenance);
+}
+public void deleteMaintenance(Long id) {
+    maintenanceRepository.deleteById(id);
+}
 
    public Maintenance updateMaintenance(Long id, Maintenance updatedData) {
 

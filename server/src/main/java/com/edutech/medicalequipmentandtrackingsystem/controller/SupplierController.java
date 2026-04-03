@@ -15,7 +15,11 @@ public class SupplierController {
 
    @Autowired
     private OrderService orderService;
-
+ @DeleteMapping("/api/supplier/order/{id}")
+public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+    orderService.deleteOrder(id);
+    return ResponseEntity.ok("Deleted Successfully");
+}
     // Get all orders
  @GetMapping("/api/supplier/orders")
     public ResponseEntity<List<Order>> getOrders() {

@@ -1,268 +1,232 @@
-// ============================================
-// DESIGN SYSTEM VARIABLES (Consistency Across Modules)
-// ============================================
-$primary-color: #c2edff;
-$primary-gradient: linear-gradient(135deg, #c2edff 0%, #a8dce3 100%);
-$primary-indigo: #6366f1;
-$secondary-gradient: $primary-color;
-$success-gradient: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-$danger-gradient: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
-$card-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.15);
-$hover-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
-$text-main: #1e293b;
-$text-muted: #64748b;
-$input-border: #e2e8f0;
-$bg-surface: #ffffff;
-$bg-light: #f8fafc;
+/* =========================================
+   THEME (NEW)
+========================================= */
+$primary: #2A6F97;
+$secondary: #61A5C2;
+$bg: #F4F9FC;
 
-// ============================================
-// ANIMATIONS (From Reference Library)
-// ============================================
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+$success: #2F9E44;
+$danger: #E03131;
+
+$card-shadow: 0 10px 35px rgba(0,0,0,0.08);
+$hover-shadow: 0 25px 50px rgba(0,0,0,0.12);
+
+/* =========================================
+   ANIMATIONS (NEW + OLD PREMIUM)
+========================================= */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes float {
+  from { transform: translate(0,0); }
+  to   { transform: translate(40px,-30px); }
 }
 
+/* Old premium shake (optional for validation) */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
 
-// ============================================
-// PAGE LAYOUT & TYPOGRAPHY
-// ============================================
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 0.5rem;
-  
-  // Wrap main content with entrance animation
-  .card {
-    animation: fadeInUp 0.8s ease-out both;
-  }
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: $text-main;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  
-  // Subtle underline decoration matching other pages
-  &::after {
-    content: '';
-    height: 4px;
-    width: 80px;
-    background: $primary-gradient;
-    margin-left: 15px;
-    border-radius: 2px;
-    display: inline-block;
-  }
-}
-
-// ============================================
-// PREMIUM CARD STYLING
-// ============================================
-.card {
-  border: none !important;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: $card-shadow;
-  transition: all 0.4s ease;
-  height: 100%; // Ensure full height for consistency
-
-  &:hover {
-    box-shadow: $hover-shadow;
-  }
-}
-
-.card-header {
-  background: $primary-gradient;
-  background-size: 200% auto;
-  animation: gradient-shift 5s ease infinite;
-  padding: 1.5rem 2rem;
-  color: black;
-  font-weight: 700;
-  font-size: 1.25rem;
+/* =========================================
+   PAGE WRAPPER
+========================================= */
+.page-wrapper {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: $bg;
+  font-family: 'Poppins', sans-serif;
   position: relative;
   overflow: hidden;
+}
 
-  // Pattern Overlay for Header (SVG)
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.5;
-    pointer-events: none;
+/* =========================================
+   BACKGROUND BLUR
+========================================= */
+.bg-blur {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: $secondary;
+  filter: blur(120px);
+  top: 10%;
+  left: 10%;
+  opacity: 0.85;
+  animation: float 10s infinite alternate;
+  pointer-events: none;
+}
+
+.bg-blur.second {
+  background: $primary;
+  top: 70%;
+  left: 60%;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+.top-bar {
+  margin-bottom: 20px;
+
+  h2 {
+    color: $primary;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 0.2px;
   }
 }
 
-.card-body {
-  padding: 2.5rem;
-  background: $bg-light;
+/* =========================================
+   GLASS CARD (NEW BASE + PREMIUM DEPTH)
+========================================= */
+.glass-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: $card-shadow;
+  border: 1px solid rgba(42, 111, 151, 0.10);
+  animation: fadeUp 0.6s ease;
 }
 
-// ============================================
-// FORM ELEMENTS
-// ============================================
-.form-label {
-  font-weight: 600;
-  color: $text-muted;
-  margin-bottom: 0.6rem;
-  font-size: 0.95rem;
-  display: block;
-  transition: color 0.3s ease;
+.glass-card:hover {
+  box-shadow: $hover-shadow;
 }
 
-.form-control, .form-select {
-  background: white;
-  border: 2px solid $input-border;
-  border-radius: 14px;
-  padding: 0.875rem 1rem;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-  outline: none;
-  width: 100%;
+/* =========================================
+   GRID
+========================================= */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 30px;
+  margin-top: 25px;
+}
 
-  &:focus {
-    border-color: $primary-indigo;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-    background: white;
-    
-    & option {
-      color: $text-main;
-      background: white;
+/* =========================================
+   FORM CONTROLS (NEW + OLD PREMIUM FOCUS)
+========================================= */
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #475569;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #d9e6f2;
+    background: #fff;
+    transition: all 0.25s ease;
+    outline: none;
+    font-size: 14px;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 4px rgba(42, 111, 151, 0.12);
+    }
+
+    &:disabled {
+      background: #f1f5f9;
+      color: #94a3b8;
+      cursor: not-allowed;
     }
   }
 
-  &:disabled {
-    background: #f1f5f9;
-    color: #94a3b8;
-    cursor: not-allowed;
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
   }
-  
-  & option[value=""] {
-    color: #999;
+
+  /* Optional validation style if you add class="has-error" to form-group */
+  &.has-error input,
+  &.has-error select,
+  &.has-error textarea {
+    border-color: $danger;
+    box-shadow: 0 0 0 4px rgba(224, 49, 49, 0.12);
+    animation: shake 0.25s ease;
   }
 }
 
-textarea.form-control {
-  resize: vertical;
-  min-height: 100px;
-  line-height: 1.5;
+/* =========================================
+   BUTTON (NEW + PREMIUM HOVER)
+========================================= */
+.btn-wrap {
+  margin-top: 30px;
 }
 
-// ============================================
-// ACTION BUTTONS (Override Default Bootstrap Primary)
-// ============================================
-.btn-primary {
-  background: $primary-gradient !important;
-  background-size: 200% auto !important;
-  animation: gradient-shift 5s ease infinite !important;
-  border: none !important;
-  border-radius: 14px !important;
-  color: black !important;
-  font-weight: 600 !important;
-  padding: 1rem 2rem !important;
-  font-size: 1rem !important;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  position: relative;
-  overflow: hidden;
-  width: 100% !important;
+.primary-btn {
+  width: 100%;
+  background: $primary;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 800;
+  box-shadow: 0 10px 22px rgba(42, 111, 151, 0.22);
 
   &:hover {
-    background-position: right center !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(42, 111, 151, 0.28);
   }
 
   &:active {
-    transform: translateY(0) !important;
+    transform: translateY(0);
+    box-shadow: 0 8px 16px rgba(42, 111, 151, 0.18);
   }
 
   &:disabled {
-    opacity: 0.6 !important;
-    cursor: not-allowed !important;
-    transform: none !important;
-    box-shadow: none !important;
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 }
 
-// ============================================
-// ALERTS / MESSAGES (Styled as Modern Cards)
-// ============================================
-.alert {
-  border: none !important;
-  border-radius: 16px !important;
-  padding: 1.25rem !important;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  animation: fadeInUp 0.5s ease-out;
-  margin-bottom: 1rem;
-
-  &.alert-success {
-    background: rgba(16, 185, 129, 0.1) !important;
-    color: #059669 !important;
-    border: 1px solid rgba(16, 185, 129, 0.2) !important;
-    
-    i {
-      color: #10b981;
-      font-size: 1.2rem;
-    }
-  }
-
-  &.alert-danger {
-    background: rgba(239, 68, 68, 0.1) !important;
-    color: #dc2626 !important;
-    border: 1px solid rgba(239, 68, 68, 0.2) !important;
-    
-    i {
-      color: #ef4444;
-      font-size: 1.2rem;
-    }
-  }
+/* =========================================
+   MESSAGES (NEW + PREMIUM CARD FEEL)
+========================================= */
+.success-msg {
+  background: $success;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-top: 15px;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(47, 158, 68, 0.18);
+  animation: fadeUp 0.35s ease;
 }
 
-// ============================================
-// RESPONSIVE ADJUSTMENTS
-// ============================================
+.error-msg {
+  background: $danger;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-top: 15px;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(224, 49, 49, 0.18);
+  animation: fadeUp 0.35s ease;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
 @media (max-width: 768px) {
-  .title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .card-header {
-    padding: 1.2rem 1.5rem;
-    font-size: 1.1rem;
-  }
-
-  .card-body {
-    padding: 1.5rem;
-  }
-
-  .form-control, .form-select, textarea {
-    font-size: 0.9rem;
-    padding: 0.75rem;
-  }
-  
-  .btn-primary {
-    font-size: 0.95rem;
-    padding: 0.85rem;
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 }
