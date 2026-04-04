@@ -1,46 +1,55 @@
 package com.edutech.medicalequipmentandtrackingsystem.service;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.Equipment;
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.Order;
 import com.edutech.medicalequipmentandtrackingsystem.repository.EquipmentRepository;
 import com.edutech.medicalequipmentandtrackingsystem.repository.OrderRepository;
+import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-
-import java.io.ObjectInputFilter.Status;
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class OrderService {
-    
-//Implement the required code here
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private EquipmentRepository equipmentRepository;
-  
+
+    private final OrderRepository orderRepository;
+    private final EquipmentRepository equipmentRepository;
+
+    public OrderService(OrderRepository orderRepository, EquipmentRepository equipmentRepository) {
+        this.orderRepository = orderRepository;
+        this.equipmentRepository = equipmentRepository;
+    }
+
+    // =========================
+    // EXISTING REQUIRED METHODS
+    // =========================
+
     public Order placeOrder(Long equipmentId, Order order) {
         Equipment equipment = equipmentRepository.findById(equipmentId)
                 .orElseThrow(() -> new RuntimeException("Equipment not found"));
 
         order.setEquipment(equipment);
-        if(order.getStatus()==null||order.getStatus().isEmpty()){
+
+        // ensure default status if not provided
+        if (order.getStatus() == null || order.getStatus().trim().isEmpty()) {
             order.setStatus("Initiated");
         }
-        return orderRepository.save(order);
- }
- public void deleteOrder(Long id) {
-    orderRepository.deleteById(id);
-}
 
+        // ensure date if not provided
+        if (order.getOrderDate() == null) {
+            order.setOrderDate(new Date());
+        }
+
+        order.setDeleted(false);
+        order.setDeletedAt(null);
+
+        return orderRepository.save(order);
+    }
+
+    // ✅ Active orders only (IMPORTANT for refresh issue)
     public List<Order> getAllOrders() {
-        return orderRepository.findAll();
- }
+        return orderRepository.findByDeletedFalse();
+    }
 
     public Order updateOrderStatus(Long orderId, String newStatus) {
         Order order = orderRepository.findById(orderId)
@@ -48,6 +57,51 @@ public class OrderService {
 
         order.setStatus(newStatus);
         return orderRepository.save(order);
- }
+    }
 
+    // =========================
+    // ✅ SOFT DELETE FEATURES
+    // =========================
+
+    // ✅ Deleted orders list
+    public List<Order> getDeletedOrders() {
+        return orderRepository.findByDeletedTrue();
+    }
+
+    // ✅ Soft delete one
+    public void softDeleteOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        order.setDeleted(true);
+        order.setDeletedAt(new Date());
+        orderRepository.save(order);
+    }
+
+    // ✅ Soft delete bulk
+    public void softDeleteOrders(List<Long> ids) {
+        List<Order> orders = orderRepository.findAllById(ids);
+        Date now = new Date();
+
+        for (Order o : orders) {
+            o.setDeleted(true);
+            o.setDeletedAt(now);
+        }
+        orderRepository.saveAll(orders);
+    }
+
+    // ✅ Restore
+    public void restoreOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        order.setDeleted(false);
+        order.setDeletedAt(null);
+        orderRepository.save(order);
+    }
+
+    // ✅ Permanent delete
+    public void permanentDelete(Long orderId) {
+        orderRepository.deleteById(orderId);
+    }
 }

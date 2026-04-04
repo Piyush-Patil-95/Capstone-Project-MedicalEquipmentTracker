@@ -13,85 +13,172 @@
     </div>
 
     <!-- INFO -->
-    <div class="glass-card">
-      <div class="section-header">
+    <div class="section-header">
+      <div class="left">
         <h4>Orders Information</h4>
         <span class="count">{{ orderList.length }} Total</span>
       </div>
 
-      <div class="card-grid">
+      <!-- ✅ FILTER BUTTON -->
+      <div class="right">
+        <button class="filter-btn" (click)="toggleFilterPanel()">
+          Filter
+          <span class="chev" [class.open]="showFilterPanel">▾</span>
+        </button>
 
-        <!-- CARD -->
-        <div class="order-card"
-             *ngFor="let order of orderList; let i = index">
+        <!-- ✅ FILTER PANEL (appears on button click) -->
+        <div class="filter-panel" *ngIf="showFilterPanel">
+          <div class="filter-title">Filter by Status</div>
 
-          <!-- CARD HEADER -->
-          <div class="card-header">
-            <span class="index">#{{ i + 1 }}</span>
+          <button class="filter-option" *ngFor="let s of statusOptions" [class.active]="selectedStatus === s"
+            (click)="applyFilter(s)">
+            {{ s }}
+          </button>
 
-            <span class="status"
-                  [ngClass]="{
-                    'initiated': order.status === 'Initiated',
-                    'complete': order.status === 'Complete',
-                    'delivered': order.status === 'Delivered'
-                  }">
-              {{ order.status }}
+          <div class="filter-footer">
+            <span class="filter-count">
+              Showing: {{ filteredOrders.length }} / {{ orderList.length }}
             </span>
+
+            <button class="clear-btn" (click)="clearFilter()">Clear</button>
           </div>
-
-          <!-- DATE + QUANTITY -->
-          <div class="row-block">
-            <div>
-              <label>Order Date</label>
-              <p>{{ order.orderDate | date:'dd-MMM-yyyy' }}</p>
-            </div>
-
-            <div>
-              <label>Quantity</label>
-              <p>{{ order.quantity }}</p>
-            </div>
-          </div>
-
-          <!-- EQUIPMENT -->
-          <div class="info-block">
-            <label>Equipment</label>
-            <p><strong>Id:</strong> {{ order.equipment?.id }}</p>
-            <p><strong>Name:</strong> {{ order.equipment?.name }}</p>
-            <p class="muted"><strong>Description:</strong> {{ order.equipment?.description }}</p>
-          </div>
-
-          <!-- HOSPITAL -->
-          <div class="info-block">
-            <label>Hospital</label>
-            <p><strong>Id:</strong> {{ order.equipment?.hospital?.id }}</p>
-            <p><strong>Name:</strong> {{ order.equipment?.hospital?.name }}</p>
-            <p class="muted"><strong>Location:</strong> {{ order.equipment?.hospital?.location }}</p>
-          </div>
-
-          <!-- ACTIONS (Update + Delete like old code) -->
-          <div class="card-footer">
-            <button class="btn-status" (click)="edit(order)">
-              Update Status
-            </button>
-
-            <button class="btn-delete" (click)="deleteOrder(order.id)">
-              Delete
-            </button>
-          </div>
-
         </div>
-
-        <!-- EMPTY -->
-        <div *ngIf="orderList.length === 0" class="empty-state">
-          <h5>No orders available</h5>
-          <p>Once orders are created, they will appear here.</p>
-        </div>
-
       </div>
     </div>
 
+    <!-- ✅ FILTER BAR (PASTE HERE) Filtered Dropdown menu-->
+    <!-- <div class="filter-bar">
+      <label class="filter-label">Filter By Status:</label>
+
+      <select class="filter-select" [(ngModel)]="selectedStatus">
+        <option *ngFor="let s of statusOptions" [value]="s"> -->
+          <!-- {{ s }}
+        </option>
+      </select>
+
+      <span class="filter-count">
+        Showing: {{ filteredOrders.length }} / {{ orderList.length }}
+      </span>
+    </div> -->
+
+    <!-- ✅ BULK ACTION TOOLBAR -->
+<div class="bulk-toolbar">
+
+  <div class="left-tools">
+    <label class="check-all">
+      <input type="checkbox"
+             [checked]="allVisibleSelected"
+             (change)="selectAllVisible($event)">
+      <span>Select All</span>
+    </label>
+
+    <span class="selected-pill" *ngIf="selectedCount > 0">
+      {{ selectedCount }} selected
+    </span>
+  </div>
+
+  <div class="right-tools">
+    <button class="trash-btn" (click)="toggleDeletedPanel()">
+      Deleted Orders ({{ deletedOrders.length }})
+    </button>
+
+    <button class="danger-btn"
+            [disabled]="selectedCount === 0"
+            (click)="openBulkDeleteConfirm()">
+      Delete Selected
+    </button>
+
+    <button class="ghost-btn"
+            *ngIf="selectedCount > 0"
+            (click)="clearSelection()">
+      Clear
+    </button>
   </div>
 </div>
+
+
+
+    <div class="card-grid">
+
+      <!-- CARD -->
+      <div class="order-card" *ngFor="let order of filteredOrders; let i = index">
+
+        <!-- CARD HEADER -->
+        <div class="card-header">
+
+  <div class="card-left">
+    <label class="card-check">
+      <input type="checkbox"
+             [checked]="selectedMap[order.id] || false"
+(change)="toggleSelect(order.id, $event)">
+      <span class="index">#{{ i + 1 }}</span>
+    </label>
+  </div>
+
+  <span class="status"
+        [ngClass]="{
+          'initiated': order.status === 'Initiated',
+          'complete': order.status === 'Complete',
+          'delivered': order.status === 'Delivered'
+        }">
+    {{ order.status }}
+  </span>
+</div>
+
+
+        <!-- DATE + QUANTITY -->
+        <div class="row-block">
+          <div>
+            <label>Order Date</label>
+            <p>{{ order.orderDate | date:'dd-MMM-yyyy' }}</p>
+          </div>
+
+          <div>
+            <label>Quantity</label>
+            <p>{{ order.quantity }}</p>
+          </div>
+        </div>
+
+        <!-- EQUIPMENT -->
+        <div class="info-block">
+          <label>Equipment</label>
+          <p><strong>Id:</strong> {{ order.equipment?.id }}</p>
+          <p><strong>Name:</strong> {{ order.equipment?.name }}</p>
+          <p class="muted"><strong>Description:</strong> {{ order.equipment?.description }}</p>
+        </div>
+
+        <!-- HOSPITAL -->
+        <div class="info-block">
+          <label>Hospital</label>
+          <p><strong>Id:</strong> {{ order.equipment?.hospital?.id }}</p>
+          <p><strong>Name:</strong> {{ order.equipment?.hospital?.name }}</p>
+          <p class="muted"><strong>Location:</strong> {{ order.equipment?.hospital?.location }}</p>
+        </div>
+
+        <!-- ACTIONS (Update + Delete like old code) -->
+        <div class="card-footer">
+          <button class="btn-status" (click)="edit(order)">
+            Update Status
+          </button>
+
+          <button class="btn-delete" (click)="deleteOrder(order.id)">
+            Delete
+          </button>
+        </div>
+
+      </div>
+
+      <!-- EMPTY -->
+      <div *ngIf="orderList.length === 0" class="empty-state">
+        <h5>No orders available</h5>
+        <p>Once orders are created, they will appear here.</p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<!-- </div> -->
 
 <!-- MODAL (UNCHANGED LOGIC) -->
 <div class="status-modal-overlay" *ngIf="orderObj?.id">
@@ -103,6 +190,28 @@
     </div>
 
     <div class="modal-body">
+
+
+      <div class="tracking-container" [class.all-complete]="orderObj.status === 'Complete'"
+        [class.all-delivered]="orderObj.status === 'Delivered'">
+
+        <div class="tracking-step" *ngFor="let step of trackingSteps; let i = index"
+          [class.delivered-step]="step === 'Delivered'">
+
+          <div class="circle">
+            <span *ngIf="i < getStepIndex(orderObj.status)">✓</span>
+            <span *ngIf="i === getStepIndex(orderObj.status)">●</span>
+          </div>
+
+          <div class="line" *ngIf="i < trackingSteps.length - 1"
+            [class.after-complete-line]="trackingSteps[i] === 'Complete'">
+          </div>
+
+
+        </div>
+      </div>
+
+
       <label>New Status:</label>
 
       <select [(ngModel)]="statusModel.newStatus">
@@ -122,4 +231,52 @@
 <!-- SUCCESS TOAST (UNCHANGED LOGIC) -->
 <div *ngIf="showMessage" class="success-toast">
   {{ responseMessage }}
+</div>
+<!-- ✅ CONFIRM BULK DELETE MODAL -->
+<div class="confirm-overlay" *ngIf="showDeleteConfirm">
+  <div class="confirm-box">
+    <h4>Delete {{ selectedCount }} order(s)?</h4>
+    <p>This will move them to <b>Deleted Orders</b>. You can restore later.</p>
+
+    <div class="confirm-actions">
+      <button class="ghost-btn" (click)="cancelBulkDelete()">Cancel</button>
+      <button class="danger-btn" (click)="confirmBulkDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ DELETED ORDERS PANEL -->
+<div class="deleted-overlay" *ngIf="showDeletedPanel">
+  <div class="deleted-panel">
+
+    <div class="deleted-header">
+      <h4>Deleted Orders</h4>
+      <button class="modal-close" (click)="toggleDeletedPanel()">×</button>
+    </div>
+
+    <div *ngIf="deletedOrders.length === 0" class="deleted-empty">
+      <h5>No deleted orders</h5>
+      <p>Deleted orders will appear here.</p>
+    </div>
+
+    <div class="deleted-list" *ngIf="deletedOrders.length > 0">
+      <div class="deleted-item" *ngFor="let d of deletedOrders">
+        <div class="deleted-meta">
+          <div class="tag">#{{ d.id }}</div>
+          <div class="small">
+            {{ d.orderDate | date:'dd-MMM-yyyy' }} • Qty: {{ d.quantity }}
+          </div>
+          <div class="small faded">
+            Deleted: {{ d.deletedAt | date:'dd-MMM-yyyy, h:mm a' }}
+          </div>
+        </div>
+
+        <div class="deleted-actions">
+          <button class="restore-btn" (click)="restoreOrder(d.id)">Restore</button>
+          <button class="danger-btn" (click)="permanentlyDelete(d.id)">Delete Permanently</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>

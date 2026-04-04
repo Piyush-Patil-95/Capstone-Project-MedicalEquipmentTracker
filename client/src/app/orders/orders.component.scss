@@ -364,3 +364,456 @@
     bottom: 16px;
   }
 }
+
+/* ========== ORDER TRACKING (Screenshot-matched) ========== */
+
+.tracking-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.tracking-step {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: white;           /* ✅ tick is white inside colored circle */
+  font-weight: 800;
+  z-index: 2;
+}
+
+
+.line {
+  width: 90px;
+  height: 3px;
+  background: #e0e0e0;
+  margin: 0 8px;
+}
+
+.label {
+  position: absolute;
+  top: 40px;              /* ✅ puts label below circle */
+  width: 90px;
+  text-align: center;
+  font-size: 13px;
+  color: #6c757d;
+  left: -32px;            /* ✅ centers label under circle */
+}
+
+/* ✅ Active/completed state */
+.completed .circle {
+  background: #b3b3b3;
+}
+
+.completed + .tracking-step .line {
+  background: #d0d0d0;
+}
+
+/* =========================
+   ✅ FULL RED LINE WHEN COMPLETE
+========================= */
+
+/* =========================
+   ✅ RED LINE WHEN COMPLETE
+   (BUT NOT DELIVERED STEP)
+========================= */
+
+.all-complete .circle {
+  background-color: #dc3545;
+}
+
+.all-complete .line {
+  background-color: #dc3545;
+}
+
+
+.all-complete .after-complete-line {
+  background-color: #e0e0e0;
+}
+
+
+.all-complete .label {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* ❌ Cancel red for Delivered step during Complete */
+.all-complete .delivered-step .circle {
+  background-color: #d9d9d9;
+}
+
+.all-complete .delivered-step .label {
+  color: #6c757d;
+}
+
+/* =========================
+   ✅ FULL GREEN LINE WHEN DELIVERED
+========================= */
+
+.all-delivered .circle {
+  background-color: #28a745; /* Green */
+}
+
+.all-delivered .line {
+  background-color: #28a745;
+}
+
+.all-delivered .label {
+  color: #28a745;
+  font-weight: 600;
+}
+/* =========================
+   FILTER BUTTON + PANEL
+========================= */
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-header .left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-header .right {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-btn {
+  border: 1px solid rgba(42,111,151,0.35);
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  color: #2A6F97;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(42,111,151,0.08);
+}
+
+.chev {
+  transition: 0.2s ease;
+  display: inline-block;
+}
+
+.chev.open {
+  transform: rotate(180deg);
+}
+
+/* Panel */
+.filter-panel {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  width: 220px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+  border: 1px solid rgba(42,111,151,0.15);
+  padding: 10px;
+  z-index: 20;
+}
+
+.filter-title {
+  font-weight: 900;
+  color: #334155;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.filter-option {
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+  color: #0f172a;
+  transition: 0.15s ease;
+}
+
+.filter-option:hover {
+  background: rgba(42,111,151,0.08);
+}
+
+.filter-option.active {
+  background: rgba(42,111,151,0.14);
+  color: #2A6F97;
+}
+
+.filter-footer {
+  border-top: 1px dashed rgba(42,111,151,0.18);
+  margin-top: 8px;
+  padding-top: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.filter-count {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 800;
+}
+
+.clear-btn {
+  border: none;
+  background: #ef4444;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  background: #dc2626;
+}
+/* =========================
+   BULK TOOLBAR
+========================= */
+.bulk-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin: 14px 0 18px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(42,111,151,0.12);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+
+.left-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.check-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  color: #334155;
+}
+
+.selected-pill {
+  background: rgba(42,111,151,0.12);
+  color: #2A6F97;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.right-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Buttons */
+.ghost-btn {
+  border: 1px solid rgba(42,111,151,0.35);
+  background: #fff;
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.danger-btn {
+  border: none;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(239,68,68,0.25);
+}
+
+.danger-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.trash-btn {
+  border: 1px solid rgba(42,111,151,0.35);
+  background: rgba(42,111,151,0.08);
+  color: #2A6F97;
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* =========================
+   CARD CHECKBOX
+========================= */
+.card-left .card-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-left input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #2A6F97;
+}
+
+/* =========================
+   CONFIRM MODAL
+========================= */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1200;
+  padding: 16px;
+}
+
+.confirm-box {
+  width: min(420px, 100%);
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.20);
+}
+
+.confirm-box h4 {
+  margin: 0 0 6px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.confirm-box p {
+  margin: 0 0 14px;
+  color: #475569;
+  font-weight: 600;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* =========================
+   DELETED ORDERS PANEL
+========================= */
+.deleted-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1250;
+}
+
+.deleted-panel {
+  width: min(460px, 100%);
+  height: 100%;
+  background: #fff;
+  padding: 16px;
+  box-shadow: -18px 0 40px rgba(0,0,0,0.18);
+  overflow: auto;
+}
+
+.deleted-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(42,111,151,0.12);
+}
+
+.deleted-header h4 {
+  margin: 0;
+  font-weight: 900;
+  color: #2A6F97;
+}
+
+.deleted-empty {
+  text-align: center;
+  padding: 40px 10px;
+  color: #64748b;
+}
+
+.deleted-list {
+  padding-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.deleted-item {
+  border: 1px solid rgba(42,111,151,0.12);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.deleted-meta .tag {
+  display: inline-block;
+  background: rgba(42,111,151,0.10);
+  color: #2A6F97;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+
+.small { font-size: 12px; font-weight: 700; color: #0f172a; }
+.faded { color: #64748b; font-weight: 600; }
+
+.deleted-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.restore-btn {
+  border: none;
+  background: #22c55e;
+  color: #fff;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+

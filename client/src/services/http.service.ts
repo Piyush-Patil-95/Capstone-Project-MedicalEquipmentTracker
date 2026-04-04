@@ -11,17 +11,18 @@ export class HttpService {
 
   public serverName = environment.apiUrl;
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
   private getHttpOptions() {
     return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.authService.getToken()}`
+        Authorization: `Bearer ${this.auth.getToken()}`
       })
     };
   }
 
+  // AUTH
   Login(data: any): Observable<any> {
     return this.http.post(`${this.serverName}/api/user/login`, data);
   }
@@ -30,115 +31,113 @@ export class HttpService {
     return this.http.post(`${this.serverName}/api/user/register`, data);
   }
 
- deleteHospital(id: number): Observable<any> {
-  return this.http.delete(
-    `${this.serverName}/api/hospital/${id}`,
-    {
-      ...this.getHttpOptions(),
-      responseType: 'text' as 'json'
-    }
-  );
-}
-
-  addEquipment(data: any, hospitalId: any): Observable<any> {
-    return this.http.post(
-      `${this.serverName}/api/hospital/equipment?hospitalId=${hospitalId}`,
-      data,
-      this.getHttpOptions()
-    );
+  // HOSPITAL
+  createHospital(data: any): Observable<any> {
+    return this.http.post(`${this.serverName}/api/hospital/create`, data, this.getHttpOptions());
   }
 
-  getEquipmentById(id: any): Observable<any> {
-    return this.http.get(
-      `${this.serverName}/api/hospital/equipment/${id}`,
-      this.getHttpOptions()
-    );
+  getHospital(): Observable<any> {
+    return this.http.get(`${this.serverName}/api/hospitals`, this.getHttpOptions());
   }
 
-  orderEquipment(data: any, equipmentId: any): Observable<any> {
-    return this.http.post(
-      `${this.serverName}/api/hospital/order?equipmentId=${equipmentId}`,
-      data,
-      this.getHttpOptions()
-    );
+  // EQUIPMENT
+  addEquipment(hospitalId: any, data: any): Observable<any> {
+    return this.http.post(`${this.serverName}/api/hospital/equipment?hospitalId=${hospitalId}`, data, this.getHttpOptions());
   }
 
+  getEquipmentById(hospitalId: any): Observable<any> {
+    return this.http.get(`${this.serverName}/api/hospital/equipment/${hospitalId}`, this.getHttpOptions());
+  }
+
+  // ORDERS (Supplier side)
   getorders(): Observable<any> {
-    return this.http.get(
-      `${this.serverName}/api/supplier/orders`,
-      this.getHttpOptions()
-    );
+    return this.http.get(`${this.serverName}/api/supplier/orders`, this.getHttpOptions());
   }
 
-  UpdateOrderStatus(status: any, orderId: any): Observable<any> {
+  // ✅ IMPORTANT: signature = (orderId, newStatus)
+  UpdateOrderStatus(orderId: any, newStatus: any): Observable<any> {
     return this.http.put(
-      `${this.serverName}/api/supplier/order/update/${orderId}?newStatus=${status}`,
+      `${this.serverName}/api/supplier/order/update/${orderId}?newStatus=${newStatus}`,
       {},
       this.getHttpOptions()
     );
   }
 
-  scheduleMaintenance(data: any, equipmentId: any): Observable<any> {
-    return this.http.post(
-      `${this.serverName}/api/hospital/maintenance/schedule?equipmentId=${equipmentId}`,
-      data,
-      this.getHttpOptions()
-    );
-  }
-
+  // MAINTENANCE
   getMaintenance(): Observable<any> {
-    return this.http.get(
-      `${this.serverName}/api/technician/maintenance`,
+    return this.http.get(`${this.serverName}/api/technician/maintenance`, this.getHttpOptions());
+  }
+
+  updateMaintenance(maintenanceId: any, data: any): Observable<any> {
+    return this.http.put(`${this.serverName}/api/technician/maintenance/update/${maintenanceId}`, data, this.getHttpOptions());
+  }
+
+  scheduleMaintenance(equipmentId: any, data: any): Observable<any> {
+    return this.http.post(`${this.serverName}/api/hospital/maintenance/schedule?equipmentId=${equipmentId}`, data, this.getHttpOptions());
+  }
+
+  orderEquipment(equipmentId: any, data: any): Observable<any> {
+    return this.http.post(`${this.serverName}/api/hospital/order?equipmentId=${equipmentId}`, data, this.getHttpOptions());
+  }
+
+  // ============================
+  // ✅ SOFT DELETE APIs (Option B)
+  // ============================
+
+  deleteOrder(orderId: number): Observable<any> {
+    return this.http.delete(
+      `${this.serverName}/api/supplier/order/delete/${orderId}`,
       this.getHttpOptions()
     );
   }
- deleteMaintenance(id: number): Observable<any> {
-  return this.http.delete(
-    `${this.serverName}/api/technician/maintenance/${id}`,
-    {
-      ...this.getHttpOptions(),
-      responseType: 'text' as 'json'
-    }
-  );
-}
- updateMaintenance(data: any, id: any): Observable<any> {
-  return this.http.put(
-    `${this.serverName}/api/technician/maintenance/update/${id}`,
-    data,
-    {
-      ...this.getHttpOptions(),   // ✅ ADD THIS
-      responseType: 'text' as 'json'
-    }
-  );
-}
-deleteOrder(id: number): Observable<any> {
-  return this.http.delete(
-    `${this.serverName}/api/supplier/order/${id}`,
-    {
-      ...this.getHttpOptions(),
-      responseType: 'text' as 'json'
-    }
-  );
-}
 
-
-  createHospital(data: any): Observable<any> {
+  deleteOrdersBulk(ids: number[]): Observable<any> {
     return this.http.post(
-      `${this.serverName}/api/hospital/create`,
-      data,
+      `${this.serverName}/api/supplier/orders/delete`,
+      ids,
       this.getHttpOptions()
     );
   }
 
-  getHospital(): Observable<any> {
+  getDeletedOrders(): Observable<any> {
     return this.http.get(
-      `${this.serverName}/api/hospitals`,
+      `${this.serverName}/api/supplier/orders/deleted`,
       this.getHttpOptions()
     );
   }
 
-  // ✅ CAPTCHA (FIXED)
-  getCaptcha(): Observable<any> {
-    return this.http.get(`${this.serverName}/api/captcha/generate`);
+  restoreOrder(orderId: number): Observable<any> {
+    return this.http.put(
+      `${this.serverName}/api/supplier/order/restore/${orderId}`,
+      {},
+      this.getHttpOptions()
+    );
   }
+
+  permanentDeleteOrder(orderId: number): Observable<any> {
+    return this.http.delete(
+      `${this.serverName}/api/supplier/order/permanent/${orderId}`,
+      this.getHttpOptions()
+    );
+  }
+  // ✅ CAPTCHA (Login page)
+getCaptcha(): Observable<any> {
+  return this.http.get(`${this.serverName}/api/captcha/generate`);
+}
+
+// ✅ DELETE HOSPITAL (Admin/Hospital module)
+deleteHospital(id: number): Observable<any> {
+  return this.http.delete(
+    `${this.serverName}/api/hospital/delete/${id}`,
+    this.getHttpOptions()
+  );
+}
+
+// ✅ DELETE MAINTENANCE (Technician module)
+deleteMaintenance(id: number): Observable<any> {
+  return this.http.delete(
+    `${this.serverName}/api/technician/maintenance/delete/${id}`,
+    this.getHttpOptions()
+  );
+}
 }

@@ -1,40 +1,65 @@
 package com.edutech.medicalequipmentandtrackingsystem.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.Order;
 import com.edutech.medicalequipmentandtrackingsystem.service.OrderService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class SupplierController {
 
-   @Autowired
-    private OrderService orderService;
- @DeleteMapping("/api/supplier/order/{id}")
-public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
-    orderService.deleteOrder(id);
-    return ResponseEntity.ok("Deleted Successfully");
-}
-    // Get all orders
- @GetMapping("/api/supplier/orders")
-    public ResponseEntity<List<Order>> getOrders() {
-        return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
- }
+    private final OrderService orderService;
 
-    // Update order status
- @PutMapping("/api/supplier/order/update/{orderId}")
-    public ResponseEntity<Order> updateOrder(
- @PathVariable Long orderId,
- @RequestParam String newStatus) {
+    public SupplierController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
+    // ✅ Active orders only
+    @GetMapping("/api/supplier/orders")
+    public ResponseEntity<List<Order>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    // ✅ Keep your existing update status endpoint
+    @PutMapping("/api/supplier/order/update/{orderId}")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long orderId,
+                                                   @RequestParam String newStatus) {
         Order updated = orderService.updateOrderStatus(orderId, newStatus);
-        return new ResponseEntity<>(updated, HttpStatus.OK);
- }
-       
-  
+        return ResponseEntity.ok(updated);
+    }
+
+    // =========================
+    // ✅ SOFT DELETE ENDPOINTS
+    // =========================
+
+    @GetMapping("/api/supplier/orders/deleted")
+    public ResponseEntity<List<Order>> getDeletedOrders() {
+        return ResponseEntity.ok(orderService.getDeletedOrders());
+    }
+
+    @DeleteMapping("/api/supplier/order/delete/{orderId}")
+    public ResponseEntity<String> softDelete(@PathVariable Long orderId) {
+        orderService.softDeleteOrder(orderId);
+        return ResponseEntity.ok("Order moved to deleted list");
+    }
+
+    @PostMapping("/api/supplier/orders/delete")
+    public ResponseEntity<String> softDeleteBulk(@RequestBody List<Long> ids) {
+        orderService.softDeleteOrders(ids);
+        return ResponseEntity.ok(ids.size() + " orders moved to deleted list");
+    }
+
+    @PutMapping("/api/supplier/order/restore/{orderId}")
+    public ResponseEntity<String> restore(@PathVariable Long orderId) {
+        orderService.restoreOrder(orderId);
+        return ResponseEntity.ok("Order restored");
+    }
+
+    @DeleteMapping("/api/supplier/order/permanent/{orderId}")
+    public ResponseEntity<String> permanentDelete(@PathVariable Long orderId) {
+        orderService.permanentDelete(orderId);
+        return ResponseEntity.ok("Order permanently deleted");
+    }
 }

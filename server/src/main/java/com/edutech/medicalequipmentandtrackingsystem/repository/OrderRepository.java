@@ -12,4 +12,11 @@ import java.util.List;
 public interface OrderRepository  extends JpaRepository<Order,Long>{
     List<Order>findByEquipmentId(Long equipmentId);
     // extend jpa repository and add method if needed
+    
+// ✅ Active orders only
+    List<Order> findByDeletedFalse();
+
+    // ✅ Deleted orders only
+    List<Order> findByDeletedTrue();
+
 }

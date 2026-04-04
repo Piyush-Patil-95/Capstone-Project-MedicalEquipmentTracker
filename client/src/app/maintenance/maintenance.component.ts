@@ -83,7 +83,7 @@ export class MaintenanceComponent implements OnInit {
       this.maintenanceList = this.maintenanceList.filter((m: any) => m.id !== id);
       alert('Deleted successfully');
     },
-    error: (err) => {
+    error: (err: any) => {
       console.error(err);
       alert('Delete failed');
     }
