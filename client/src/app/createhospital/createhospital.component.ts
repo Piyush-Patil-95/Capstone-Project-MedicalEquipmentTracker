@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
 import { AuthService } from '../../services/auth.service';
 
+// Declare Razorpay
+declare var Razorpay: any;
+
 @Component({
   selector: 'app-createhospital',
   templateUrl: './createhospital.component.html',
@@ -19,12 +22,11 @@ export class CreatehospitalComponent implements OnInit {
 
   showMessage: boolean = false;
   responseMessage: any = null;
-  searchText: string = ''; // Changed to lowercase string
-  filteredHospitals: any[] = []
 
+  searchText: string = '';
+  filteredHospitals: any[] = [];
   hospitalList: any[] = [];
 
-  // ✅ OLD FEATURES BACK
   orders: any[] = [];
   maintenance: any[] = [];
 
@@ -47,20 +49,17 @@ export class CreatehospitalComponent implements OnInit {
       hospitalId: ['', Validators.required]
     });
 
-    // ✅ Load everything
     this.getHospital();
     this.getOrders();
     this.getMaintenance();
   }
 
-  // ================================================
-  // GET ALL HOSPITALS
-  // ================================================
+  // ================= GET DATA =================
   getHospital() {
     this.service.getHospital().subscribe({
       next: (data: any) => {
         this.hospitalList = data || [];
-        this.mapData(); 
+        this.mapData();
       },
       error: () => {
         this.showError = true;
@@ -70,154 +69,184 @@ export class CreatehospitalComponent implements OnInit {
   }
 
   getOrders() {
-    this.service.getorders().subscribe({
-      next: (data: any) => {
-        this.orders = data || [];
-        this.mapData();
-      },
-      error: () => {}
-    });
-  }
+  this.service.getorders().subscribe({
+    next: (data: any) => {
+      console.log("🔥 ORDERS RAW:", data);   // ✅ ADD THIS
+      this.orders = data || [];
+      console.log("🔥 ORDERS STORED:", this.orders); // ✅ ADD THIS
+      this.mapData();
+    },
+    error: (err) => {
+      console.log("❌ Orders API Error:", err);
+    }
+  });
+}
 
   getMaintenance() {
     this.service.getMaintenance().subscribe({
       next: (data: any) => {
         this.maintenance = data || [];
         this.mapData();
-      },
-      error: () => {}
+      }
     });
   }
 
-  // ================================================
-  // MAP DATA & INITIALIZE FILTERED LIST
-  // ================================================
+  // ================= MAP DATA =================
   mapData() {
-    if (!this.hospitalList || this.hospitalList.length === 0) {
-      this.filteredHospitals = [];
-      return;
-    }
-
-    this.hospitalList = this.hospitalList.map((h: any) => {
-      const hospitalOrders = this.orders.filter(
-        (o: any) => o?.equipment?.hospital?.id === h.id
-      );
-      const hospitalMaintenance = this.maintenance.filter(
-        (m: any) => m?.hospital?.id === h.id
-      );
-
-      return {
-        ...h,
-        equipmentCount: h?.equipmentList?.length || 0,
-        orders: hospitalOrders,
-        maintenance: hospitalMaintenance
-      };
-    });
-
-    // ✅ FIX: Ensure the view updates whenever data is mapped/loaded
-    this.onSearch();
+  if (!this.hospitalList || this.hospitalList.length === 0) {
+    this.filteredHospitals = [];
+    return;
   }
 
-  // ================================================
-  // SEARCH LOGIC (FIXED)
-  // ================================================
+  this.hospitalList = this.hospitalList.map((h: any) => {
+
+    const hospitalOrders = this.orders.filter((o: any) =>
+      h.equipmentList?.some((eq: any) =>
+        eq.id === o?.equipment?.id || eq.id === o?.equipment_id
+      )
+    );
+
+    const sortedOrders = hospitalOrders.sort((a: any, b: any) => {
+  return new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime();
+});
+
+const latestOrder = hospitalOrders.sort((a: any, b: any) => b.id - a.id)[0];
+
+    return {
+      ...h,
+      equipmentCount: h?.equipmentList?.length || 0,
+      orders: hospitalOrders,
+      latestOrder: latestOrder,
+      maintenance: [],
+      canPay: this.isCompleted(latestOrder?.status)
+      // ❌ NO hospital.paymentDone here
+    };
+  });
+
+  this.onSearch();
+}
+
+  isCompleted(status: any): boolean {
+    const s = (status ?? '').toString().toLowerCase();
+    return s.includes('complete');
+  }
+
+  // ================= SEARCH =================
   onSearch() {
     const search = this.searchText.toLowerCase().trim();
- 
+
     if (!search) {
-      // ✅ FIX: If search is empty, show everything
       this.filteredHospitals = [...this.hospitalList];
     } else {
       this.filteredHospitals = this.hospitalList.filter(h =>
-        (h.name && h.name.toLowerCase().includes(search)) ||
-        (h.location && h.location.toLowerCase().includes(search))
+        h.name?.toLowerCase().includes(search) ||
+        h.location?.toLowerCase().includes(search)
       );
     }
   }
 
-  // ================================================
-  // ADD HOSPITAL
-  // ================================================
+  // ================= ADD =================
   onSubmit() {
-    this.showError = false;
-    this.errorMessage = null;
-
-    if (this.itemForm.invalid) {
-      this.itemForm.markAllAsTouched();
-      this.showError = true;
-      this.errorMessage = "Please find all required hospital fields";
-      return;
-    }
+    if (this.itemForm.invalid) return;
 
     this.service.createHospital(this.itemForm.value).subscribe({
       next: () => {
         this.itemForm.reset();
-        this.showError = false;
-        alert('Hospital Added !');
-        this.getHospital(); // Re-fetches and triggers mapData -> onSearch
-      },
-      error: () => {
-        this.showError = true;
-        this.errorMessage = "Failed to add hospital";
+        this.getHospital();
+        alert('Hospital Added');
       }
     });
   }
 
-  // ================================================
-  // DELETE HOSPITAL
-  // ================================================
+  // ================= DELETE =================
   deleteHospital(id: number) {
-    if (!confirm('Are you sure you want to delete this hospital?')) return;
+    if (!confirm('Delete hospital?')) return;
 
-    this.service.deleteHospital(id).subscribe({
-      next: () => {
-        this.hospitalList = this.hospitalList.filter((h: any) => h.id !== id);
-        this.onSearch(); // ✅ FIX: Update the display immediately
-      },
-      error: () => {
-        this.hospitalList = this.hospitalList.filter((h: any) => h.id !== id);
-        this.onSearch(); // ✅ FIX: Update the display immediately
-      }
+    this.service.deleteHospital(id).subscribe(() => {
+      this.getHospital();
     });
   }
 
+  // ================= AMOUNT =================
+  getAmount(hospital: any): number {
+    let total = 0;
+
+    hospital.equipmentList?.forEach((eq: any) => {
+      const name = eq.name?.toLowerCase();
+
+      if (name.includes('bed')) total += 1500;
+      else if (name.includes('ventilator')) total += 5000;
+      else total += 1000;
+    });
+
+    return total;
+  }
+
+  // ================= PAYMENT =================
+ payNow(hospital: any) {
+
+  if (hospital.latestOrder?.paymentDone) {
+    alert("Already Paid");
+    return;
+  }
+
+  const totalAmount = this.getAmount(hospital);
+
+  let paymentHandled = false;
+
+  const options = {
+    key: "rzp_test_SZ7wiMY5dnVOV4",
+    amount: totalAmount * 100,
+    currency: "INR",
+    name: "Hospital Payment",
+
+    handler: () => {
+      paymentHandled = true;
+      this.savePayment(hospital);
+    },
+
+    modal: {
+      ondismiss: () => {
+        if (!paymentHandled) {
+          this.savePayment(hospital);
+        }
+      }
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+  // ================= SAVE PAYMENT =================
+ savePayment(hospital: any) {
+
+  const payload = {
+    orderId: hospital.latestOrder.id   // 🔥 IMPORTANT CHANGE
+  };
+
+  this.service.markPaymentDone(payload).subscribe({
+    next: () => {
+      hospital.latestOrder.paymentDone = true;
+      this.getHospital();
+    }
+  });
+}
+
+  // ================= MODAL =================
   openModal(hospital: any) {
-    this.showMessage = false;
-    this.responseMessage = null;
-    this.showError = false;
-    this.errorMessage = null;
     this.equipmentForm.reset();
     this.equipmentForm.patchValue({ hospitalId: hospital.id });
   }
 
   submitEquipment() {
-    this.showMessage = false;
-    this.showError = false;
+    if (this.equipmentForm.invalid) return;
 
-    if (this.equipmentForm.invalid) {
-      this.equipmentForm.markAllAsTouched();
-      this.showError = true;
-      this.errorMessage = "Please find all required equipment fields";
-      return;
-    }
+    const data = this.equipmentForm.value;
 
-    const equipmentData = this.equipmentForm.value;
-    const hospitalId = equipmentData.hospitalId;
-
-    this.service.addEquipment(equipmentData, hospitalId).subscribe({
-      next: () => {
-        this.showMessage = true;
-        this.responseMessage = "Equipment added successfully";
-        this.getHospital(); // Refreshes counts and list
-        setTimeout(() => {
-          this.equipmentForm.reset();
-          this.equipmentForm.patchValue({ hospitalId: hospitalId });
-        }, 1200);
-      },
-      error: (err) => {
-        this.showError = true;
-        this.errorMessage = "Failed to add equipment";
-      }
+    this.service.addEquipment(data, data.hospitalId).subscribe(() => {
+      this.getHospital();
+      alert("Equipment added");
     });
   }
 }

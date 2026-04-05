@@ -1,75 +1,455 @@
-<div class="landing">
+<div class="landing" (mousemove)="onMouseMove($event)">
 
-  
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor" [style.left.px]="cursorX" [style.top.px]="cursorY"></div>
+  <div class="cursor-follower" [style.left.px]="followerX" [style.top.px]="followerY"></div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress" [style.width.%]="scrollProgress"></div>
+
+  <!-- FLOATING PARTICLES -->
+  <div class="particles">
+    <span *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]" class="particle"></span>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" [class.scrolled]="isScrolled">
+    <div class="logo" (click)="scrollTo('hero')">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+        <span class="pulse-ring"></span>
+      </div>
+      <span class="logo-text">Med<span>Track</span></span>
+    </div>
+
+    <div class="nav-links" [class.active]="menuOpen">
+      <a (click)="scrollTo('hero')" [class.active]="activeSection === 'hero'">Home</a>
+      <a (click)="scrollTo('about')" [class.active]="activeSection === 'about'">About</a>
+      <a (click)="scrollTo('features')" [class.active]="activeSection === 'features'">Features</a>
+      <a (click)="scrollTo('contact')" [class.active]="activeSection === 'contact'">Contact</a>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn-outline" (click)="goLogin()">Login</button>
+      <button class="btn-primary" (click)="goRegister()">Get Started</button>
+    </div>
+
+    <div class="hamburger" (click)="toggleMenu()" [class.active]="menuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
 
   <!-- HERO -->
-  <section class="hero">
-
-    <!-- BACKGROUND BLUR SHAPES -->
-    <div class="bg-blur"></div>
-    <div class="bg-blur second"></div>
+  <section id="hero" class="hero">
+    <!-- ANIMATED BACKGROUND -->
+    <div class="hero-bg">
+      <div class="bg-blur" [style.transform]="'translate(' + (mouseX * 0.02) + 'px, ' + (mouseY * 0.02) + 'px)'"></div>
+      <div class="bg-blur second" [style.transform]="'translate(' + (-mouseX * 0.03) + 'px, ' + (-mouseY * 0.03) + 'px)'"></div>
+      <div class="bg-blur third"></div>
+      <div class="grid-pattern"></div>
+    </div>
 
     <!-- LEFT CONTENT -->
-     
     <div class="hero-left">
-      <h1>Medical Equipment Tracker</h1>
-      <p>
+      <div class="badge animate-fade-up">
+        <span class="dot"></span>
+        <span>Smart Healthcare Solution</span>
+      </div>
+
+      <h1 class="animate-fade-up delay-1">
+        <span class="line">Medical</span>
+        <span class="line">Equipment</span>
+        <span class="line gradient">Tracker</span>
+      </h1>
+
+      <p class="animate-fade-up delay-2">
         A smart system to manage hospital equipment, streamline maintenance,
-        and improve operational efficiency.
+        and improve operational efficiency with real-time insights.
       </p>
-    
 
-      <div class="actions">
-        <button class="btn primary" (click)="goRegister()">Register</button>
+      <div class="actions animate-fade-up delay-3">
+        <button class="btn-primary large magnetic" (click)="goRegister()">
+          <span>Get Started Free</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
 
-        <div class="login-group">
-          <button class="btn primary" (click)="goLogin()">Login</button>
-          
+        <button class="btn-outline large" (click)="goLogin()">
+          <span>Sign In</span>
+        </button>
+
+        <button class="btn-play" (click)="playDemo()">
+          <div class="play-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+          <span>Watch Demo</span>
+        </button>
+      </div>
+
+      <!-- STATS -->
+      <div class="hero-stats animate-fade-up delay-4">
+        <div class="stat">
+          <span class="number" data-count="500">0</span>
+          <span class="label">Hospitals</span>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <span class="number" data-count="50000">0</span>
+          <span class="label">Equipment</span>
+        </div>
+        <div class="divider"></div>
+        <div class="stat">
+          <span class="number" data-count="99">0</span>
+          <span class="label">% Uptime</span>
         </div>
       </div>
-    
     </div>
 
     <!-- RIGHT IMAGE -->
-    <div class="hero-right">
-      <img src="assets/images/demo.png" alt="medical image">
+    <div class="hero-right animate-fade-left">
+      <div class="image-container" 
+           (mousemove)="tiltImage($event)" 
+           (mouseleave)="resetTilt()">
+        <div class="image-glow"></div>
+        <img src="assets/medical-equipment.png" alt="medical image" [style.transform]="imageTransform">
+        
+        <!-- FLOATING CARDS -->
+        <div class="float-card card-1">
+          <div class="icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="info">
+            <span class="title">Real-time</span>
+            <span class="desc">Monitoring</span>
+          </div>
+        </div>
+
+        <div class="float-card card-2">
+          <div class="icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </div>
+          <div class="info">
+            <span class="title">AI Powered</span>
+            <span class="desc">Analytics</span>
+          </div>
+        </div>
+
+        <div class="float-card card-3">
+          <div class="icon purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div class="info">
+            <span class="title">99.9%</span>
+            <span class="desc">Accuracy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ORBIT RINGS -->
+      <div class="orbit-rings">
+        <div class="ring ring-1"><span class="dot"></span></div>
+        <div class="ring ring-2"><span class="dot"></span></div>
+        <div class="ring ring-3"><span class="dot"></span></div>
+      </div>
     </div>
 
+    <!-- SCROLL INDICATOR -->
+    <div class="scroll-indicator" (click)="scrollTo('about')">
+      <div class="mouse">
+        <div class="wheel"></div>
+      </div>
+      <span>Scroll to explore</span>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section id="features" class="features">
+    <div class="section-header">
+      <span class="tag">FEATURES</span>
+      <h2>Powerful Tools for <span class="gradient">Healthcare</span></h2>
+      <p>Everything you need to manage medical equipment efficiently</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card" 
+           *ngFor="let feature of features; let i = index"
+           [class.revealed]="feature.revealed"
+           (mouseenter)="onCardHover($event)"
+           (mousemove)="onCardMove($event)"
+           (mouseleave)="onCardLeave($event)">
+        <div class="card-spotlight"></div>
+        <div class="card-border"></div>
+        <div class="icon" [style.background]="feature.gradient">
+          <span [innerHTML]="feature.icon"></span>
+        </div>
+        <h3>{{feature.title}}</h3>
+        <p>{{feature.desc}}</p>
+        <a class="link">
+          Learn more 
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- ABOUT -->
   <section id="about" class="about">
-    <h2>About the System</h2>
-    <p>
-      This platform helps hospitals efficiently track medical equipment,
-      assign maintenance tasks, and manage supplier operations in one place.
-    </p>
+    <div class="section-header">
+      <span class="tag">ABOUT US</span>
+      <h2>Who We <span class="gradient">Serve</span></h2>
+      <p>
+        This platform helps hospitals efficiently track medical equipment,
+        assign maintenance tasks, and manage supplier operations in one place.
+      </p>
+    </div>
 
     <div class="about-cards">
-      <div class="card">
-        <h3>🏥 Hospital</h3>
-        <p>Track and manage equipment efficiently</p>
+      <div class="card" 
+           *ngFor="let card of aboutCards; let i = index"
+           [class.active]="activeCard === i"
+           (mouseenter)="activeCard = i"
+           (click)="goRegister()">
+        <div class="card-bg" [style.background]="card.gradient"></div>
+        <div class="card-content">
+          <div class="icon-wrapper">
+            <span class="emoji">{{card.emoji}}</span>
+            <div class="icon-ring"></div>
+          </div>
+          <h3>{{card.title}}</h3>
+          <p>{{card.desc}}</p>
+          <ul class="features-list">
+            <li *ngFor="let item of card.features">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              {{item}}
+            </li>
+          </ul>
+          <button class="card-btn">
+            Get Started
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+        <div class="card-shine"></div>
       </div>
-      <div class="card">
-        <h3>🧑‍🔧 Technician</h3>
-        <p>Handle maintenance workflows</p>
+    </div>
+  </section>
+
+  <!-- STATS SECTION -->
+  <section class="stats-section">
+    <div class="stats-bg"></div>
+    <div class="stats-grid">
+      <div class="stat-item" *ngFor="let stat of stats">
+        <div class="stat-icon" [innerHTML]="stat.icon"></div>
+        <div class="stat-value">
+          <span class="counter" [attr.data-target]="stat.value">0</span>
+          <span class="suffix">{{stat.suffix}}</span>
+        </div>
+        <span class="stat-label">{{stat.label}}</span>
       </div>
-      <div class="card">
-        <h3>🚚 Supplier</h3>
-        <p>Manage inventory and orders</p>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="section-header">
+      <span class="tag">TESTIMONIALS</span>
+      <h2>What People <span class="gradient">Say</span></h2>
+    </div>
+
+    <div class="testimonial-track">
+      <div class="testimonial-card" *ngFor="let t of testimonials">
+        <div class="quote-icon">❝</div>
+        <p class="quote">{{t.quote}}</p>
+        <div class="author">
+          <div class="avatar" [style.background]="t.color">{{t.initials}}</div>
+          <div class="author-info">
+            <span class="name">{{t.name}}</span>
+            <span class="role">{{t.role}}</span>
+          </div>
+        </div>
+        <div class="stars">
+          <span *ngFor="let s of [1,2,3,4,5]" [class.filled]="s <= t.rating">★</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="cta-section">
+    <div class="cta-bg">
+      <div class="cta-shape shape-1"></div>
+      <div class="cta-shape shape-2"></div>
+    </div>
+    <div class="cta-content">
+      <h2>Ready to Transform Your Healthcare Operations?</h2>
+      <p>Join thousands of hospitals already using MedTrack</p>
+      <div class="cta-buttons">
+        <button class="btn-white" (click)="goRegister()">
+          Start Free Trial
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+        <button class="btn-ghost" (click)="scrollTo('contact')">Contact Sales</button>
       </div>
     </div>
   </section>
 
   <!-- CONTACT -->
   <section id="contact" class="contact">
-    <h2>Contact Us</h2>
+    <div class="contact-wrapper">
+      <div class="contact-info">
+        <span class="tag">CONTACT</span>
+        <h2>Get In <span class="gradient">Touch</span></h2>
+        <p>Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
 
-    <div class="contact-box">
-      <p><strong>Email:</strong> support@medtrack.com</p>
-      <p><strong>Phone:</strong> +91 98765 43210</p>
-      <p><strong>Address:</strong> Mumbai, India</p>
+        <div class="info-items">
+          <div class="info-item">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div class="text">
+              <span class="label">Email</span>
+              <span class="value">support@medtrack.com</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div class="text">
+              <span class="label">Phone</span>
+              <span class="value">+91 98765 43210</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div class="text">
+              <span class="label">Address</span>
+              <span class="value">Mumbai, India</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="social-links">
+          <a href="#" class="social-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+          </a>
+          <a href="#" class="social-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#" class="social-link">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <form (ngSubmit)="submitForm()">
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" id="name" required [(ngModel)]="form.name" name="name">
+              <label for="name">Your Name</label>
+              <span class="focus-line"></span>
+            </div>
+            <div class="form-group">
+              <input type="email" id="email" required [(ngModel)]="form.email" name="email">
+              <label for="email">Your Email</label>
+              <span class="focus-line"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="text" id="subject" required [(ngModel)]="form.subject" name="subject">
+            <label for="subject">Subject</label>
+            <span class="focus-line"></span>
+          </div>
+          <div class="form-group">
+            <textarea id="message" rows="5" required [(ngModel)]="form.message" name="message"></textarea>
+            <label for="message">Message</label>
+            <span class="focus-line"></span>
+          </div>
+          <button type="submit" class="btn-primary full">
+            <span>Send Message</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </form>
+      </div>
     </div>
   </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+          <span>Med<span>Track</span></span>
+        </div>
+        <p>Smart healthcare equipment management for modern hospitals.</p>
+      </div>
+      <div class="footer-links">
+        <div class="link-col">
+          <h4>Product</h4>
+          <a>Features</a>
+          <a>Pricing</a>
+          <a>Integrations</a>
+        </div>
+        <div class="link-col">
+          <h4>Company</h4>
+          <a>About</a>
+          <a>Blog</a>
+          <a>Careers</a>
+        </div>
+        <div class="link-col">
+          <h4>Support</h4>
+          <a>Help Center</a>
+          <a>Contact</a>
+          <a>Status</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 MedTrack. All rights reserved.</p>
+    </div>
+  </footer>
 
 </div>

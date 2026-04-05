@@ -23,6 +23,13 @@ public class HospitalService {
 public void deleteHospital(Long id){
     hospitalRepository.deleteById(id);
 }
+public Hospital getById(Long id){
+    return hospitalRepository.findById(id).orElseThrow();
+}
+
+public Hospital save(Hospital hospital){
+    return hospitalRepository.save(hospital);
+}
 
     //Implement the required code here
 }

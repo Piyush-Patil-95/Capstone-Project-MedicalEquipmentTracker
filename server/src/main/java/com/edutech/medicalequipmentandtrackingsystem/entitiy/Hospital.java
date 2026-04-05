@@ -58,6 +58,15 @@ private List<Equipment> equipmentList;
     public void setEquipmentList(List<Equipment> equipmentList) {
         this.equipmentList = equipmentList;
     }
+    private boolean paymentDone = false;
+
+public boolean isPaymentDone() {
+    return paymentDone;
+}
+
+public void setPaymentDone(boolean paymentDone) {
+    this.paymentDone = paymentDone;
+}
 
 
     

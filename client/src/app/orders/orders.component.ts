@@ -28,7 +28,7 @@ export class OrdersComponent  {
   }
 
   getOrders(): void {
-    this.httpService.getorders().subscribe({
+    this.httpService.getorders1().subscribe({
       next: (data) => {
         this.orderList = data;
       },
@@ -38,6 +38,45 @@ export class OrdersComponent  {
       }
     });
   }
+ downloadPDF(id: number) {
+  console.log("📄 Downloading PDF for order ID:", id);
+
+  this.httpService.downloadOrderPdf(id).subscribe({
+    next: (blob: Blob) => {
+      console.log("✅ Blob type:", blob.type, "size:", blob.size);
+
+      if (!blob || blob.size === 0) {
+        alert("❌ Empty PDF received");
+        return;
+      }
+
+      // If backend returned JSON error as blob
+      if (blob.type && blob.type.includes('application/json')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          console.error("❌ Backend returned JSON instead of PDF:", reader.result);
+          alert("❌ Backend returned error JSON instead of PDF. Check console.");
+        };
+        reader.readAsText(blob);
+        return;
+      }
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `order_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => {
+      console.error("❌ PDF Download Error:", err);
+      alert(`❌ Download failed (Status: ${err.status})`);
+    }
+  });
+}
+
   deleteOrder(id: number) {
   if (!confirm('Are you sure you want to delete this order?')) return;
 

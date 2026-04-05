@@ -4,20 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "equipments") // do not change table name
+@Table(name = "equipments")
 public class Equipment {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String description;
 
     @ManyToOne
-@JoinColumn(name="hospital_id")
+@JoinColumn(name = "hospital_id")
 @JsonIgnoreProperties({"equipmentList"})
 private Hospital hospital;
 
-    public Equipment() {
-    }
+    public Equipment() {}
 
     public Equipment(String name, String description) {
         this.name = name;
@@ -55,7 +57,4 @@ private Hospital hospital;
     public void setHospital(Hospital hospital) {
         this.hospital = hospital;
     }
-
-    
-
 }

@@ -1,5 +1,5 @@
 package com.edutech.medicalequipmentandtrackingsystem.entitiy;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +11,7 @@ public class Order {
     private Long id;
     private  Date OrderDate;
     private String status;
+    private boolean paymentDone = false;
     // private enum Status{
     //     Pending,
     //     Shipped,
@@ -18,9 +19,10 @@ public class Order {
 
     // }
     private int quantity;
-    @ManyToOne
-    @JoinColumn(name="equipment_id")
-    private  Equipment equipment;
+    @ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "equipment_id")
+@JsonIgnoreProperties({"hospital"})  // 🔥 IMPORTANT
+private Equipment equipment;
     public Long getId() {
         return id;
     }
@@ -51,6 +53,13 @@ public class Order {
     public void setEquipment(Equipment equipment) {
         this.equipment = equipment;
     }
+    public boolean isPaymentDone() {
+    return paymentDone;
+}
+
+public void setPaymentDone(boolean paymentDone) {
+    this.paymentDone = paymentDone;
+}
 
 
     
