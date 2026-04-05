@@ -49,5 +49,13 @@ public class OrderService {
         order.setStatus(newStatus);
         return orderRepository.save(order);
  }
+ public Order getById(Long id) {
+    return orderRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Order not found"));
+}
+
+public Order save(Order order) {
+    return orderRepository.save(order);
+}
 
 }

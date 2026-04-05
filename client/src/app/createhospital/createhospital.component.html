@@ -1,6 +1,5 @@
 <div class="page-wrapper">
 
-  <!-- Animated Background -->
   <div class="bg-blur"></div>
   <div class="bg-blur second"></div>
 
@@ -23,31 +22,20 @@
       <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
         <div class="form-row">
 
-          <!-- NAME -->
           <div class="form-group">
             <label>Hospital Name</label>
             <input type="text"
                    placeholder="Enter hospital name"
-                   formControlName="name"
-                   [class.error]="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
-            <small *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched">
-              Hospital name is required
-            </small>
+                   formControlName="name">
           </div>
 
-          <!-- LOCATION -->
           <div class="form-group">
             <label>Location</label>
             <input type="text"
                    placeholder="Enter location"
-                   formControlName="location"
-                   [class.error]="itemForm.get('location')?.invalid && itemForm.get('location')?.touched">
-            <small *ngIf="itemForm.get('location')?.invalid && itemForm.get('location')?.touched">
-              Location is required
-            </small>
+                   formControlName="location">
           </div>
 
-          <!-- BUTTON -->
           <div class="form-group btn-wrap">
             <button type="submit" class="primary-btn w-100">
               + Add Hospital
@@ -67,44 +55,75 @@
         <span class="count">{{ filteredHospitals.length }} Total</span>
       </div>
 
-      <!-- 🔍 SEARCH BAR -->
+      <!-- SEARCH -->
       <div class="mb-4">
         <input
           type="text"
           class="form-control"
-          placeholder="🔍 Search hospital by name or location..."
+          placeholder="🔍 Search hospital..."
           [(ngModel)]="searchText"
           (input)="onSearch()"
         >
       </div>
 
-      <!-- ✅ SINGLE GRID (SEARCH AWARE) -->
       <div class="hospital-grid">
         <div class="row g-4">
 
-          <!-- HOSPITAL CARD -->
-          <div
-            class="col-12 col-sm-6 col-lg-4 col-xl-3"
-            *ngFor="let hospital of filteredHospitals">
+          <div class="col-12 col-sm-6 col-lg-4 col-xl-3"
+               *ngFor="let hospital of filteredHospitals">
 
             <div class="card p-3 shadow">
 
               <h5>{{ hospital.name }}</h5>
-              <p><i class="bi bi-geo-alt"></i> {{ hospital.location }}</p>
+              <p>{{ hospital.location }}</p>
 
               <!-- STATUS -->
               <div class="mb-2">
                 <div>🏥 Equipments: {{ hospital.equipmentList?.length || 0 }}</div>
-                <div>📦 Order: {{ hospital.orders?.length ? hospital.orders[0]?.status : 'No Orders' }}</div>
+
                 <div>
-                  🔧 Maintenance:
-                  <span *ngIf="hospital.maintenance?.length">
-                    {{ hospital.maintenance[0]?.status }}
-                  </span>
-                  <span *ngIf="!hospital.maintenance?.length">
-                    No Maintenance
-                  </span>
+                  📦 Order:
+                  {{ hospital.latestOrder?.status || 'No Orders' }}
                 </div>
+              </div>
+
+              <!-- 💳 PAY BUTTON (PER ORDER FIX) -->
+              <button
+                class="btn btn-primary w-100 mb-2"
+                *ngIf="hospital.latestOrder
+                       && hospital.latestOrder.status?.toLowerCase().includes('complete')
+                       && !hospital.latestOrder.paymentDone"
+                (click)="payNow(hospital)">
+                💳 Pay ₹{{ getAmount(hospital) }}
+              </button>
+
+              <!-- ✅ PAYMENT DONE (PER ORDER FIX) -->
+              <div
+                class="alert alert-success p-2 mb-2"
+                *ngIf="hospital.latestOrder?.paymentDone">
+                <small>✅ Payment Completed</small>
+              </div>
+
+              <!-- ⏳ WAIT -->
+              <div
+                class="alert alert-warning p-2 mb-2"
+                *ngIf="hospital.latestOrder
+                       && !hospital.latestOrder.status?.toLowerCase().includes('complete')">
+                <small>⏳ Payment available after supplier completes order</small>
+              </div>
+
+              <!-- ℹ️ NO ORDER -->
+              <div
+                class="alert alert-secondary p-2 mb-2"
+                *ngIf="!hospital.latestOrder">
+                <small>ℹ️ No order found for this hospital</small>
+              </div>
+
+              <!-- ℹ️ NO EQUIPMENT -->
+              <div
+                class="alert alert-info p-2 mb-2"
+                *ngIf="!hospital.equipmentList?.length">
+                <small>ℹ️ No equipment assigned yet</small>
               </div>
 
               <!-- ACTIONS -->
@@ -113,22 +132,15 @@
                 data-bs-toggle="modal"
                 data-bs-target="#equipmentModal"
                 (click)="openModal(hospital)">
-                Assign Equipment
+                ➕ Assign Equipment
               </button>
 
               <button
                 class="btn btn-danger w-100"
                 (click)="deleteHospital(hospital.id)">
-                Delete Hospital
+                🗑️ Delete Hospital
               </button>
 
-            </div>
-          </div>
-
-          <!-- EMPTY -->
-          <div class="col-12" *ngIf="filteredHospitals.length === 0">
-            <div class="text-center mt-4">
-              <h4>No Hospitals Found 😢</h4>
             </div>
           </div>
 
@@ -141,8 +153,8 @@
 </div>
 
 <!-- MODAL -->
-<div class="modal fade custom-modal" id="equipmentModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="equipmentModal">
+  <div class="modal-dialog">
     <div class="modal-content">
 
       <div class="modal-header">
@@ -152,32 +164,38 @@
 
       <div class="modal-body">
 
-        <form [formGroup]="equipmentForm">
-          <div class="form-group">
-            <label>Name</label>
-            <input type="text" formControlName="name" placeholder="Equipment Name">
-          </div>
-
-          <div class="form-group">
-            <label>Description</label>
-            <textarea formControlName="description"
-                      placeholder="Equipment Description"></textarea>
-          </div>
-        </form>
-
-        <div *ngIf="showMessage" class="success-msg">
-          {{ responseMessage || 'Equipment added successfully' }}
+        <div class="alert alert-success" *ngIf="showMessage">
+          {{ responseMessage }}
         </div>
 
-        <div *ngIf="showError" class="error-msg">
+        <div class="alert alert-danger" *ngIf="showError">
           {{ errorMessage }}
         </div>
+
+        <form [formGroup]="equipmentForm">
+          <div class="mb-3">
+            <label class="form-label">Equipment Name</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder="e.g., Hospital Bed, Ventilator">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea
+              class="form-control"
+              formControlName="description"
+              rows="3"></textarea>
+          </div>
+        </form>
 
       </div>
 
       <div class="modal-footer">
-        <button class="secondary-btn" data-bs-dismiss="modal">Close</button>
-        <button class="primary-btn" (click)="submitEquipment()">Save</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-primary" (click)="submitEquipment()">💾 Save Equipment</button>
       </div>
 
     </div>

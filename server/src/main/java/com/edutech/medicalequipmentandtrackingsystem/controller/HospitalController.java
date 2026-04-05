@@ -39,6 +39,23 @@ public class HospitalController {
       Hospital createdHospital = hospitalService.createHospital(hospital);
       return new ResponseEntity<>(createdHospital, HttpStatus.CREATED);
    }
+   @GetMapping("/api/hospital/orders")
+public ResponseEntity<List<Order>> getHospitalOrders() {
+    return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
+}
+ @PostMapping("/api/hospital/payment/complete")
+public ResponseEntity<?> markPaymentDone(@RequestBody Map<String, Long> payload) {
+
+    Long orderId = payload.get("orderId");
+
+    Order order = orderService.getById(orderId);
+
+    order.setPaymentDone(true);
+
+    orderService.save(order);
+
+    return ResponseEntity.ok("Payment stored");
+}
 
    // Get All Hospitals
    @GetMapping("/api/hospitals")

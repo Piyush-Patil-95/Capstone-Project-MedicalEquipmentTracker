@@ -1,5 +1,4 @@
 export const environment = {
-  // production: false,
-	apiUrl: window.location.href.replace(/5000\/.*$/, "3000")
+  production: false,
+  apiUrl: 'https://orchardsolveone.lntedutech.com/project/7358/proxy/3000'
 };
-
