@@ -51,22 +51,22 @@ export class MaintenanceComponent implements OnInit {
 
   // ── DATA LOADING ──────────────────────────
 
-  getMaintenance(): void {
-    this.httpService.getMaintenance().subscribe({
-      next: (data: any) => {
-        this.maintenanceList = (data || []).sort((a: any, b: any) => b.id - a.id);
-        this.applyFilter();
-        this.buildHospitalBreakdown();
-      },
-      error: (err: any) => {
-        console.error('Failed to load maintenance:', err);
-      }
-    });
-  }
+  getMaintenance() {
+  this.httpService.getMaintenance().subscribe({
+    next: (data: any) => {
+      this.maintenanceList = (Array.isArray(data) ? data : []).sort(
+        (a: any, b: any) => b.id - a.id
+      );
+      this.applyFilter();
+      this.buildHospitalBreakdown();
+    },
+    error: (err: any) => console.error('Failed to load maintenance:', err)
+  });
+}
 
   // ── FILTER ────────────────────────────────
 
-  applyFilter() {
+  applyFilter(): void {
     if (!this.filterStatus) {
       this.filteredMaintenance = [...this.maintenanceList];
     } else {
@@ -74,6 +74,11 @@ export class MaintenanceComponent implements OnInit {
         (m.status ?? '').toLowerCase() === this.filterStatus.toLowerCase()
       );
     }
+  }
+
+  setFilter(status: string): void {
+    this.filterStatus = status;
+    this.applyFilter();
   }
 
   // ── STATS ─────────────────────────────────
@@ -84,24 +89,34 @@ export class MaintenanceComponent implements OnInit {
     ).length;
   }
 
+  /**
+   * FIX: 'in progress' was incorrectly mapped to 'initiated'.
+   * Now correctly maps to 'inprogress' CSS class.
+   * Ensure your SCSS has: .badge.complete, .badge.inprogress, .badge.pending,
+   * .badge.initiated, .badge.scheduled, .badge.unknown
+   */
   getStatusClass(status: string): string {
-    const s = (status ?? '').toLowerCase();
-    if (s.includes('complete'))  return 'complete';
-    if (s.includes('progress'))  return 'initiated';
-    if (s.includes('pending'))   return 'pending';
-    if (s.includes('initiat'))   return 'initiated';
-    if (s.includes('schedul'))   return 'scheduled';
+    const s = (status ?? '').toLowerCase().trim();
+    if (s === 'complete')    return 'complete';
+    if (s === 'progress') return 'in-progress';
+    if (s === 'pending')     return 'pending';
+    if (s === 'initiated')   return 'initiated';
+    if (s === 'scheduled')   return 'scheduled';
     return 'unknown';
   }
 
   getInitials(name: string): string {
     if (!name) return '?';
-    return name.split(' ').slice(0, 2).map((w: string) => w[0]?.toUpperCase() || '').join('');
+    return name
+      .split(' ')
+      .slice(0, 2)
+      .map((w: string) => w[0]?.toUpperCase() || '')
+      .join('');
   }
 
   // ── HOSPITAL BREAKDOWN ────────────────────
 
-  buildHospitalBreakdown() {
+  buildHospitalBreakdown(): void {
     const map = new Map<string, { name: string; location: string; count: number }>();
 
     this.maintenanceList.forEach((m: any) => {
@@ -122,14 +137,26 @@ export class MaintenanceComponent implements OnInit {
 
   // ── EDIT MODAL ────────────────────────────
 
-  openEditModal(item: any) {
+  openEditModal(item: any): void {
     this.selectedMaintenance = item;
     this.editShowMessage = false;
     this.editShowError = false;
+    this.editErrorMessage = '';
+    this.editResponseMessage = '';
+
+    // Safely parse dates — handles both 'YYYY-MM-DD' strings and ISO timestamps
+    const toDateString = (val: any): string => {
+      if (!val) return '';
+      const s = val.toString();
+      // Already in YYYY-MM-DD format
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      // ISO timestamp — take date part only
+      return s.split('T')[0];
+    };
 
     this.editForm.patchValue({
-      scheduledDate: item.scheduledDate ? item.scheduledDate.toString().split('T')[0] : '',
-      completedDate: item.completedDate ? item.completedDate.toString().split('T')[0] : '',
+      scheduledDate: toDateString(item.scheduledDate),
+      completedDate: toDateString(item.completedDate),
       status:        item.status || '',
       description:   item.description || ''
     });
@@ -137,13 +164,16 @@ export class MaintenanceComponent implements OnInit {
     this.showEditModal = true;
   }
 
-  closeEditBackdrop(event: MouseEvent) {
+  closeEditBackdrop(event: MouseEvent): void {
     if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
       this.showEditModal = false;
     }
   }
 
-  submitUpdate() {
+  submitUpdate(): void {
+    // Mark all controls as touched to trigger validation UI
+    this.editForm.markAllAsTouched();
+
     if (this.editForm.invalid) {
       this.editShowError = true;
       this.editErrorMessage = 'Please fill all required fields.';
@@ -151,7 +181,7 @@ export class MaintenanceComponent implements OnInit {
     }
 
     this.editSubmitting = true;
-    this.editShowError = false;
+    this.editShowError   = false;
     this.editShowMessage = false;
 
     const payload = {
@@ -163,27 +193,30 @@ export class MaintenanceComponent implements OnInit {
 
     this.httpService.updateMaintenance(payload, this.selectedMaintenance.id).subscribe({
       next: () => {
-        this.editSubmitting = false;
-        this.editShowMessage = true;
+        this.editSubmitting   = false;
+        this.editShowMessage  = true;
         this.editResponseMessage = 'Updated successfully!';
+
+        // Refresh list
         this.getMaintenance();
+
         setTimeout(() => {
-          this.showEditModal = false;
+          this.showEditModal   = false;
           this.editShowMessage = false;
         }, 1200);
       },
       error: (err: any) => {
-        this.editSubmitting = false;
-        this.editShowError = true;
-        this.editErrorMessage = 'Update failed. Please try again.';
-        console.error(err);
+        this.editSubmitting  = false;
+        this.editShowError   = true;
+        this.editErrorMessage = err?.error?.message || 'Update failed. Please try again.';
+        console.error('Update error:', err);
       }
     });
   }
 
   // ── DELETE ────────────────────────────────
 
-  deleteMaintenance(id: number) {
+  deleteMaintenance(id: number): void {
     if (!confirm('Delete this maintenance record?')) return;
 
     this.httpService.deleteMaintenance(id).subscribe({
@@ -195,16 +228,26 @@ export class MaintenanceComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Delete failed:', err);
-        alert('Delete failed.');
+        alert('Delete failed. Please try again.');
       }
     });
   }
 
   // ── TOAST ─────────────────────────────────
 
-  showToastMsg(msg: string) {
+  showToastMsg(msg: string): void {
     this.toastMessage = msg;
-    this.showToast = true;
-    setTimeout(() => this.showToast = false, 3000);
+    this.showToast    = true;
+    setTimeout(() => (this.showToast = false), 3000);
   }
+
+
+  debugData() {
+  console.log('maintenanceList:', this.maintenanceList);
+  console.log('filteredMaintenance:', this.filteredMaintenance);
+  this.httpService.getMaintenance().subscribe({
+    next: (data: any) => console.log('RAW API RESPONSE:', data),
+    error: (err: any) => console.log('API ERROR:', err)
+  });
+}
 }

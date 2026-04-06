@@ -18,10 +18,19 @@ public class TechnicianController {
     private MaintenanceService maintenanceService;
 
     // Get all maintenance
+
+    @PostMapping("/api/technician/maintenance/add")
+public ResponseEntity<Maintenance> addMaintenance(@RequestBody Maintenance maintenance) {
+    return new ResponseEntity<>(maintenanceService.addMaintenance(maintenance), HttpStatus.CREATED);
+}
+
+
  @GetMapping("/api/technician/maintenance")
     public ResponseEntity<List<Maintenance>> getMaintenance() {
         return new ResponseEntity<>(maintenanceService.getAllMaintenance(), HttpStatus.OK);
  }
+
+
 @DeleteMapping("/api/technician/maintenance/{id}")
 public ResponseEntity<?> deleteMaintenance(@PathVariable Long id) {
     maintenanceService.deleteMaintenance(id);

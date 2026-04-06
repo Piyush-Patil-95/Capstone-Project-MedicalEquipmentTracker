@@ -16,6 +16,15 @@ export class HttpService {
 
 
   // ✅ Reusable headers (with safe token)
+  // Add this inside your HttpService class
+sendContactMessage(data: any): Observable<any> {
+  return this.http.post(
+    `${this.serverName}/api/contact/send`, // Adjust this URL to your backend route
+    data,
+    this.getHttpOptions()
+  );
+}
+
   private getHttpOptions() {
     const token = this.authService.getToken();
     console.log("🔥 TOKEN:", token);
@@ -26,6 +35,19 @@ export class HttpService {
       })
     };
   }
+
+  // In your HttpService
+private getPublicOptions() {
+  return {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+}
+
+// Add this method for the contact form
+
+
   getMyHospital(): Observable<any> {
   return this.http.get(
     `${this.serverName}/api/hospital/my`,
@@ -75,6 +97,64 @@ export class HttpService {
       this.getHttpOptions()
     );
   }
+  getDeletedOrders(): Observable<any> {
+    return this.http.get(
+      `${this.serverName}/api/supplier/orders/deleted`,
+      this.getHttpOptions()
+    );
+  }
+  // ============================
+// BULK DELETE
+// ============================
+deleteOrdersBulk(ids: number[]): Observable<any> {
+  return this.http.post(
+    `${this.serverName}/api/supplier/orders/delete`,
+    ids,
+    this.getHttpOptions()
+  );
+}
+
+// ============================
+// RESTORE ORDER
+// ============================
+restoreOrder(orderId: number): Observable<any> {
+  return this.http.put(
+    `${this.serverName}/api/supplier/order/restore/${orderId}`,
+    {},
+    this.getHttpOptions()
+  );
+}
+
+// ============================
+// PERMANENT DELETE
+// ============================
+permanentDeleteOrder(orderId: number): Observable<any> {
+  return this.http.delete(
+    `${this.serverName}/api/supplier/order/permanent/${orderId}`,
+    this.getHttpOptions()
+  );
+}
+
+// ============================
+// RESTORE ALL
+// ============================
+restoreAllDeletedOrders(): Observable<any> {
+  return this.http.put(
+    `${this.serverName}/api/supplier/orders/restoreAll`,
+    {},
+    this.getHttpOptions()
+  );
+}
+
+// ============================
+// DELETE ALL PERMANENTLY
+// ============================
+deleteAllDeletedOrdersPermanently(): Observable<any> {
+  return this.http.delete(
+    `${this.serverName}/api/supplier/orders/deleted/deleteAll`,
+    this.getHttpOptions()
+  );
+}
 
   getEquipmentById(id: any): Observable<any> {
     return this.http.get(
@@ -107,16 +187,17 @@ updateHospital(id: number, data: any): Observable<any> {
   );
 }
 getorders() {
-  return this.http.get(`${this.serverName}/api/hospital/orders`, this.getHttpOptions());
+  return this.http.get(`${this.serverName}/api/supplier/orders`, this.getHttpOptions());
 }
 
-  UpdateOrderStatus(status: any, orderId: any): Observable<any> {
-    return this.http.put(
-      `${this.serverName}/api/supplier/order/update/${orderId}?newStatus=${status}`,
-      {},
-      this.getHttpOptions()
-    );
-  }
+ // ✅ FIXED
+UpdateOrderStatus(orderId: any, newStatus: any): Observable<any> {
+  return this.http.put(
+    `${this.serverName}/api/supplier/order/update/${orderId}?newStatus=${newStatus}`,
+    {},
+    this.getHttpOptions()
+  );
+}
 
   deleteOrder(id: number): Observable<any> {
     return this.http.delete(
@@ -150,6 +231,12 @@ getorders() {
     );
   }
 
+  addMaintenance(data:any):Observable<any>{
+    return this.http.post(`${this.serverName}/api/technician/maintenance/add`,
+      data,
+      this.getHttpOptions())
+  }
+
   // getMaintenance(): Observable<any> {
   //   return this.http.get(
   //     `${this.serverName}/api/technician/maintenance`,
@@ -158,7 +245,7 @@ getorders() {
   // }
 
   getMaintenance() {
-  return this.http.get(`${this.serverName}/api/hospital/maintenance`, this.getHttpOptions());
+  return this.http.get(`${this.serverName}/api/technician/maintenance`, this.getHttpOptions());
 }
 
 
@@ -188,6 +275,11 @@ getorders() {
       }
     );
   }
+
+//   getAllMaintenance() {
+//   return this.http.get(`${this.serverName}/api/technician/maintenance`, this.getHttpOptions());
+//   // or whatever your backend's "get all" endpoint is
+// }
 
   // ===================== CAPTCHA =====================
   getCaptcha(): Observable<any> {

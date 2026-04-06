@@ -1,5 +1,8 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { HttpService } from '../../services/http.service';
+
 
 @Component({
   selector: 'app-dashbaord',
@@ -126,7 +129,7 @@ export class DashbaordComponent implements OnInit, OnDestroy {
   private animationId: number = 0;
   private countersAnimated = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private httpService:HttpService) {}
 
   ngOnInit(): void {
     this.animateCursor();
@@ -331,9 +334,23 @@ export class DashbaordComponent implements OnInit, OnDestroy {
     alert('Demo video would play here!');
   }
 
-  submitForm(): void {
-    console.log('Form submitted:', this.form);
-    alert('Thank you for your message! We will get back to you soon.');
-    this.form = { name: '', email: '', subject: '', message: '' };
-  }
+  
+    submitForm(): void {
+  console.log('Sending form data:', this.form);
+
+  this.httpService.sendContactMessage(this.form).subscribe({
+    next: (res) => {
+      alert('Message sent successfully!');
+      this.form = { name: '', email: '', subject: '', message: '' };
+    },
+    error: (err) => {
+      console.error('Backend Error:', err);
+      // If you see a 404 here, the endpoint /api/contact/send doesn't exist on your server
+      // If you see a 403/401, your backend is still demanding a Token
+      alert(`Error: ${err.status} - ${err.message}`);
+    }
+  });
+}
+
+   
 }

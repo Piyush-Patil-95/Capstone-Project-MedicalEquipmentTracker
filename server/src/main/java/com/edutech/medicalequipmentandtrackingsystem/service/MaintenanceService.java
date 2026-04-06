@@ -52,4 +52,16 @@ public void deleteMaintenance(Long id) {
 }
 
 
+public Maintenance addMaintenance(Maintenance maintenance) {
+    if (maintenance.getEquipment() != null && maintenance.getEquipment().getId() != null) {
+        Equipment equipment = equipmentRepository.findById(
+            maintenance.getEquipment().getId()
+        ).orElseThrow(() -> new RuntimeException("Equipment not found"));
+        
+        maintenance.setEquipment(equipment);
+        maintenance.setHospital(equipment.getHospital()); // auto-link hospital
+    }
+    return maintenanceRepository.save(maintenance);
+}
+
 }

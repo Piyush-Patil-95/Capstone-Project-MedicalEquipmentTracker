@@ -75,7 +75,7 @@ $card-shadow: 0 4px 20px rgba(0,0,0,0.07);
 .stat-card {
   background: #fff; border-radius: 14px; padding: 20px; box-shadow: $card-shadow; border: 1px solid rgba(0,0,0,0.05);
   .stat-num { font-size: 32px; font-weight: 800; margin-bottom: 6px; &.default { color:#1e293b; } &.green { color:#1d9e75; } &.amber { color:#ba7517; } &.blue { color:#185fa5; } }
-  .stat-label { font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+  .stat-label { font-size: 12px; color: #0a3d84; display: flex; align-items: center; gap: 6px; font-weight: 600; }
   .stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; &.grey { background:#94a3b8; } &.green { background:#1d9e75; } &.amber { background:#ba7517; } &.blue { background:#185fa5; } }
 }
 
@@ -144,6 +144,7 @@ $card-shadow: 0 4px 20px rgba(0,0,0,0.07);
   &.delivered { background: #e1f5ee; color: #0f6e56; }
   &.initiated { background: #e6f1fb; color: #185fa5; }
   &.pending   { background: #faeeda; color: #854f0b; }
+  &.in-progress { background: #ede9fe; color: #6d28d9; }
   &.scheduled { background: #faeeda; color: #854f0b; }
   &.unknown   { background: #f1f5f9; color: #64748b; }
 }
@@ -179,4 +180,22 @@ $card-shadow: 0 4px 20px rgba(0,0,0,0.07);
   .main-content { margin-left: 60px; padding: 20px 16px; }
   .tech-banner { flex-direction: column; gap: 12px; .tech-banner-right { text-align: left; } }
   .card-actions { grid-template-columns: 1fr; }
+}
+
+
+.stat-card {
+  .stat-num {
+    &.default { color: #1e293b; }
+    &.green   { color: #1d9e75; }
+    &.amber   { color: #ba7517; }
+    &.blue    { color: #185fa5; }
+    &.teal    { color: #b4c8c3; } // ✅ ADD
+  }
+  .stat-dot {
+    &.grey  { background: #94a3b8; }
+    &.green { background: #1d9e75; }
+    &.amber { background: #ba7517; }
+    &.blue  { background: #185fa5; }
+    &.teal  { background: #0f6e56; } // ✅ ADD
+  }
 }
