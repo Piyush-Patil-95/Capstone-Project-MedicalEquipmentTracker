@@ -84,12 +84,13 @@ export class HttpService {
   // ✅ SOFT DELETE APIs (Option B)
   // ============================
 
-  deleteOrder(orderId: number): Observable<any> {
-    return this.http.delete(
-      `${this.serverName}/api/supplier/order/delete/${orderId}`,
-      this.getHttpOptions()
-    );
-  }
+  deleteOrder(orderId: number) {
+  return this.http.delete(
+    `${this.serverName}/api/supplier/order/delete/${orderId}`,
+    this.getHttpOptions()
+  );
+}
+
 
   deleteOrdersBulk(ids: number[]): Observable<any> {
     return this.http.post(

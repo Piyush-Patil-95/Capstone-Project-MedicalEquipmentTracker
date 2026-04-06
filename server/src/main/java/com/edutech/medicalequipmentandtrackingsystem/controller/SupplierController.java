@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 public class SupplierController {
@@ -39,23 +41,32 @@ public class SupplierController {
         return ResponseEntity.ok(orderService.getDeletedOrders());
     }
 
+   
+// ✅ FIXED: Return Map so Angular treats it as JSON (no parse error)
     @DeleteMapping("/api/supplier/order/delete/{orderId}")
-    public ResponseEntity<String> softDelete(@PathVariable Long orderId) {
+    public ResponseEntity<Map<String, String>> softDelete(@PathVariable Long orderId) {
         orderService.softDeleteOrder(orderId);
-        return ResponseEntity.ok("Order moved to deleted list");
+        return ResponseEntity.ok(Map.of("message", "Order moved to deleted list"));
     }
 
+   
+
+// ✅ FIXED: Return Map so Angular treats it as JSON (no parse error)
     @PostMapping("/api/supplier/orders/delete")
-    public ResponseEntity<String> softDeleteBulk(@RequestBody List<Long> ids) {
+    public ResponseEntity<Map<String, String>> softDeleteBulk(@RequestBody List<Long> ids) {
         orderService.softDeleteOrders(ids);
-        return ResponseEntity.ok(ids.size() + " orders moved to deleted list");
+        return ResponseEntity.ok(Map.of("message", ids.size() + " orders moved to deleted list"));
     }
 
-    @PutMapping("/api/supplier/order/restore/{orderId}")
-    public ResponseEntity<String> restore(@PathVariable Long orderId) {
-        orderService.restoreOrder(orderId);
-        return ResponseEntity.ok("Order restored");
-    }
+
+   
+
+@PutMapping("/api/supplier/order/restore/{orderId}")
+public ResponseEntity<Map<String, String>> restore(@PathVariable Long orderId) {
+    orderService.restoreOrder(orderId);
+    return ResponseEntity.ok(Map.of("message", "Order restored"));
+}
+
 
     @DeleteMapping("/api/supplier/order/permanent/{orderId}")
     public ResponseEntity<String> permanentDelete(@PathVariable Long orderId) {

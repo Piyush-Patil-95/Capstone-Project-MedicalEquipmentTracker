@@ -31,6 +31,19 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedAt;
 
+    
+// ✅ NEW: Payment tracking fields (for Payment Filter UI)
+    // ======================================================
+
+    // "Paid" | "Unpaid" | "Refunded"
+    @Column(nullable = false)
+    private String paymentStatus = "Unpaid";
+
+    // when doctor updated payment status (optional)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date paymentUpdatedAt;
+
+
     // ========= Getters/Setters =========
 
     public Long getId() {
@@ -88,4 +101,19 @@ public class Order {
     public void setDeletedAt(Date deletedAt) {
         this.deletedAt = deletedAt;
     }
+    public String getPaymentStatus() {
+    return paymentStatus;
+}
+
+public void setPaymentStatus(String paymentStatus) {
+    this.paymentStatus = paymentStatus;
+}
+
+public Date getPaymentUpdatedAt() {
+    return paymentUpdatedAt;
+}
+
+public void setPaymentUpdatedAt(Date paymentUpdatedAt) {
+    this.paymentUpdatedAt = paymentUpdatedAt;
+}
 }

@@ -104,4 +104,23 @@ public class OrderService {
     public void permanentDelete(Long orderId) {
         orderRepository.deleteById(orderId);
     }
+
+    public Order updatePaymentStatus(Long orderId, String paymentStatus) {
+
+    Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+    // ✅ Only allow Paid/Unpaid
+    if (!"Paid".equalsIgnoreCase(paymentStatus) && !"Unpaid".equalsIgnoreCase(paymentStatus)) {
+        throw new RuntimeException("Invalid payment status. Use Paid or Unpaid only.");
+    }
+
+    order.setPaymentStatus(
+            "Paid".equalsIgnoreCase(paymentStatus) ? "Paid" : "Unpaid"
+    );
+    order.setPaymentUpdatedAt(new Date());
+
+    return orderRepository.save(order);
+}
+
 }

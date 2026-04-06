@@ -86,6 +86,15 @@ public ResponseEntity<?> deleteHospital(@PathVariable Long id) {
       return new ResponseEntity<>(placedOrder, HttpStatus.CREATED);
    }
 
+   @PutMapping("/api/hospital/order/payment/{orderId}")
+public ResponseEntity<Order> updatePaymentStatus(
+        @PathVariable Long orderId,
+        @RequestParam String paymentStatus
+) {
+    Order updated = orderService.updatePaymentStatus(orderId, paymentStatus);
+    return new ResponseEntity<>(updated, HttpStatus.OK);
+}
+
 
 
 }

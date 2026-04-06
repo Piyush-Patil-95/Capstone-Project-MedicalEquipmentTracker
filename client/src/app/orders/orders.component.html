@@ -20,6 +20,57 @@
       </div>
 
       <!-- ✅ FILTER BUTTON -->
+       <!-- ✅ PAYMENT FILTER BUTTON (GREEN) -->
+<!-- <button class="payment-btn" (click)="togglePaymentPanel()">
+  {{ selectedPayment }}
+  <span class="chev" [class.open]="showPaymentPanel">▾</span>
+</button> -->
+
+<!-- ✅ PAYMENT FILTER PANEL -->
+<!-- <div class="payment-panel" *ngIf="showPaymentPanel">
+  <div class="payment-title">Payment</div>
+
+  <button class="payment-option"
+          *ngFor="let p of paymentOptions"
+          [class.active]="selectedPayment === p"
+          (click)="applyPaymentFilter(p)">
+    {{ p }}
+  </button>
+
+  <div class="payment-footer">
+    <button class="payment-clear" (click)="clearPaymentFilter()">Clear</button>
+  </div>
+</div> -->
+
+<!-- ✅ PAYMENT FILTER (place next to Filter button) -->
+<div class="payment-wrap"
+     (mouseenter)="showPaymentPanel = true"
+     (mouseleave)="showPaymentPanel = false">
+
+  <button type="button" class="payment-btn" (click)="togglePaymentPanel()">
+    {{ selectedPayment }}
+    <span class="chev" [class.open]="showPaymentPanel">▾</span>
+  </button>
+
+  <div class="payment-panel" *ngIf="showPaymentPanel">
+    <div class="payment-title">Payment</div>
+
+    <button type="button"
+            class="payment-option"
+            *ngFor="let p of paymentOptions"
+            [class.active]="selectedPayment === p"
+            (click)="applyPaymentFilter(p)">
+      {{ p }}
+    </button>
+
+    <div class="payment-footer">
+      <button type="button" class="payment-clear" (click)="clearPaymentFilter()">
+        Clear
+      </button>
+    </div>
+  </div>
+</div>
+
       <div class="right">
         <button class="filter-btn" (click)="toggleFilterPanel()">
           Filter
@@ -52,7 +103,7 @@
 
       <select class="filter-select" [(ngModel)]="selectedStatus">
         <option *ngFor="let s of statusOptions" [value]="s"> -->
-          <!-- {{ s }}
+    <!-- {{ s }}
         </option>
       </select>
 
@@ -62,39 +113,33 @@
     </div> -->
 
     <!-- ✅ BULK ACTION TOOLBAR -->
-<div class="bulk-toolbar">
+    <div class="bulk-toolbar">
 
-  <div class="left-tools">
-    <label class="check-all">
-      <input type="checkbox"
-             [checked]="allVisibleSelected"
-             (change)="selectAllVisible($event)">
-      <span>Select All</span>
-    </label>
+      <div class="left-tools">
+        <label class="check-all">
+          <input type="checkbox" [checked]="allVisibleSelected" (change)="selectAllVisible($event)">
+          <span>Select All</span>
+        </label>
 
-    <span class="selected-pill" *ngIf="selectedCount > 0">
-      {{ selectedCount }} selected
-    </span>
-  </div>
+        <span class="selected-pill" *ngIf="selectedCount > 0">
+          {{ selectedCount }} selected
+        </span>
+      </div>
 
-  <div class="right-tools">
-    <button class="trash-btn" (click)="toggleDeletedPanel()">
-      Deleted Orders ({{ deletedOrders.length }})
-    </button>
+      <div class="right-tools">
+        <button class="trash-btn" (click)="toggleDeletedPanel()">
+          Deleted Orders ({{ deletedOrders.length }})
+        </button>
 
-    <button class="danger-btn"
-            [disabled]="selectedCount === 0"
-            (click)="openBulkDeleteConfirm()">
-      Delete Selected
-    </button>
+        <button class="danger-btn" [disabled]="selectedCount === 0" (click)="openBulkDeleteConfirm()">
+          Delete Selected
+        </button>
 
-    <button class="ghost-btn"
-            *ngIf="selectedCount > 0"
-            (click)="clearSelection()">
-      Clear
-    </button>
-  </div>
-</div>
+        <button class="ghost-btn" *ngIf="selectedCount > 0" (click)="clearSelection()">
+          Clear
+        </button>
+      </div>
+    </div>
 
 
 
@@ -106,24 +151,30 @@
         <!-- CARD HEADER -->
         <div class="card-header">
 
-  <div class="card-left">
-    <label class="card-check">
-      <input type="checkbox"
-             [checked]="selectedMap[order.id] || false"
-(change)="toggleSelect(order.id, $event)">
-      <span class="index">#{{ i + 1 }}</span>
-    </label>
-  </div>
+          <div class="card-left">
+            <label class="card-check">
+              <input type="checkbox" [checked]="selectedMap[order.id] || false"
+                (change)="toggleSelect(order.id, $event)">
+              <span class="index">#{{ i + 1 }}</span>
+            </label>
+          </div>
 
-  <span class="status"
-        [ngClass]="{
+          <span class="status" [ngClass]="{
           'initiated': order.status === 'Initiated',
           'complete': order.status === 'Complete',
           'delivered': order.status === 'Delivered'
         }">
-    {{ order.status }}
-  </span>
-</div>
+            {{ order.status }}
+          </span>
+
+          <span class="pay-pill"
+      [ngClass]="{
+        'paid': (order.paymentStatus || 'Unpaid') === 'Paid',
+        'unpaid': (order.paymentStatus || 'Unpaid') === 'Unpaid'
+      }">
+  {{ order.paymentStatus || 'Unpaid' }}
+</span>
+        </div>
 
 
         <!-- DATE + QUANTITY -->
@@ -161,7 +212,7 @@
             Update Status
           </button>
 
-          <button class="btn-delete" (click)="deleteOrder(order.id)">
+          <button type="button" class="btn-delete" (click)="deleteOrder(order.id)">
             Delete
           </button>
         </div>
@@ -190,7 +241,7 @@
     </div>
 
     <div class="modal-body">
-
+      <!-- 
 
       <div class="tracking-container" [class.all-complete]="orderObj.status === 'Complete'"
         [class.all-delivered]="orderObj.status === 'Delivered'">
@@ -209,16 +260,63 @@
 
 
         </div>
-      </div>
+      </div> -->
 
+      <!-- ✅ ROAD + AMBULANCE TRACKER -->
+      <div class="road-tracker"
+     [class.state-complete]="pendingStatus === 'Complete'"
+     [class.state-delivered]="pendingStatus === 'Delivered'">
+
+  <div class="road">
+    <div class="road-centerline"></div>
+    <div class="road-progress"
+         [style.width.%]="getProgressPercent(pendingStatus)">
+    </div>
+
+    <ng-container *ngFor="let step of trackingSteps; let i = index">
+      <div class="road-step"
+           [style.left.%]="(i / (trackingSteps.length - 1)) * 100"
+           [class.active]="i <= getStepIndex(pendingStatus)"
+           [class.current]="i === getStepIndex(pendingStatus)">
+        <div class="step-circle">
+          <span *ngIf="i < getStepIndex(pendingStatus)">✓</span>
+          <span *ngIf="i === getStepIndex(pendingStatus) && pendingStatus !== 'Delivered'">●</span>
+          <span *ngIf="step === 'Delivered' && pendingStatus === 'Delivered'">✓</span>
+        </div>
+        <div class="step-label">{{ step }}</div>
+      </div>
+    </ng-container>
+
+    <div class="ambulance"
+         [style.left.%]="getAmbulanceLeftPercent(pendingStatus)"
+         [attr.data-status]="pendingStatus">
+      🚑
+    </div>
+  </div>
+</div>
 
       <label>New Status:</label>
 
-      <select [(ngModel)]="statusModel.newStatus">
-        <option value="Initiated">Initiated</option>
-        <option value="Complete">Complete</option>
-        <option value="Delivered">Delivered</option>
-      </select>
+
+      <select [(ngModel)]="statusModel.newStatus"
+        (ngModelChange)="onNewStatusChange($event)">
+
+  <option value="Initiated"
+          [disabled]="getStatusIndex('Initiated') < getStatusIndex(orderObj.status)">
+    Initiated
+  </option>
+
+  <option value="Complete"
+          [disabled]="getStatusIndex('Complete') < getStatusIndex(orderObj.status)">
+    Complete
+  </option>
+
+  <option value="Delivered"
+          [disabled]="getStatusIndex('Delivered') < getStatusIndex(orderObj.status)">
+    Delivered
+  </option>
+
+</select>
 
       <button class="primary-btn" (click)="update()">
         Submit Update
@@ -279,4 +377,7 @@
     </div>
 
   </div>
+</div>
+<div *ngIf="showError" class="error-toast">
+  {{ errorMessage }}
 </div>
