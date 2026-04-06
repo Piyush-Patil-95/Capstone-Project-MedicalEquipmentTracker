@@ -56,7 +56,15 @@ public ResponseEntity<?> markPaymentDone(@RequestBody Map<String, Long> payload)
 
     return ResponseEntity.ok("Payment stored");
 }
-
+    
+@PutMapping("/api/hospital/update/{id}")
+public ResponseEntity<Hospital> updateHospital(@PathVariable Long id, @RequestBody Hospital hospitalData) {
+    Hospital existing = hospitalService.getById(id);
+    existing.setName(hospitalData.getName());
+    existing.setLocation(hospitalData.getLocation());
+    Hospital updated = hospitalService.save(existing);
+    return new ResponseEntity<>(updated, HttpStatus.OK);
+}
    // Get All Hospitals
    @GetMapping("/api/hospitals")
    public ResponseEntity<List<Hospital>> getAllHospitals() {
