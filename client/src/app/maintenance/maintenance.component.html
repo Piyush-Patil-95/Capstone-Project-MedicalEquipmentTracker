@@ -1,140 +1,277 @@
 <div class="page-wrapper">
 
-  <!-- Background -->
-  <div class="bg-blur"></div>
-  <div class="bg-blur second"></div>
-
-  <div class="container">
-
-    <!-- HEADER -->
-    <div class="top-bar">
-      <h2>Manage Maintenance</h2>
-      <p class="subtitle">View, edit, and delete maintenance records</p>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <span class="logo-name">MediCore</span>
     </div>
 
-    <!-- MAIN CARD -->
-    <div class="glass-card">
+    <div class="nav-section">Technician</div>
 
-      <div class="section-header">
-        <h4>Maintenance Information</h4>
-        <span class="count">{{ maintenanceList.length }} Total</span>
+    <div class="nav-item" [class.active]="activeTab==='dashboard'" (click)="activeTab='dashboard'">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      <span>Dashboard</span>
+    </div>
+
+    <div class="nav-item" [class.active]="activeTab==='maintenance'" (click)="activeTab='maintenance'">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+      </svg>
+      <span>Maintenance</span>
+    </div>
+
+    <!-- SIDEBAR BOTTOM STRIP -->
+    <div class="sidebar-bottom">
+      <div class="sb-role-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+        Technician
+      </div>
+      <div class="sb-stats">
+        <span>{{ maintenanceList.length }} records</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- ══════════════ DASHBOARD ══════════════ -->
+    <ng-container *ngIf="activeTab==='dashboard'">
+
+      <!-- HERO BANNER -->
+      <div class="tech-banner">
+        <div class="tech-banner-left">
+          <div class="tech-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#5dcaa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26">
+              <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="tech-title">Technician Dashboard</div>
+            <div class="tech-sub">Manage all maintenance records</div>
+          </div>
+        </div>
+        <div class="tech-banner-right">
+          <p>{{ maintenanceList.length }} total records</p>
+          <p>{{ getMaintenanceCountByStatus('complete') }} completed</p>
+        </div>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="section-label">Maintenance Overview</div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-num default">{{ maintenanceList.length }}</div>
+          <div class="stat-label"><div class="stat-dot grey"></div> Total Records</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num green">{{ getMaintenanceCountByStatus('complete') }}</div>
+          <div class="stat-label"><div class="stat-dot green"></div> Complete</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num amber">{{ getMaintenanceCountByStatus('pending') }}</div>
+          <div class="stat-label"><div class="stat-dot amber"></div> Pending</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">{{ getMaintenanceCountByStatus('in progress') }}</div>
+          <div class="stat-label"><div class="stat-dot blue"></div> In Progress</div>
+        </div>
+      </div>
+
+      <!-- BOTTOM ROW: summary + recent -->
+      <div class="bottom-row">
+
+        <div class="summary-card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+            Maintenance Summary
+          </div>
+          <div class="summary-row"><span class="summary-label">Total</span><span class="summary-val default">{{ maintenanceList.length }}</span></div>
+          <div class="summary-row"><span class="summary-label">Complete</span><span class="summary-val green">{{ getMaintenanceCountByStatus('complete') }}</span></div>
+          <div class="summary-row"><span class="summary-label">In Progress</span><span class="summary-val blue">{{ getMaintenanceCountByStatus('in progress') }}</span></div>
+          <div class="summary-row"><span class="summary-label">Pending</span><span class="summary-val amber">{{ getMaintenanceCountByStatus('pending') }}</span></div>
+          <div class="summary-row"><span class="summary-label">Initiated</span><span class="summary-val teal">{{ getMaintenanceCountByStatus('initiated') }}</span></div>
+        </div>
+
+        <div class="orders-card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Recent Maintenance
+          </div>
+          <div class="order-item" *ngFor="let m of maintenanceList.slice(0,5)">
+            <div class="order-top">
+              <div class="order-name">{{ m.equipment?.name || 'Equipment' }}</div>
+              <span class="badge" [ngClass]="getStatusClass(m.status)">{{ m.status || 'Scheduled' }}</span>
+            </div>
+            <div class="order-sub">
+              {{ m.hospital?.name || m.equipment?.hospital?.name || '—' }} · {{ m.scheduledDate | date:'mediumDate' }}
+            </div>
+          </div>
+          <div class="empty-state-sm" *ngIf="!maintenanceList.length"><p>No maintenance records yet.</p></div>
+        </div>
+
+      </div>
+
+      <!-- HOSPITAL BREAKDOWN -->
+      <div class="section-label" style="margin-top:24px;">By Hospital</div>
+      <div class="hosp-breakdown-grid">
+        <div class="hosp-breakdown-card" *ngFor="let hb of hospitalBreakdown">
+          <div class="hb-left">
+            <div class="hb-avatar">{{ getInitials(hb.name) }}</div>
+            <div>
+              <div class="hb-name">{{ hb.name }}</div>
+              <div class="hb-loc">{{ hb.location }}</div>
+            </div>
+          </div>
+          <div class="hb-right">
+            <div class="hb-count">{{ hb.count }}</div>
+            <div class="hb-label">records</div>
+          </div>
+        </div>
+        <div class="empty-state-sm full" *ngIf="!hospitalBreakdown.length"><p>No data yet.</p></div>
+      </div>
+
+    </ng-container>
+
+    <!-- ══════════════ MAINTENANCE TAB ══════════════ -->
+    <ng-container *ngIf="activeTab==='maintenance'">
+
+      <div class="tab-header">
+        <div><h2>Maintenance Records</h2><p class="tab-sub">View, update and delete all maintenance</p></div>
+        <span class="tab-count">{{ maintenanceList.length }} Total</span>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <button class="filter-btn" [class.active]="filterStatus===''" (click)="filterStatus=''; applyFilter()">All</button>
+        <button class="filter-btn" [class.active]="filterStatus==='Pending'" (click)="filterStatus='Pending'; applyFilter()">Pending</button>
+        <button class="filter-btn" [class.active]="filterStatus==='In Progress'" (click)="filterStatus='In Progress'; applyFilter()">In Progress</button>
+        <button class="filter-btn" [class.active]="filterStatus==='Complete'" (click)="filterStatus='Complete'; applyFilter()">Complete</button>
       </div>
 
       <div class="card-grid">
+        <div class="order-card" *ngFor="let item of filteredMaintenance; let i = index">
 
-        <!-- CARD -->
-        <div class="maintenance-card"
-             *ngFor="let item of maintenanceList; let i = index">
-
-          <!-- HEADER -->
-          <div class="card-header">
-            <span class="index">#{{ i + 1 }}</span>
-
-            <span class="status"
-                  [ngClass]="{
-                    'pending': item.status === 'Pending' || item.status === 'Initiated',
-                    'progress': item.status === 'In Progress',
-                    'complete': item.status === 'Complete'
-                  }">
-              {{ item.status }}
-            </span>
+          <div class="card-header-row">
+            <span class="idx">#{{ i + 1 }}</span>
+            <span class="badge" [ngClass]="getStatusClass(item.status)">{{ item.status || 'Scheduled' }}</span>
           </div>
 
-          <!-- DATES -->
-          <div class="row-block">
-            <div>
-              <label>Scheduled Date</label>
-              <p>{{ item.scheduledDate | date:'dd-MMM-yyyy' }}</p>
-            </div>
-
-            <div>
-              <label>Completed Date</label>
-              <p>{{ item.completedDate | date:'dd-MMM-yyyy' }}</p>
-            </div>
-          </div>
-
-          <!-- EQUIPMENT -->
           <div class="info-block">
             <label>Equipment</label>
-            <p><strong>Id:</strong> {{ item.equipment?.id || item.equipment_id }}</p>
-            <p><strong>Name:</strong> {{ item.equipment?.name || 'N/A' }}</p>
-            <p class="muted"><strong>Description:</strong> {{ item.equipment?.description || 'N/A' }}</p>
+            <p>{{ item.equipment?.name || '—' }}</p>
+            <p class="muted">{{ item.equipment?.description || '' }}</p>
           </div>
 
-          <!-- HOSPITAL (supports both item.hospital and item.equipment.hospital) -->
           <div class="info-block">
             <label>Hospital</label>
-            <p><strong>Id:</strong> {{ item.hospital?.id || item.equipment?.hospital?.id || 'N/A' }}</p>
-            <p><strong>Name:</strong> {{ item.hospital?.name || item.equipment?.hospital?.name || 'N/A' }}</p>
-            <p class="muted"><strong>Location:</strong> {{ item.hospital?.location || item.equipment?.hospital?.location || 'N/A' }}</p>
+            <p>{{ item.hospital?.name || item.equipment?.hospital?.name || '—' }}</p>
+            <p class="muted">{{ item.hospital?.location || item.equipment?.hospital?.location || '' }}</p>
+          </div>
+
+          <div class="row-block">
+            <div><label>Scheduled</label><p>{{ item.scheduledDate | date:'dd-MMM-yyyy' }}</p></div>
+            <div><label>Completed</label><p>{{ (item.completedDate | date:'dd-MMM-yyyy') || '—' }}</p></div>
+          </div>
+
+          <div class="info-block" *ngIf="item.description">
+            <label>Notes</label>
+            <p class="muted">{{ item.description }}</p>
           </div>
 
           <!-- ACTIONS -->
-          <div class="card-footer">
-            <button type="button" class="edit-btn" (click)="edit(item)">
-              Edit
+          <div class="card-actions">
+            <button class="action-edit-btn" (click)="openEditModal(item)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Update
             </button>
-
-            <button type="button" class="delete-btn" (click)="deleteMaintenance(item.id)">
+            <button class="action-del-btn" (click)="deleteMaintenance(item.id)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
               Delete
             </button>
           </div>
 
         </div>
 
-        <!-- EMPTY -->
-        <div *ngIf="maintenanceList.length === 0" class="empty-state">
-          <h5>No maintenance records available</h5>
-          <p>Once you add maintenance entries, they will appear here.</p>
+        <div class="empty-state-sm full" *ngIf="!filteredMaintenance.length">
+          <p>No maintenance records found.</p>
+        </div>
+      </div>
+
+    </ng-container>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- UPDATE MAINTENANCE MODAL                   -->
+<!-- ══════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditBackdrop($event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h5>Update Maintenance</h5>
+      <button class="modal-close" (click)="showEditModal=false">×</button>
+    </div>
+
+    <div class="modal-body-inner">
+      <div class="success-msg" *ngIf="editShowMessage">{{ editResponseMessage }}</div>
+      <div class="error-msg"   *ngIf="editShowError">{{ editErrorMessage }}</div>
+
+      <!-- Read-only context -->
+      <div class="context-strip" *ngIf="selectedMaintenance">
+        <div class="cs-item"><span class="cs-label">Equipment</span><span class="cs-val">{{ selectedMaintenance.equipment?.name || '—' }}</span></div>
+        <div class="cs-item"><span class="cs-label">Hospital</span><span class="cs-val">{{ selectedMaintenance.hospital?.name || selectedMaintenance.equipment?.hospital?.name || '—' }}</span></div>
+      </div>
+
+      <form [formGroup]="editForm">
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Scheduled Date <span class="req">*</span></label>
+            <input type="date" formControlName="scheduledDate">
+          </div>
+          <div class="form-group">
+            <label>Completed Date</label>
+            <input type="date" formControlName="completedDate">
+          </div>
         </div>
 
-      </div>
+        <div class="form-group">
+          <label>Status <span class="req">*</span></label>
+          <select formControlName="status">
+            <option value="">Select Status</option>
+            <option value="Initiated">Initiated</option>
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Complete">Complete</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea formControlName="description" rows="3" placeholder="Maintenance details..."></textarea>
+        </div>
+
+      </form>
     </div>
 
+    <div class="modal-foot">
+      <button class="secondary-btn" (click)="showEditModal=false">Cancel</button>
+      <button class="primary-btn teal-btn" (click)="submitUpdate()" [disabled]="editSubmitting">{{ editSubmitting ? 'Saving...' : '💾 Save Update' }}</button>
+    </div>
   </div>
 </div>
 
-<!-- MODAL (UNCHANGED FUNCTIONALITY) -->
-<div class="modal-overlay" *ngIf="maintenanceObj?.id">
-  <div class="modal-content">
-
-    <div class="modal-header">
-      <h5>Update Maintenance</h5>
-      <button type="button" class="modal-close" (click)="maintenanceObj = {}">✕</button>
-    </div>
-
-    <form [formGroup]="itemForm" (ngSubmit)="update()">
-
-      <div class="form-group">
-        <label>Scheduled Date</label>
-        <input type="date" formControlName="scheduledDate">
-      </div>
-
-      <div class="form-group">
-        <label>Completed Date</label>
-        <input type="date" formControlName="completedDate">
-      </div>
-
-      <div class="form-group">
-        <label>Description</label>
-        <textarea formControlName="description" placeholder="Enter details..."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Status</label>
-        <select formControlName="status">
-          <option value="Initiated">Initiated</option>
-          <option value="Pending">Pending</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Complete">Complete</option>
-        </select>
-      </div>
-
-      <button type="submit" class="primary-btn" [disabled]="itemForm.invalid">
-        Submit
-      </button>
-
-    </form>
-
-  </div>
-</div>
+<!-- SUCCESS TOAST -->
+<div class="success-toast" *ngIf="showToast">{{ toastMessage }}</div>

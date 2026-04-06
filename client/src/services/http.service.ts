@@ -93,7 +93,13 @@ export class HttpService {
     this.getHttpOptions()
   );
 }
-
+updateHospital(id: number, data: any): Observable<any> {
+  return this.http.put(
+    `${this.serverName}/api/hospital/update/${id}`,
+    data,
+    this.getHttpOptions()
+  );
+}
 getorders() {
   return this.http.get(`${this.serverName}/api/hospital/orders`, this.getHttpOptions());
 }
