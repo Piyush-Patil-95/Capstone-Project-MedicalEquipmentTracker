@@ -26,7 +26,12 @@ export class HttpService {
       })
     };
   }
-
+  getMyHospital(): Observable<any> {
+  return this.http.get(
+    `${this.serverName}/api/hospital/my`,
+    this.getHttpOptions()
+  );
+}
   // ===================== AUTH =====================
   Login(data: any): Observable<any> {
     return this.http.post(`${this.serverName}/api/user/login`, data);
@@ -93,6 +98,7 @@ export class HttpService {
     this.getHttpOptions()
   );
 }
+
 updateHospital(id: number, data: any): Observable<any> {
   return this.http.put(
     `${this.serverName}/api/hospital/update/${id}`,

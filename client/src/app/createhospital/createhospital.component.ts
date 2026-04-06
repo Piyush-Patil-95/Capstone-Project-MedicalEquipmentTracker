@@ -92,19 +92,22 @@ export class CreatehospitalComponent implements OnInit {
   // ── DATA LOADING ──────────────────────────
 
   getHospital() {
-    this.service.getHospital().subscribe({
-      next: (data: any) => {
-        const list = Array.isArray(data) ? data : [data];
-        this.hospital = list[0] || null;
-        if (this.hospital) {
-          this.detailForm.patchValue({ name: this.hospital.name, location: this.hospital.location });
-          this.detailForm.disable();
-          this.getOrders();
-        }
-      },
-      error: (err: any) => console.error('Failed to load hospital:', err)
-    });
-  }
+  this.service.getMyHospital().subscribe({
+    next: (data: any) => {
+      this.hospital = Array.isArray(data) ? data[0] : data;
+      if (this.hospital) {
+        this.detailForm.patchValue({
+          name: this.hospital.name,
+          location: this.hospital.location
+        });
+        this.detailForm.disable();
+        this.getOrders();
+      }
+    },
+    error: (err: any) => console.error('Failed to load hospital:', err)
+  });
+}
+      
 
   getOrders() {
     this.service.getorders().subscribe({

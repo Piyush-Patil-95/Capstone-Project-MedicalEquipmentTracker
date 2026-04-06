@@ -56,17 +56,45 @@
       </div>
 
       <!-- ROLE -->
-      <div class="form-group">
-        <label>Role</label>
-        <select formControlName="role">
-          <option value="">Select Role</option>
-          <option *ngFor="let r of roles" [value]="r">{{r}}</option>
-        </select>
+<div class="form-group">
+  <label>Role</label>
+  <select formControlName="role">
+    <option value="">Select Role</option>
+    <option *ngFor="let r of roles" [value]="r">{{r}}</option>
+  </select>
+  <small class="error" *ngIf="itemForm.get('role')?.touched && itemForm.get('role')?.errors">
+    Role is required
+  </small>
+</div>
+  <!-- HOSPITAL FIELDS: name + location -->
+<ng-container *ngIf="itemForm.get('role')?.value === 'HOSPITAL'">
+  <div class="form-group">
+    <label>Hospital Name</label>
+    <input type="text" formControlName="hospitalName">
+    <small class="error" *ngIf="itemForm.get('hospitalName')?.touched && itemForm.get('hospitalName')?.errors">
+      Hospital name is required
+    </small>
+  </div>
+  <div class="form-group">
+    <label>Location</label>
+    <input type="text" formControlName="location">
+    <small class="error" *ngIf="itemForm.get('location')?.touched && itemForm.get('location')?.errors">
+      Location is required
+    </small>
+  </div>
+</ng-container>
 
-        <small class="error" *ngIf="itemForm.get('role')?.touched && itemForm.get('role')?.errors">
-          Role is required
-        </small>
-      </div>
+<!-- SUPPLIER / TECHNICIAN: full name only -->
+<ng-container *ngIf="itemForm.get('role')?.value === 'SUPPLIER' || itemForm.get('role')?.value === 'TECHNICIAN'">
+  <div class="form-group">
+    <label>Full Name</label>
+    <input type="text" formControlName="fullName">
+    <small class="error" *ngIf="itemForm.get('fullName')?.touched && itemForm.get('fullName')?.errors">
+      Full name is required
+    </small>
+  </div>
+</ng-container>
+        
 
       <button type="submit" class="register-btn">Register</button>
     </form>
