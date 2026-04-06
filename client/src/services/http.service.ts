@@ -22,23 +22,59 @@ export class HttpService {
     };
   }
 
+  // ============================================================
+  // LOGIN API
+  // ============================================================
   Login(data: any): Observable<any> {
     return this.http.post(`${this.serverName}/api/user/login`, data);
   }
 
+  // ============================================================
+  // REGISTER API (Step 1: send OTP to email)
+  // ============================================================
   registerUser(data: any): Observable<any> {
     return this.http.post(`${this.serverName}/api/user/register`, data);
   }
 
- deleteHospital(id: number): Observable<any> {
-  return this.http.delete(
-    `${this.serverName}/api/hospital/${id}`,
-    {
-      ...this.getHttpOptions(),
-      responseType: 'text' as 'json'
-    }
+  // ============================================================
+  // VERIFY OTP (Step 2)
+  // ============================================================
+  // verifyEmailOtp(email: string, otp: string): Observable<any> {
+  //   return this.http.post(
+  //     `${this.serverName}/api/user/verify-otp?email=${email}&otp=${otp}`,
+  //     {}
+  //   );
+  // }
+
+  verifyEmailOtp(data: any): Observable<any> {
+  return this.http.post(
+    `${this.serverName}/api/user/verify-otp`,
+    data
   );
 }
+
+  // ============================================================
+  // OPTIONAL → RESEND OTP (if needed)
+  // ============================================================
+  resendOtp(email: string): Observable<any> {
+    return this.http.post(
+      `${this.serverName}/api/user/resend-otp?email=${email}`,
+      {}
+    );
+  }
+
+  // ============================================================
+  // REMAINING EXISTING API METHODS
+  // ============================================================
+  deleteHospital(id: number): Observable<any> {
+    return this.http.delete(
+      `${this.serverName}/api/hospital/${id}`,
+      {
+        ...this.getHttpOptions(),
+        responseType: 'text' as 'json'
+      }
+    );
+  }
 
   addEquipment(data: any, hospitalId: any): Observable<any> {
     return this.http.post(
@@ -92,35 +128,37 @@ export class HttpService {
       this.getHttpOptions()
     );
   }
- deleteMaintenance(id: number): Observable<any> {
-  return this.http.delete(
-    `${this.serverName}/api/technician/maintenance/${id}`,
-    {
-      ...this.getHttpOptions(),
-      responseType: 'text' as 'json'
-    }
-  );
-}
- updateMaintenance(data: any, id: any): Observable<any> {
-  return this.http.put(
-    `${this.serverName}/api/technician/maintenance/update/${id}`,
-    data,
-    {
-      ...this.getHttpOptions(),   // ✅ ADD THIS
-      responseType: 'text' as 'json'
-    }
-  );
-}
-deleteOrder(id: number): Observable<any> {
-  return this.http.delete(
-    `${this.serverName}/api/supplier/order/${id}`,
-    {
-      ...this.getHttpOptions(),
-      responseType: 'text' as 'json'
-    }
-  );
-}
 
+  deleteMaintenance(id: number): Observable<any> {
+    return this.http.delete(
+      `${this.serverName}/api/technician/maintenance/${id}`,
+      {
+        ...this.getHttpOptions(),
+        responseType: 'text' as 'json'
+      }
+    );
+  }
+
+  updateMaintenance(data: any, id: any): Observable<any> {
+    return this.http.put(
+      `${this.serverName}/api/technician/maintenance/update/${id}`,
+      data,
+      {
+        ...this.getHttpOptions(),
+        responseType: 'text' as 'json'
+      }
+    );
+  }
+
+  deleteOrder(id: number): Observable<any> {
+    return this.http.delete(
+      `${this.serverName}/api/supplier/order/${id}`,
+      {
+        ...this.getHttpOptions(),
+        responseType: 'text' as 'json'
+      }
+    );
+  }
 
   createHospital(data: any): Observable<any> {
     return this.http.post(
@@ -137,8 +175,11 @@ deleteOrder(id: number): Observable<any> {
     );
   }
 
-  // ✅ CAPTCHA (FIXED)
+  // ============================================================
+  // CAPTCHA
+  // ============================================================
   getCaptcha(): Observable<any> {
     return this.http.get(`${this.serverName}/api/captcha/generate`);
   }
+
 }

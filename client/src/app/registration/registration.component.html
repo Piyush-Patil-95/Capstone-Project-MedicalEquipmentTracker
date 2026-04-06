@@ -5,9 +5,11 @@
   <div class="bg-blur second"></div>
 
   <div class="register-card">
+
     <a routerLink="/dashboard" class="dashboard-link">
-  ⬅ Back to Dashboard
-</a>
+      ⬅ Back to Dashboard
+    </a>
+
     <h1>Create Account</h1>
     <p class="subtitle">Register to continue</p>
 
@@ -16,16 +18,25 @@
       {{ successMessage }}
     </div>
 
-    <form [formGroup]="itemForm" (ngSubmit)="onRegister()">
+    <!-- ERROR MESSAGE -->
+    <div class="error-msg" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- STEP 1 : Registration Form (before OTP) -->
+    <!-- ========================================================= -->
+    <form *ngIf="!otpSent" [formGroup]="itemForm" (ngSubmit)="onRegister()">
 
       <!-- USERNAME -->
       <div class="form-group">
         <label>Username</label>
-        <input type="text" formControlName="username">
+        <input type="text" formControlName="username" />
 
-        <small class="error" *ngIf="itemForm.get('username')?.touched && itemForm.get('username')?.errors">
+        <small class="error"
+          *ngIf="itemForm.get('username')?.touched && itemForm.get('username')?.errors">
           <span *ngIf="itemForm.get('username')?.errors?.['required']">Username is required</span>
-          <span *ngIf="itemForm.get('username')?.errors?.['minlength']">Minimum 6 characters required</span>
+          <span *ngIf="itemForm.get('username')?.errors?.['minlength']">Minimum 6 characters</span>
           <span *ngIf="itemForm.get('username')?.errors?.['pattern']">Only alphabets allowed</span>
         </small>
       </div>
@@ -33,24 +44,26 @@
       <!-- EMAIL -->
       <div class="form-group">
         <label>Email</label>
-        <input type="email" formControlName="email">
+        <input type="email" formControlName="email" />
 
-        <small class="error" *ngIf="itemForm.get('email')?.touched && itemForm.get('email')?.errors">
+        <small class="error"
+          *ngIf="itemForm.get('email')?.touched && itemForm.get('email')?.errors">
           <span *ngIf="itemForm.get('email')?.errors?.['required']">Email is required</span>
-          <span *ngIf="itemForm.get('email')?.errors?.['email']">Invalid email format</span>
+          <span *ngIf="itemForm.get('email')?.errors?.['email']">Invalid email</span>
         </small>
       </div>
 
       <!-- PASSWORD -->
       <div class="form-group">
         <label>Password</label>
-        <input type="password" formControlName="password">
+        <input type="password" formControlName="password" />
 
-        <small class="error" *ngIf="itemForm.get('password')?.touched && itemForm.get('password')?.errors">
+        <small class="error"
+          *ngIf="itemForm.get('password')?.touched && itemForm.get('password')?.errors">
           <span *ngIf="itemForm.get('password')?.errors?.['required']">Password is required</span>
-          <span *ngIf="itemForm.get('password')?.errors?.['minlength']">Minimum 8 characters required</span>
+          <span *ngIf="itemForm.get('password')?.errors?.['minlength']">Minimum 8 characters</span>
           <span *ngIf="itemForm.get('password')?.errors?.['pattern']">
-            Must contain uppercase, lowercase, number
+            Must contain uppercase, lowercase & number
           </span>
         </small>
       </div>
@@ -60,16 +73,44 @@
         <label>Role</label>
         <select formControlName="role">
           <option value="">Select Role</option>
-          <option *ngFor="let r of roles" [value]="r">{{r}}</option>
+          <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
         </select>
 
-        <small class="error" *ngIf="itemForm.get('role')?.touched && itemForm.get('role')?.errors">
+        <small class="error"
+          *ngIf="itemForm.get('role')?.touched && itemForm.get('role')?.errors">
           Role is required
         </small>
       </div>
 
-      <button type="submit" class="register-btn">Register</button>
+      <button class="register-btn" type="submit">
+        Register
+      </button>
+
     </form>
+
+    <!-- ========================================================= -->
+    <!-- STEP 2 : OTP VERIFICATION -->
+    <!-- ========================================================= -->
+    <div *ngIf="otpSent" class="otp-box">
+
+      <h2>Email Verification</h2>
+      <p>Please enter the OTP sent to your email.</p>
+
+      <form [formGroup]="otpForm">
+
+        <input
+          type="text"
+          formControlName="otp"
+          placeholder="Enter OTP"
+          class="otp-input"
+        />
+
+        <button type="button" (click)="verifyOtp()" class="register-btn">
+          Verify OTP
+        </button>
+
+      </form>
+    </div>
 
     <p class="footer-text">
       Already have an account?

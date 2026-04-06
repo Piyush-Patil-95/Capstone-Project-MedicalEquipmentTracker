@@ -1,19 +1,25 @@
 package com.edutech.medicalequipmentandtrackingsystem.entitiy;
 
-
 import javax.persistence.*;
+
 @Entity
 @Table(name = "users") // do not change table name
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String username;
-    private String  email;
+    private String email;
     private String password;
     private String role;
-   
-   
+
+    // 🔥 NEW FIELDS for OTP-based email verification
+    private boolean emailVerified;     // register ke time false, OTP verify ke baad true
+    private String emailOtp;           // 6-digit OTP store karne ke liye
+
+    // ------------------ Getters & Setters ------------------
 
     public Long getId() {
         return id;
@@ -55,5 +61,19 @@ public class User {
         this.role = role;
     }
 
-    
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public String getEmailOtp() {
+        return emailOtp;
+    }
+
+    public void setEmailOtp(String emailOtp) {
+        this.emailOtp = emailOtp;
+    }
 }

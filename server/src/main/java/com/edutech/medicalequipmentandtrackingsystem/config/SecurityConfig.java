@@ -51,7 +51,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/user/login/**",
                 "/api/captcha/**" ,
                 "/",
-                "/api/user/dashboard"         // 🔥 REQUIRED FIX
+                "/api/user/dashboard" ,
+                "/api/user/verify-otp/**"        // 🔥 REQUIRED FIX
             ).permitAll()
 
             // ✅ ROLE BASED APIs

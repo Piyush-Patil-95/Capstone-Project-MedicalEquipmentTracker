@@ -1,9 +1,7 @@
 package com.edutech.medicalequipmentandtrackingsystem.controller;
 
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,133 +10,154 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.*;
 
 import com.edutech.medicalequipmentandtrackingsystem.dto.LoginRequest;
 import com.edutech.medicalequipmentandtrackingsystem.dto.LoginResponse;
-import com.edutech.medicalequipmentandtrackingsystem.entitiy.Equipment;
-import com.edutech.medicalequipmentandtrackingsystem.entitiy.Hospital;
-import com.edutech.medicalequipmentandtrackingsystem.entitiy.Maintenance;
-import com.edutech.medicalequipmentandtrackingsystem.entitiy.Order;
+import com.edutech.medicalequipmentandtrackingsystem.dto.OtpVerifyRequest;
 import com.edutech.medicalequipmentandtrackingsystem.entitiy.User;
 import com.edutech.medicalequipmentandtrackingsystem.jwt.JwtUtil;
 import com.edutech.medicalequipmentandtrackingsystem.service.CaptchaService;
-import com.edutech.medicalequipmentandtrackingsystem.service.EquipmentService;
-import com.edutech.medicalequipmentandtrackingsystem.service.HospitalService;
-import com.edutech.medicalequipmentandtrackingsystem.service.MaintenanceService;
-import com.edutech.medicalequipmentandtrackingsystem.service.OrderService;
 import com.edutech.medicalequipmentandtrackingsystem.service.UserService;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 @RestController
-
-@RequestMapping
+@RequestMapping("/api/user")
+@CrossOrigin(origins = "*")
 public class RegisterAndLoginController {
-  @Autowired    
-   private UserService userService;
-   @Autowired
-   private JwtUtil jwtUtil;
-   @Autowired
-   private AuthenticationManager authenticationManager;
-   @Autowired 
-   private CaptchaService captchaService;
 
-   
-     @PostMapping("/api/user/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user){
-     User savedUser= userService.registerUser(user);
-     return new ResponseEntity<>(savedUser,HttpStatus.CREATED);
-     
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private CaptchaService captchaService;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    // =============================================
+    // REGISTER + SEND OTP
+    // =============================================
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+
+        if (userService.existsByEmail(user.getEmail())) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("message", "Email already registered"));
+        }
+
+        String otp = String.valueOf(100000 + new Random().nextInt(900000));
+
+        user.setEmailVerified(false);
+        user.setEmailOtp(otp);
+
+        User savedUser = userService.registerUser(user);
+
+        sendOtpEmail(savedUser.getEmail(), otp);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(Collections.singletonMap("message",
+                        "OTP sent to your email for verification."));
     }
-    //   @PostMapping("/api/user/login")
-    //  public ResponseEntity<?> loginUser(@RequestBody LoginRequest request){
-    //   try{
-    //     authenticationManager.authenticate(
-    //      new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword())
-    //     );
-    //   }
-    //   catch (Exception e){
-       
-    //    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    //   }
-    //     User user=userService.getUserByUsername(request.getUsername());//fetching user bro
-    //     String token=jwtUtil.generateToken(user.getUsername());//generating 
-    //      LoginResponse response=new LoginResponse(token, user.getUsername(), user.getEmail(), user.getRole());
-    //     return new ResponseEntity<>(response,HttpStatus.OK);
-     
-    //  }
 
+    // =============================================
+    // VERIFY OTP  (BODY BASED REQUEST)
+    // =============================================
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody OtpVerifyRequest request) {
 
- @PostMapping("/api/user/login")
+        User user = userService.getUserByEmail(request.getEmail());
 
-public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
- 
-    boolean captchaValid = captchaService.validateCaptcha(
+        if (user == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("message", "User not found"));
+        }
 
-            request.getCaptchaId(),
+        if (!request.getOtp().equals(user.getEmailOtp())) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("message", "Invalid OTP"));
+        }
 
-            request.getCaptchaAnswer()
+        user.setEmailVerified(true);
+        user.setEmailOtp(null);
+        userService.updateUser(user);
 
-    );
- 
-    if (!captchaValid) {
-
-        return new ResponseEntity<>("Invalid Captcha", HttpStatus.BAD_REQUEST);
-
+        return ResponseEntity
+                .ok(Collections.singletonMap("message", "Email verified successfully!"));
     }
- 
-    try {
 
-        authenticationManager.authenticate(
+    // =============================================
+    // LOGIN
+    // =============================================
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
 
-            new UsernamePasswordAuthenticationToken(
-
-                request.getUsername(),
-
-                request.getPassword()
-
-            )
-
+        boolean captchaValid = captchaService.validateCaptcha(
+                request.getCaptchaId(),
+                request.getCaptchaAnswer()
         );
 
-    } catch (AuthenticationException e) {
+        if (!captchaValid) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("message", "Invalid Captcha"));
+        }
 
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
+            );
+        } catch (AuthenticationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("message", "Invalid username or password"));
+        }
 
+        User user = userService.getUserByUsername(request.getUsername());
+
+        if (!user.isEmailVerified()) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("message", "Please verify your email before login"));
+        }
+
+        UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
+        String token = jwtUtil.generateToken(userDetails);
+
+        LoginResponse response = new LoginResponse(
+                token,
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole()
+        );
+
+        return ResponseEntity.ok(response);
     }
- 
-    // :white_check_mark: IMPORTANT CHANGE
 
-    UserDetails userDetails = userService.loadUserByUsername(request.getUsername());
- 
-    String token = jwtUtil.generateToken(userDetails);
- 
-    User user = userService.getUserByUsername(request.getUsername());
- 
-    LoginResponse response = new LoginResponse(
-
-            token,
-
-            user.getUsername(),
-
-            user.getEmail(),
-
-            user.getRole()
-
-    );
- 
-    return new ResponseEntity<>(response, HttpStatus.OK);
-
+    // =============================================
+    // SEND EMAIL
+    // =============================================
+    private void sendOtpEmail(String toEmail, String otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Your Email Verification OTP");
+        message.setText(
+                "Your OTP is: " + otp + "\n\nDo not share this OTP with anyone."
+        );
+        mailSender.send(message);
+    }
 }
- 
-        
-    }
-
