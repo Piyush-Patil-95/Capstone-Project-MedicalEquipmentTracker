@@ -189,13 +189,13 @@ $card-shadow: 0 4px 20px rgba(0,0,0,0.07);
     &.green   { color: #1d9e75; }
     &.amber   { color: #ba7517; }
     &.blue    { color: #185fa5; }
-    &.teal    { color: #b4c8c3; } // ✅ ADD
+    &.teal    { color: #e23255; } // ✅ ADD
   }
   .stat-dot {
     &.grey  { background: #94a3b8; }
     &.green { background: #1d9e75; }
     &.amber { background: #ba7517; }
     &.blue  { background: #185fa5; }
-    &.teal  { background: #0f6e56; } // ✅ ADD
+    &.teal  { background: #e23255; } // ✅ ADD
   }
 }
