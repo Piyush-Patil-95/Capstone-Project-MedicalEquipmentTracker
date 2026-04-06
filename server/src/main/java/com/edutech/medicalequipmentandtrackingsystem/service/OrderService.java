@@ -5,7 +5,7 @@ import com.edutech.medicalequipmentandtrackingsystem.entitiy.Order;
 import com.edutech.medicalequipmentandtrackingsystem.repository.EquipmentRepository;
 import com.edutech.medicalequipmentandtrackingsystem.repository.OrderRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
@@ -123,4 +123,27 @@ public class OrderService {
     return orderRepository.save(order);
 }
 
+@Transactional
+public int restoreAllDeletedOrders() {
+    List<Order> deletedOrders = orderRepository.findByDeletedTrue();
+
+    for (Order o : deletedOrders) {
+        o.setDeleted(false);
+        o.setDeletedAt(null);
+    }
+
+    orderRepository.saveAll(deletedOrders);
+    return deletedOrders.size();
+}
+
+@Transactional
+public int deleteAllDeletedOrdersPermanently() {
+    List<Order> deletedOrders = orderRepository.findByDeletedTrue();
+    int count = deletedOrders.size();
+    orderRepository.deleteAll(deletedOrders);
+    return count;
+
+
+
+}
 }

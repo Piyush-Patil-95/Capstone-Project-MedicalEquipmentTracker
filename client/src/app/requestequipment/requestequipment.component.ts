@@ -121,17 +121,20 @@ export class RequestequipmentComponent implements OnInit {
       status: formValue.status
     };
 
-    this.http.orderEquipment(payload,formValue.equipmentId ).subscribe({
-      next: () => {
-        this.showMessage = true;
-        this.responseMessage = 'Save Successfully';
-        this.itemForm.reset();
-        this.router.navigate(['/createhospital'])
-      },
-      error: () => {
-        this.showError = true;
-        this.errorMessage = 'Failed to submit equipment order.';
-      }
-    });
+    const equipmentId = Number(formValue.equipmentId);
+
+this.http.orderEquipment(equipmentId, payload).subscribe({
+  next: (res: any) => {
+    this.showMessage = true;
+    this.responseMessage = 'Order placed successfully!';
+    this.showError = false;
+    this.itemForm.reset();
+  },
+  error: (err: any) => {
+    console.error(err);
+    this.showError = true;
+    this.errorMessage = 'Failed to submit equipment order.';
+  }
+});
   }
 }

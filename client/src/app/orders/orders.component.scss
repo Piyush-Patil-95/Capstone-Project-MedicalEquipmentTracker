@@ -709,7 +709,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1200;
+  z-index: 2000;
   padding: 16px;
 }
 
@@ -1112,3 +1112,141 @@
   box-shadow: 0 10px 22px rgba(0,0,0,0.18);
   z-index: 2000;
 }
+
+/* =========================================
+   ✅ Vertical Road Tracker for each Order Card
+   (Right side, does not disturb content)
+========================================= */
+
+/* =========================================
+   ✅ Thin Vertical Road Tracker (Right Side)
+========================================= */
+
+/* =========================================
+   ✅ VERTICAL ROAD TRACKER (PER CARD)
+   Ambulance ON TOP (not clipped)
+========================================= */
+
+.order-card{
+  position: relative;
+  padding-right: 52px; /* reserved space */
+}
+
+/* tracker container */
+.card-road-tracker{
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  height: 68%;
+  transform: translateY(-50%);
+  width: 34px;
+  pointer-events: none;
+  overflow: visible; /* ✅ allows ambulance outside road */
+}
+
+/* road itself stays clipped */
+.card-road{
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  width: 16px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #111;
+  overflow: hidden; /* ✅ keep lane/progress inside road */
+  box-shadow: inset 0 2px 6px rgba(255,255,255,0.08);
+}
+
+.card-road-lane{
+  position:absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.9) 0px,
+    rgba(255,255,255,0.9) 9px,
+    rgba(255,255,255,0) 9px,
+    rgba(255,255,255,0) 16px
+  );
+  opacity: .75;
+}
+
+.card-road-progress{
+  position:absolute;
+  left:0;
+  width:100%;
+  height:0%;
+  bottom:0;
+  background: rgba(179,179,179,0.55);
+  transition: height 500ms ease;
+}
+
+.card-dot{
+  position:absolute;
+  left:50%;
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:#d9d9d9;
+  transform:translateX(-50%);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+.card-dot.top{ top: 6px; }
+.card-dot.mid{ top: 50%; transform: translate(-50%,-50%); }
+.card-dot.bot{ bottom: 6px; }
+
+/* ambulance overlays road */
+.card-ambulance{
+  position:absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  transition: top 600ms cubic-bezier(0.22,1,0.36,1);
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.28));
+}
+
+.amb-svg{
+  width: 30px;
+  height: 30px;
+  display:block;
+}
+
+/* status colors */
+.state-complete .card-road-progress{ height: 50%; background: rgba(220,53,69,0.75); }
+.state-delivered .card-road-progress{ height: 100%; background: rgba(40,167,69,0.80); }
+.state-delivered .card-dot{ background: #28a745; }
+.deleted-header-actions{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.restore-all-btn{
+  border: none;
+  background: #22c55e;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(34,197,94,0.25);
+  transition: 0.2s ease;
+}
+
+.restore-all-btn:hover{
+  transform: translateY(-1px);
+  background: #16a34a;
+}
+
+.restore-all-btn:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+

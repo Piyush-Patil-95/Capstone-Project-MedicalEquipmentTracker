@@ -455,6 +455,83 @@ onNewStatusChange(newStatus: string): void {
   // ✅ Allow forward selection (do NOT move ambulance here)
   // Ambulance should move only on Submit Update (your requirement)
 }
+// ✅ For vertical tracker on each card
+cardTrackSteps: string[] = ['Initiated', 'Complete', 'Delivered'];
+
+getCardTrackIndex(status: string): number {
+  const idx = this.cardTrackSteps.indexOf(status);
+  return idx < 0 ? 0 : idx;
+}
+
+// Ambulance vertical position (0% top, 50% middle, 100% bottom)
+getCardAmbulanceTopPercent(status: string): number {
+  const idx = this.getCardTrackIndex(status);
+  return (idx / (this.cardTrackSteps.length - 1)) * 100;
+}
+
+restoreAll(): void {
+  if (!this.deletedOrders?.length) return;
+
+  this.showError = false;
+  this.errorMessage = '';
+
+  this.httpService.restoreAllDeletedOrders()
+    .pipe(finalize(() => {
+      // refresh both lists
+      this.getOrders();
+      this.loadDeletedOrders();
+    }))
+    .subscribe({
+      next: (res: any) => {
+        this.showMessage = true;
+        this.responseMessage = res?.message || 'All deleted orders restored';
+        setTimeout(() => this.showMessage = false, 2500);
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.showError = true;
+        this.errorMessage = 'Restore All failed';
+        setTimeout(() => this.showError = false, 2500);
+      }
+    });
+}
+
+showDeleteAllConfirm: boolean = false;
+
+openDeleteAllConfirm(): void {
+  if (!this.deletedOrders?.length) return;
+  this.showDeleteAllConfirm = true;
+}
+
+cancelDeleteAll(): void {
+  this.showDeleteAllConfirm = false;
+}
+
+deleteAllPermanently(): void {
+  this.showError = false;
+  this.errorMessage = '';
+
+  this.httpService.deleteAllDeletedOrdersPermanently()
+    .pipe(finalize(() => {
+      // refresh deleted list immediately
+      this.loadDeletedOrders();
+      this.showDeleteAllConfirm = false;
+    }))
+    .subscribe({
+      next: (res: any) => {
+        this.showMessage = true;
+        this.responseMessage = res?.message || 'All deleted orders permanently removed';
+        setTimeout(() => this.showMessage = false, 2500);
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.showError = true;
+        this.errorMessage = 'Delete All Permanently failed';
+        setTimeout(() => this.showError = false, 2500);
+      }
+    });
+}
+
 
 
 }

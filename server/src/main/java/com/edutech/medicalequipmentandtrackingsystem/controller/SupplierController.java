@@ -73,4 +73,16 @@ public ResponseEntity<Map<String, String>> restore(@PathVariable Long orderId) {
         orderService.permanentDelete(orderId);
         return ResponseEntity.ok("Order permanently deleted");
     }
+    
+@PutMapping("/api/supplier/orders/restoreAll")
+public ResponseEntity<Map<String, String>> restoreAll() {
+    int count = orderService.restoreAllDeletedOrders();
+    return ResponseEntity.ok(Map.of("message", count + " orders restored successfully"));
+}
+@DeleteMapping("/api/supplier/orders/deleted/deleteAll")
+public ResponseEntity<Map<String, String>> deleteAllDeletedOrders() {
+    int count = orderService.deleteAllDeletedOrdersPermanently();
+    return ResponseEntity.ok(Map.of("message", count + " deleted orders permanently removed"));
+}
+
 }
