@@ -10,8 +10,21 @@ import { HttpService } from '../../services/http.service';
 })
 export class RegistrationComponent implements OnInit {
   itemForm!: FormGroup;
+  otpForm!: FormGroup;
+
   successMessage: string = '';
   errorMessage: string = '';
+
+  // ✅ OTP flow states
+  showOtpBox: boolean = false;      // Show OTP input box
+  otpSent: boolean = false;         // OTP was sent
+  otpVerified: boolean = false;     // OTP verified
+  otpLoading: boolean = false;      // Loading state
+  otpError: string = '';            // OTP error msg
+  otpSuccess: string = '';          // OTP success msg
+  resendTimer: number = 0;          // Countdown timer
+  timerInterval: any;
+
   roles: string[] = ['HOSPITAL', 'SUPPLIER', 'TECHNICIAN'];
 
   constructor(
@@ -31,18 +44,19 @@ export class RegistrationComponent implements OnInit {
       fullName:     ['']
     });
 
-    // React to role changes — set/clear validators dynamically
+    // ✅ OTP form
+    this.otpForm = this.fb.group({
+      otp: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]]
+    });
+
     this.itemForm.get('role')?.valueChanges.subscribe(role => {
       this.clearConditionalValidators();
-
       if (role === 'HOSPITAL') {
         this.itemForm.get('hospitalName')?.setValidators([Validators.required]);
         this.itemForm.get('location')?.setValidators([Validators.required]);
       } else if (role === 'SUPPLIER' || role === 'TECHNICIAN') {
         this.itemForm.get('fullName')?.setValidators([Validators.required]);
       }
-
-      // Trigger re-validation on conditional fields
       ['hospitalName', 'location', 'fullName'].forEach(field =>
         this.itemForm.get(field)?.updateValueAndValidity()
       );
@@ -53,18 +67,89 @@ export class RegistrationComponent implements OnInit {
     ['hospitalName', 'location', 'fullName'].forEach(field => {
       const control = this.itemForm.get(field);
       control?.clearValidators();
-      control?.setValue('');          // FIX: setValue instead of reset() to avoid marking as touched
+      control?.setValue('');
       control?.updateValueAndValidity();
     });
   }
 
-  onRegister(): void {
-    // FIX: Mark all fields as touched so validation errors show on submit
-    this.itemForm.markAllAsTouched();
+  // ✅ Step 1: Send OTP
+  sendOtp(): void {
+    const email = this.itemForm.get('email')?.value;
 
+    if (!email || this.itemForm.get('email')?.invalid) {
+      this.otpError = 'Please enter a valid email first!';
+      return;
+    }
+
+    this.otpLoading = true;
+    this.otpError = '';
+    this.otpSuccess = '';
+
+    this.httpService.sendOtp(email).subscribe({
+      next: () => {
+        this.otpLoading = false;
+        this.otpSent = true;
+        this.showOtpBox = true;
+        this.otpSuccess = `OTP sent to ${email}`;
+        this.startResendTimer();
+      },
+      error: (err) => {
+        this.otpLoading = false;
+        this.otpError = 'Failed to send OTP. Try again!';
+      }
+    });
+  }
+
+  // ✅ Step 2: Verify OTP
+  verifyOtp(): void {
+    const email = this.itemForm.get('email')?.value;
+    const otp = this.otpForm.get('otp')?.value;
+
+    if (!otp || otp.length !== 6) {
+      this.otpError = 'Please enter the 6-digit OTP!';
+      return;
+    }
+
+    this.otpLoading = true;
+    this.otpError = '';
+
+    this.httpService.verifyOtp(email, otp).subscribe({
+      next: () => {
+        this.otpLoading = false;
+        this.otpVerified = true;
+        this.showOtpBox = false;
+        this.otpSuccess = '✅ Email verified successfully!';
+        clearInterval(this.timerInterval);
+      },
+      error: () => {
+        this.otpLoading = false;
+        this.otpError = '❌ Invalid or expired OTP!';
+      }
+    });
+  }
+
+  // ✅ Resend Timer (30 seconds)
+  startResendTimer(): void {
+    this.resendTimer = 30;
+    clearInterval(this.timerInterval);
+    this.timerInterval = setInterval(() => {
+      this.resendTimer--;
+      if (this.resendTimer <= 0) {
+        clearInterval(this.timerInterval);
+      }
+    }, 1000);
+  }
+
+  // ✅ Step 3: Register (only if OTP verified)
+  onRegister(): void {
+    this.itemForm.markAllAsTouched();
     if (this.itemForm.invalid) return;
 
-    // FIX: Build payload — only include fields relevant to the selected role
+    if (!this.otpVerified) {
+      this.errorMessage = '⚠️ Please verify your email with OTP first!';
+      return;
+    }
+
     const role = this.itemForm.value.role;
     const payload: any = {
       username: this.itemForm.value.username,
@@ -85,13 +170,11 @@ export class RegistrationComponent implements OnInit {
 
     this.httpService.registerUser(payload).subscribe({
       next: () => {
-        this.successMessage = 'Registration successful! Redirecting to login...';
+        this.successMessage = '✅ Registration successful! Redirecting to login...';
         this.itemForm.reset();
-        // FIX: Auto-navigate to login after short delay
         setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (err) => {
-        // FIX: Show meaningful error from server if available
         this.errorMessage = err?.error?.message || 'Registration failed. Please try again.';
       }
     });

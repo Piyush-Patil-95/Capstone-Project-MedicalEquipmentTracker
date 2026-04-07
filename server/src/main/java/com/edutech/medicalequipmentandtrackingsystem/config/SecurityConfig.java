@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserService userService;
 
     @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    private JwtRequestFilter jwtRequestFilter;  // ✅ Only ONE name
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -36,34 +36,43 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http
-            .csrf().disable()
             .cors().and()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+            .csrf().disable()
             .authorizeRequests()
 
-            // ✅ PUBLIC APIs
+            // ✅ PUBLIC - No token needed
             .antMatchers(
+                "/api/user/register",
                 "/api/user/register/**",
+                "/api/user/login",
                 "/api/user/login/**",
-                "/api/captcha/**" ,
-                "/api/contact/**", 
+                "/api/captcha/**",
+                "/api/contact/**",      // ✅ Contact form - public
+                "/api/pdf/**",
+                "/api/otp/**", 
                 "/",
-                "/api/user/dashboard"         // 🔥 REQUIRED FIX
+                "/api/user/dashboard"
             ).permitAll()
 
-            // ✅ ROLE BASED APIs
-            .antMatchers("/api/hospital/**").hasAnyAuthority("HOSPITAL", "ADMIN")
-    .antMatchers("/api/technician/**").hasAnyAuthority("TECHNICIAN","HOSPITAL", "ADMIN")
-    .antMatchers("/api/supplier/**").hasAnyAuthority("SUPPLIER","HOSPITAL", "ADMIN")
-    .antMatchers("/api/pdf/**").permitAll()
-           
+            // ✅ ROLE BASED
+            .antMatchers("/api/hospital/**")
+                .hasAnyAuthority("HOSPITAL", "ADMIN")
 
-            .anyRequest().authenticated();
+            .antMatchers("/api/technician/**")
+                .hasAnyAuthority("TECHNICIAN", "HOSPITAL", "ADMIN")
 
+            .antMatchers("/api/supplier/**")
+                .hasAnyAuthority("SUPPLIER", "HOSPITAL", "ADMIN")
+
+            // ✅ Everything else needs authentication
+            .anyRequest().authenticated()
+
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        // ✅ Add JWT filter ONCE
         http.addFilterBefore(
             jwtRequestFilter,
             UsernamePasswordAuthenticationFilter.class

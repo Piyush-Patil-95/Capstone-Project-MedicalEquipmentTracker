@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
 export class HttpService {
 
   public serverName = environment.apiUrl;
-  private baseUrl = 'https://orchardsolveone.lntedutech.com/project/7358/proxy/8080';
+  // private baseUrl = 'https://orchardsolveone.lntedutech.com/project/7358/proxy/8080';
   
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -18,17 +18,17 @@ export class HttpService {
 
   // ✅ Reusable headers (with safe token)
   // Add this inside your HttpService class
-sendContactMessage(data: any): Observable<any> {
-  return this.http.post(
-    `${this.baseUrl}/api/contact/send`, // Adjust this URL to your backend route
-    data,
-    this.getHttpOptions()
-  );
-}
+// sendContactMessage(data: any): Observable<any> {
+//   return this.http.post(
+//     `${this.baseUrl}/api/contact/send`, // Adjust this URL to your backend route
+//     data,
+//     this.getHttpOptions()
+//   );
+// }
 
   private getHttpOptions() {
     const token = this.authService.getToken();
-    console.log("🔥 TOKEN:", token);
+    //console.log("🔥 TOKEN:", token);
     return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -45,6 +45,36 @@ private getPublicOptions() {
     })
   };
 }
+// ✅ Use PUBLIC options (no token) for contact form
+// sendContactMessage(data: any): Observable<any> {
+//   return this.http.post(
+//     `${this.serverName}/api/contact/send`,
+//     data,
+//     this.getPublicOptions()  // ← Change this!
+//   );
+// }
+// HttpService - httpservice.ts
+sendContactMessage(data: any): Observable<any> {
+  return this.http.post(
+    `${this.serverName}/api/contact/send`,
+    data,
+    {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      responseType: 'text' as 'json'  // ✅ Tell Angular to expect plain text
+    }
+  );
+}
+// // Make this method public or use it here
+// private getPublicOptions() {
+//   return {
+//     headers: new HttpHeaders({
+//       'Content-Type': 'application/json'
+//       // NO Authorization header
+//     })
+//   };
+// }
 
 // Add this method for the contact form
 // In auth.service.ts (if not already present)
@@ -301,5 +331,28 @@ UpdateOrderStatus(orderId: any, newStatus: any): Observable<any> {
   getCaptcha(): Observable<any> {
     return this.http.get(`${this.serverName}/api/captcha/generate`);
   }
+  // ✅ Send OTP
+sendOtp(email: string): Observable<any> {
+  return this.http.post(
+    `${this.serverName}/api/otp/send`,
+    { email },
+    {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      responseType: 'text' as 'json'
+    }
+  );
+}
+
+// ✅ Verify OTP
+verifyOtp(email: string, otp: string): Observable<any> {
+  return this.http.post(
+    `${this.serverName}/api/otp/verify`,
+    { email, otp },
+    {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      responseType: 'text' as 'json'
+    }
+  );
+}
 
 }

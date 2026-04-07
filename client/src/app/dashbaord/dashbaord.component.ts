@@ -44,46 +44,25 @@ export class DashbaordComponent implements OnInit, OnDestroy {
   features = [
     {
       title: 'Real-time Tracking',
-      desc: 'Monitor equipment location and status in real-time with GPS and IoT integration.',
+      desc: 'Monitor equipment location and status in real-time.',
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
       gradient: 'linear-gradient(135deg, #2A6F97, #61A5C2)',
       revealed: false
     },
     {
-      title: 'Predictive Maintenance',
-      desc: 'AI-powered predictions to prevent equipment failures before they happen.',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
-      gradient: 'linear-gradient(135deg, #667eea, #764ba2)',
-      revealed: false
-    },
+  title: 'Secure Razorpay Integration',
+  desc: 'Seamlessly process payments with India’s leading gateway, supporting UPI, Cards, and Netbanking.',
+  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+  gradient: 'linear-gradient(135deg, #3395FF, #0256B2)',
+  revealed: false
+},
     {
-      title: 'Smart Analytics',
-      desc: 'Comprehensive dashboards and reports for data-driven decision making.',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
-      gradient: 'linear-gradient(135deg, #f093fb, #f5576c)',
-      revealed: false
-    },
-    {
-      title: 'Inventory Control',
-      desc: 'Automated inventory tracking with smart reorder notifications.',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',
-      gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-      revealed: false
-    },
-    {
-      title: 'Compliance Ready',
-      desc: 'Stay compliant with automated regulatory requirement tracking.',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
-      gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)',
-      revealed: false
-    },
-    {
-      title: 'Mobile Access',
-      desc: 'Access your dashboard anywhere with our mobile-responsive platform.',
-      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
-      gradient: 'linear-gradient(135deg, #fa709a, #fee140)',
-      revealed: false
-    }
+  title: 'Automated Invoicing',
+  desc: 'Generate GST-compliant professional invoices automatically for every medical equipment purchase.',
+  icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
+  gradient: 'linear-gradient(135deg, #F59E0B, #D97706)',
+  revealed: false
+},
   ];
 
   aboutCards = [
@@ -335,19 +314,25 @@ export class DashbaordComponent implements OnInit, OnDestroy {
   }
 
   
-    submitForm(): void {
+   // dashboard.component.ts
+submitForm(): void {
   console.log('Sending form data:', this.form);
 
   this.httpService.sendContactMessage(this.form).subscribe({
     next: (res) => {
-      alert('Message sent successfully!');
+      console.log('Success:', res);
+      alert('Message sent successfully!');  // ✅ Will work now
       this.form = { name: '', email: '', subject: '', message: '' };
     },
     error: (err) => {
-      console.error('Backend Error:', err);
-      // If you see a 404 here, the endpoint /api/contact/send doesn't exist on your server
-      // If you see a 403/401, your backend is still demanding a Token
-      alert(`Error: ${err.status} - ${err.message}`);
+      console.error('Error:', err);
+      // ✅ Even if parsing fails but status is 200 - it's actually success!
+      if (err.status === 200) {
+        alert('Message sent successfully!');
+        this.form = { name: '', email: '', subject: '', message: '' };
+      } else {
+        alert(`Error: ${err.status} - ${err.message}`);
+      }
     }
   });
 }
