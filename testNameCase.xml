@@ -82,152 +82,152 @@
     <!-- CreatehospitalComponent.spec.ts -->
 
     <property
-        name="CreatehospitalComponent_form_init"
+        name="CreatehospitalComponent should initialize itemForm with required fields"
         value="CreatehospitalComponent should initialize itemForm with required fields"
     />
 
     <property
-        name="CreatehospitalComponent_name_required"
+        name="CreatehospitalComponent should mark name field as invalid if empty"
         value="CreatehospitalComponent should mark name field as invalid if empty"
     />
 
     <property
-        name="CreatehospitalComponent_location_required"
+        name="CreatehospitalComponent should mark location field as invalid if empty"
         value="CreatehospitalComponent should mark location field as invalid if empty"
     />
 
     <!-- HttpService.spec.ts -->
 
     <property
-        name="HttpService_updateOrderStatus"
+        name="HttpService should update order status"
         value="HttpService should update order status"
     />
 
     <property
-        name="HttpService_addEquipment"
+        name="HttpService should add equipment"
         value="HttpService should add equipment"
     />
 
     <property
-        name="HttpService_getOrders"
+        name="HttpService should get orders"
         value="HttpService should fetch supplier orders"
     />
 
     <property
-        name="HttpService_getMaintenance"
+        name="HttpService should get maintenance tasks"
         value="HttpService should fetch maintenance list"
     />
 
     <property
-        name="HttpService_getHospital"
+        name="HttpService should get hospitals"
         value="HttpService should fetch hospitals"
     />
 
     <property
-        name="HttpService_updateMaintenance"
+        name="HttpService should update maintenance"
         value="HttpService should update maintenance"
     />
 
     <property
-        name="HttpService_orderEquipment"
+        name="HttpService should order equipment"
         value="HttpService should place equipment order"
     />
 
     <property
-        name="HttpService_scheduleMaintenance"
+        name="HttpService should schedule maintenance"
         value="HttpService should schedule maintenance"
     />
 
     <property
-        name="HttpService_createHospital"
+        name="HttpService should create hospital"
         value="HttpService should create hospital"
     />
 
     <!-- LoginComponent.spec.ts -->
 
     <property
-        name="LoginComponent_invalid_empty"
+        name="LoginComponent should have invalid form if username and password are empty"
         value="LoginComponent should mark login form invalid when empty"
     />
 
     <property
-        name="LoginComponent_invalid_partial"
+        name="LoginComponent should have invalid form if username or password is empty"
         value="LoginComponent should mark login form invalid when partially filled"
     />
 
     <property
-        name="LoginComponent_valid"
+        name="LoginComponent should have valid form if username and password are provided"
         value="LoginComponent should validate login form when all fields are filled"
     />
 
     <!-- MaintenanceComponent.spec.ts -->
 
     <property
-        name="MaintenanceComponent_form_init"
+        name="MaintenanceComponent should initialize itemForm with required fields"
         value="MaintenanceComponent should initialize itemForm with required fields"
     />
 
     <property
-        name="MaintenanceComponent_scheduledDate_required"
+        name="MaintenanceComponent should mark scheduledDate field as invalid if empty"
         value="MaintenanceComponent should mark scheduledDate as required"
     />
 
     <property
-        name="MaintenanceComponent_completedDate_required"
+        name="MaintenanceComponent should mark completedDate field as invalid if empty"
         value="MaintenanceComponent should mark completedDate as required"
     />
 
     <property
-        name="MaintenanceComponent_description_required"
+        name="MaintenanceComponent should mark description field as invalid if empty"
         value="MaintenanceComponent should mark description as required"
     />
 
     <property
-        name="MaintenanceComponent_status_required"
+        name="MaintenanceComponent should mark status field as invalid if empty"
         value="MaintenanceComponent should mark status as required"
     />
 
     <!-- RegistrationComponent.spec.ts -->
 
     <property
-        name="RegistrationComponent_invalid_empty"
+        name="RegistrationComponent should have invalid form if any field is empty"
         value="RegistrationComponent should mark registration form invalid when empty"
     />
 
     <property
-        name="RegistrationComponent_invalid_email"
+        name="RegistrationComponent should have invalid form if email is invalid"
         value="RegistrationComponent should mark email field invalid for incorrect email format"
     />
 
     <property
-        name="RegistrationComponent_valid"
+        name="RegistrationComponent should have valid form if all fields are filled correctly"
         value="RegistrationComponent should validate registration form when all fields are filled correctly"
     />
 
     <!-- ScheduleMaintenanceComponent.spec.ts -->
 
     <property
-        name="ScheduleMaintenanceComponent_form_init"
+        name="ScheduleMaintenanceComponent should initialize itemForm with required fields"
         value="ScheduleMaintenanceComponent should initialize itemForm with required fields"
     />
 
     <property
-        name="ScheduleMaintenanceComponent_scheduledDate_required"
+        name="ScheduleMaintenanceComponent should mark scheduledDate field as invalid if empty"
         value="ScheduleMaintenanceComponent should mark scheduledDate as required"
     />
 
     <property
-        name="ScheduleMaintenanceComponent_completedDate_required"
+        name="ScheduleMaintenanceComponent should mark completedDate field as invalid if empty"
         value="ScheduleMaintenanceComponent should mark completedDate as required"
     />
 
     <property
-        name="ScheduleMaintenanceComponent_description_required"
+        name="ScheduleMaintenanceComponent should mark description field as invalid if empty"
         value="ScheduleMaintenanceComponent should mark description as required"
     />
 
     <property
-        name="ScheduleMaintenanceComponent_status_required"
+        name="ScheduleMaintenanceComponent should mark status field as invalid if empty"
         value="ScheduleMaintenanceComponent should mark status as required"
     />
 

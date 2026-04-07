@@ -1,1 +1,203 @@
-//todo: complete missing code..
+<div class="page-wrapper">
+  <!-- Teal gradient background circles -->
+  <div class="bg-circle circle-1"></div>
+  <div class="bg-circle circle-2"></div>
+  <div class="bg-circle circle-3"></div>
+
+  <!-- Floating medical icons -->
+  <div class="floating-icon icon-dna">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="28" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" fill="rgba(255,255,255,0.08)"/>
+      <path d="M22 18 Q30 28 22 38 M38 18 Q30 28 38 38" stroke="rgba(255,255,255,0.6)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M22 22 H38 M22 34 H38" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+    </svg>
+  </div>
+  <div class="floating-icon icon-pill">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="28" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" fill="rgba(255,255,255,0.08)"/>
+      <rect x="18" y="26" width="24" height="8" rx="4" stroke="rgba(255,255,255,0.6)" stroke-width="1.8" fill="none"/>
+      <line x1="30" y1="26" x2="30" y2="34" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+    </svg>
+  </div>
+  <div class="floating-icon icon-clipboard">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="28" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" fill="rgba(255,255,255,0.08)"/>
+      <rect x="20" y="17" width="20" height="26" rx="3" stroke="rgba(255,255,255,0.6)" stroke-width="1.8" fill="none"/>
+      <path d="M25 17 H35 V20 H25 Z" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" fill="none"/>
+      <line x1="24" y1="26" x2="36" y2="26" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+      <line x1="24" y1="30" x2="36" y2="30" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+      <line x1="24" y1="34" x2="30" y2="34" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+    </svg>
+  </div>
+
+  <!-- Heartbeat line -->
+  <div class="heartbeat-container">
+    <svg class="heartbeat-svg" viewBox="0 0 800 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <polyline points="0,30 80,30 110,30 130,8 145,52 160,15 175,42 190,30 250,30 300,30 350,30 400,30 420,30 440,8 455,52 470,15 485,42 500,30 560,30 640,30 720,30 800,30"
+        fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <!-- Language selector -->
+  <div class="lang-selector">
+    <span class="flag">🌐</span> En <span class="chevron">▾</span>
+  </div>
+
+  <!-- Register Card -->
+  <div class="register-card">
+    <!-- Medical cross logo -->
+    <div class="logo-circle">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="13" y="4" width="6" height="24" rx="2" fill="#0FA3B1"/>
+        <rect x="4" y="13" width="24" height="6" rx="2" fill="#0FA3B1"/>
+      </svg>
+    </div>
+
+    <h1>Create Account</h1>
+    <p class="subtitle">Register to continue</p>
+
+    <!-- SUCCESS MESSAGE -->
+    <div class="success-msg" *ngIf="successMessage">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+      {{ successMessage }}
+    </div>
+
+    <!-- ERROR MESSAGE -->
+    <div class="error-msg" *ngIf="errorMessage">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="itemForm" (ngSubmit)="onRegister()">
+
+
+      <!-- ROLE -->
+      <div class="form-group">
+        <label>Role</label>
+        <div class="input-wrapper select-wrapper">
+          <select formControlName="role">
+            <option value="">Select Role</option>
+            <option *ngFor="let r of roles" [value]="r">{{r}}</option>
+          </select>
+          <span class="input-icon">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </span>
+        </div>
+        <small class="error" *ngIf="itemForm.get('role')?.touched && itemForm.get('role')?.errors">
+          Role is required
+        </small>
+      </div>
+
+
+      <!-- HOSPITAL FIELDS -->
+      <ng-container *ngIf="itemForm.get('role')?.value === 'HOSPITAL'">
+        <div class="form-group">
+          <label>Hospital Name</label>
+          <div class="input-wrapper">
+            <input type="text" formControlName="hospitalName" placeholder="Enter hospital name">
+            <span class="input-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </span>
+          </div>
+          <small class="error" *ngIf="itemForm.get('hospitalName')?.touched && itemForm.get('hospitalName')?.errors">
+            Hospital name is required
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Location</label>
+          <div class="input-wrapper">
+            <input type="text" formControlName="location" placeholder="City, Country">
+            <span class="input-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </span>
+          </div>
+          <small class="error" *ngIf="itemForm.get('location')?.touched && itemForm.get('location')?.errors">
+            Location is required
+          </small>
+        </div>
+      </ng-container>
+
+
+      <!-- SUPPLIER / TECHNICIAN -->
+      <ng-container *ngIf="itemForm.get('role')?.value === 'SUPPLIER' || itemForm.get('role')?.value === 'TECHNICIAN'">
+        <div class="form-group">
+          <label>Full Name</label>
+          <div class="input-wrapper">
+            <input type="text" formControlName="fullName" placeholder="Enter your full name">
+            <span class="input-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </span>
+          </div>
+          <small class="error" *ngIf="itemForm.get('fullName')?.touched && itemForm.get('fullName')?.errors">
+            Full name is required
+          </small>
+        </div>
+      </ng-container>
+      
+      <!-- USERNAME -->
+      <div class="form-group">
+        <label>Username</label>
+        <div class="input-wrapper">
+          <input type="text" formControlName="username" placeholder="Enter username">
+          <span class="input-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </span>
+        </div>
+        <small class="error" *ngIf="itemForm.get('username')?.touched && itemForm.get('username')?.errors">
+          <span *ngIf="itemForm.get('username')?.errors?.['required']">Username is required</span>
+          <span *ngIf="itemForm.get('username')?.errors?.['minlength']">Minimum 6 characters required</span>
+          <span *ngIf="itemForm.get('username')?.errors?.['pattern']">Only alphabets allowed</span>
+        </small>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="form-group">
+        <label>Email</label>
+        <div class="input-wrapper">
+          <input type="email" formControlName="email" placeholder="example@gmail.com">
+          <span class="input-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+          </span>
+        </div>
+        <small class="error" *ngIf="itemForm.get('email')?.touched && itemForm.get('email')?.errors">
+          <span *ngIf="itemForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="itemForm.get('email')?.errors?.['email']">Invalid email format</span>
+        </small>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <input type="password" formControlName="password" placeholder="••••••••">
+          <span class="input-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </span>
+        </div>
+        <small class="error" *ngIf="itemForm.get('password')?.touched && itemForm.get('password')?.errors">
+          <span *ngIf="itemForm.get('password')?.errors?.['required']">Password is required</span>
+          <span *ngIf="itemForm.get('password')?.errors?.['minlength']">Minimum 8 characters required</span>
+          <span *ngIf="itemForm.get('password')?.errors?.['pattern']">Must contain uppercase, lowercase, number</span>
+        </small>
+      </div>
+
+      
+
+      
+
+      
+
+      <!-- REGISTER BUTTON -->
+      <button type="submit" class="register-btn">
+        <span>SIGN UP</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+
+    </form>
+
+    <p class="footer-text">
+      Already have an account? <a (click)="goToLogin()">Sign In</a>
+    </p>
+  </div>
+</div>

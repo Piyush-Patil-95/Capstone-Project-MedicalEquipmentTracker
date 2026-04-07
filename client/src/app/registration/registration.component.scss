@@ -1,0 +1,287 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
+
+$teal-dark:  #0A8F9F;
+$teal-mid:   #0FB8CA;
+$teal-light: #4DD9E8;
+$teal-pale:  #A8EBF2;
+$white:      #ffffff;
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0;
+  background: linear-gradient(135deg, #2A6F97 0%, #7C3AED 100%);
+  font-family: 'Nunito', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── BACKGROUND CIRCLES ── */
+.bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.circle-1 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.circle-2 {
+  width: 200px;
+  height: 200px;
+  background: rgba(255,255,255,0.07);
+  top: 15%;
+  left: 5%;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.circle-3 {
+  width: 130px;
+  height: 130px;
+  background: rgba(255,255,255,0.05);
+  top: 8%;
+  right: 8%;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+/* ── FLOATING ICONS ── */
+.floating-icon {
+  position: absolute;
+  pointer-events: none;
+  animation: floatBob 6s ease-in-out infinite;
+  svg { display: block; }
+}
+.icon-dna       { width: 72px; top: 30%; left: 4%;   animation-delay: 0s; }
+.icon-pill      { width: 56px; top: 12%; right: 24%; animation-delay: 2s; }
+.icon-clipboard { width: 64px; bottom: 28%; right: 5%; animation-delay: 4s; }
+
+@keyframes floatBob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* ── HEARTBEAT LINE ── */
+.heartbeat-container {
+  position: absolute;
+  bottom: 12%;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  opacity: 0.5;
+}
+.heartbeat-svg {
+  width: 100%;
+  height: 50px;
+}
+
+/* ── LANGUAGE SELECTOR ── */
+.lang-selector {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: $white;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  .chevron { font-size: 10px; opacity: 0.8; }
+}
+
+/* ── REGISTER CARD ── */
+.register-card {
+  width: 460px;
+  max-width: 92%;
+  padding: 34px 40px 28px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  text-align: center;
+  animation: fadeUp 0.7s ease;
+  position: relative;
+  z-index: 10;
+  margin: 20px 0;
+}
+
+/* ── LOGO ── */
+.logo-circle {
+  width: 52px;
+  height: 52px;
+  background: #E6F9FB;
+  border: 2px solid #B2ECF3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  svg { width: 26px; height: 26px; }
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 18px;
+}
+
+/* ── SUCCESS ── */
+.success-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(90deg, #0ABFC8, #0A9BAA);
+  color: $white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── FORM GROUP (single column) ── */
+.form-group {
+  text-align: left;
+  margin-bottom: 14px;
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+  }
+}
+
+/* ── INPUT WRAPPER ── */
+.input-wrapper {
+  position: relative;
+
+  input,
+  select {
+    width: 100%;
+    height: 44px;
+    padding: 10px 36px 10px 12px;
+    border-radius: 10px;
+    border: 1.5px solid #D8EEF3;
+    background: #F7FCFD;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13.5px;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    box-sizing: border-box;
+    appearance: none;
+
+    &::placeholder { color: #B0C8CE; }
+
+    &:focus {
+      border-color: $teal-mid;
+      background: $white;
+    }
+  }
+
+  .input-icon {
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ABEC5;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+}
+
+.select-wrapper select { cursor: pointer; }
+
+/* ── ERROR BANNER ── */
+.error-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #fff0f0;
+  border: 1.5px solid #f5c0c0;
+  color: #c0392b;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ── INLINE FIELD ERROR ── */
+.error {
+  color: #e05252;
+  font-size: 11px;
+  display: block;
+  margin-top: 4px;
+}
+
+/* ── REGISTER BUTTON ── */
+
+  
+  
+.register-btn {
+  width: 100%;
+  height: 46px;
+  border-radius: 25px;
+  border: none;
+  background: linear-gradient(135deg, #2A6F97 0%, #7C3AED 100%);
+  color: $white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-top: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 32px rgba(124, 58, 237, 0.55);
+  }
+}
+/* ── FOOTER ── */
+.footer-text {
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: #888;
+
+  a {
+    color: $teal-dark;
+    cursor: pointer;
+    font-weight: 700;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

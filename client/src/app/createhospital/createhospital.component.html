@@ -1,1 +1,463 @@
-//todo: Complete missing code..
+<div class="page-wrapper">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <span class="logo-name">MediCore</span>
+    </div>
+    
+    
+
+    <div class="nav-section">Operations</div>
+
+    <div class="nav-item" [class.active]="activeTab==='dashboard'" (click)="activeTab='dashboard'">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      <span>Dashboard</span>
+    </div>
+
+    <div class="nav-item" [class.active]="activeTab==='orders'" (click)="activeTab='orders'">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span>Orders</span>
+    </div>
+
+    <div class="nav-item" [class.active]="activeTab==='maintenance'" (click)="activeTab='maintenance'">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+      </svg>
+      <span>Maintenance</span>
+    </div>
+
+    <div class="nav-item" [class.active]="activeTab==='details'" (click)="activeTab='details'">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span>Hospital Info</span>
+    </div>
+
+    <div class="sidebar-profile" *ngIf="hospital" (click)="activeTab='details'">
+      <div class="sp-avatar">
+        <img *ngIf="profilePhoto" [src]="profilePhoto" alt="profile">
+        <span *ngIf="!profilePhoto">{{ getInitials(hospital.name) }}</span>
+      </div>
+      <div class="sp-info">
+        <div class="sp-name">{{ hospital.name }}</div>
+        <div class="sp-loc">{{ hospital.location }}</div>
+      </div>
+    </div>
+
+    
+    
+    <button class="signout-btn" (click)="signOut()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15">
+      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+      <polyline points="16 17 21 12 16 7"/>
+      <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    Sign Out
+  </button>
+ 
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" *ngIf="hospital">
+
+    <!-- ══════════════ DASHBOARD ══════════════ -->
+    <ng-container *ngIf="activeTab==='dashboard'">
+
+      <div class="hosp-banner">
+        <div class="hosp-left">
+          <div class="hosp-avatar-wrap" (click)="activeTab='details'" title="Edit hospital info">
+            <img *ngIf="profilePhoto" [src]="profilePhoto" class="hosp-avatar-img" alt="hospital">
+            <div *ngIf="!profilePhoto" class="hosp-avatar-initials">{{ getInitials(hospital.name) }}</div>
+            <div class="hosp-avatar-overlay">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+          </div>
+          <div>
+            <div class="hosp-name">{{ hospital.name }}</div>
+            <div class="hosp-meta">{{ hospital.location }}</div>
+          </div>
+        </div>
+        <div class="hosp-right">
+          <p>{{ hospital.equipmentList?.length || 0 }} equipment assigned</p>
+          <p>{{ orders.length }} total orders</p>
+        </div>
+      </div>
+
+      <div class="section-label">Equipment Overview</div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-num default">{{ hospital.equipmentList?.length || 0 }}</div>
+          <div class="stat-label"><div class="stat-dot grey"></div> Total Equipment</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num green">{{ getOrderCountByStatus('complete') }}</div>
+          <div class="stat-label"><div class="stat-dot green"></div> Complete</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num amber">{{ getOrderCountByStatus('initiated') }}</div>
+          <div class="stat-label"><div class="stat-dot amber"></div> Initiated</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">{{ getOrderCountByStatus('delivered') }}</div>
+          <div class="stat-label"><div class="stat-dot blue"></div> Delivered</div>
+        </div>
+      </div>
+
+      <div class="bottom-row">
+        <div class="summary-card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Order Summary
+          </div>
+          <div class="summary-row"><span class="summary-label">Total Orders</span><span class="summary-val default">{{ orders.length }}</span></div>
+          <div class="summary-row"><span class="summary-label">Delivered</span><span class="summary-val green">{{ getOrderCountByStatus('delivered') }}</span></div>
+          <div class="summary-row"><span class="summary-label">Complete</span><span class="summary-val teal">{{ getOrderCountByStatus('complete') }}</span></div>
+          <div class="summary-row"><span class="summary-label">Initiated</span><span class="summary-val amber">{{ getOrderCountByStatus('initiated') }}</span></div>
+          <div class="summary-row"><span class="summary-label">Payment Done</span><span class="summary-val blue">{{ getPaidCount() }}</span></div>
+        </div>
+
+        <div class="orders-card">
+          <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+            Recent Orders
+          </div>
+          <div class="order-item" *ngFor="let order of orders">
+            <div class="order-top">
+              <div class="order-name">{{ order.equipment?.name || 'Equipment' }}</div>
+              <span class="badge" [ngClass]="getStatusClass(order.status)">{{ order.status }}</span>
+            </div>
+            <div class="order-sub">Qty: {{ order.quantity }} · {{ order.orderDate | date:'mediumDate' }}</div>
+            <div class="order-payment" *ngIf="order.paymentDone"><span class="badge paid">✓ Paid</span></div>
+          </div>
+          <div class="empty-state-sm" *ngIf="!orders.length"><p>No orders found.</p></div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-top:24px;">Equipment Directory</div>
+      <div class="equip-grid">
+        <div class="equip-card" *ngFor="let eq of hospital.equipmentList">
+          <div class="equip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <div class="equip-info">
+            <div class="equip-name">{{ eq.name }}</div>
+            <div class="equip-desc">{{ eq.description || 'No description' }}</div>
+          </div>
+          <span class="badge" [ngClass]="getStatusClass(getEquipmentOrderStatus(eq))">{{ getEquipmentOrderStatus(eq) }}</span>
+        </div>
+        <div class="empty-state-sm" *ngIf="!hospital.equipmentList?.length"><p>No equipment assigned yet.</p></div>
+      </div>
+
+      <!-- DUAL FAB -->
+      <div class="fab-wrap">
+        <button class="fab-btn fab-secondary" (click)="openMaintenanceModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+          Schedule Maintenance
+        </button>
+        <button class="fab-btn" (click)="openAssignModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Assign Equipment
+        </button>
+      </div>
+
+    </ng-container>
+
+    <!-- ══════════════ ORDERS ══════════════ -->
+    <ng-container *ngIf="activeTab==='orders'">
+      <div class="tab-header">
+        <div><h2>Orders</h2><p class="tab-sub">Orders for {{ hospital.name }}</p></div>
+        <span class="tab-count">{{ orders.length }} Total</span>
+      </div>
+      <div class="card-grid">
+        <div class="order-card" *ngFor="let order of orders; let i = index">
+          <div class="card-header-row">
+            <span class="idx">#{{ i + 1 }}</span>
+            <span class="badge" [ngClass]="getStatusClass(order.status)">{{ order.status }}</span>
+          </div>
+          <div class="row-block">
+            <div><label>Order Date</label><p>{{ order.orderDate | date:'dd-MMM-yyyy' }}</p></div>
+            <div><label>Quantity</label><p>{{ order.quantity }}</p></div>
+          </div>
+          <div class="info-block">
+            <label>Equipment</label>
+            <p><strong>Name:</strong> {{ order.equipment?.name }}</p>
+            <p class="muted"><strong>Desc:</strong> {{ order.equipment?.description }}</p>
+          </div>
+          <button class="pay-btn" *ngIf="order.status?.toLowerCase().includes('complete') && !order.paymentDone" (click)="payNow(order)">
+            💳 Pay ₹{{ getAmountForOrder(order) }}
+          </button>
+          <div class="paid-banner"    *ngIf="order.paymentDone">✅ Payment Completed</div>
+          <div class="pending-banner" *ngIf="!order.status?.toLowerCase().includes('complete') && !order.paymentDone">⏳ Payment available after order is complete</div>
+        </div>
+        <div class="empty-state-sm full" *ngIf="!orders.length"><p>No orders found.</p></div>
+      </div>
+    </ng-container>
+
+    <!-- ══════════════ MAINTENANCE ══════════════ -->
+    <ng-container *ngIf="activeTab==='maintenance'">
+      <div class="tab-header">
+        <div><h2>Maintenance History</h2><p class="tab-sub">All maintenance for {{ hospital.name }}</p></div>
+        <span class="tab-count">{{ hospitalMaintenance.length }} Records</span>
+      </div>
+      <div class="card-grid">
+        <div class="order-card" *ngFor="let m of hospitalMaintenance; let i = index">
+          <div class="card-header-row">
+            <span class="idx">#{{ i + 1 }}</span>
+            <span class="badge" [ngClass]="getStatusClass(m.status)">{{ m.status || 'Scheduled' }}</span>
+          </div>
+          <div class="info-block">
+            <label>Equipment</label>
+            <p>{{ m.equipment?.name || '—' }}</p>
+            <p class="muted">{{ m.equipment?.description || '' }}</p>
+          </div>
+          <div class="row-block">
+            <div><label>Scheduled</label><p>{{ m.scheduledDate | date:'dd-MMM-yyyy' }}</p></div>
+            <div><label>Completed</label><p>{{ (m.completedDate | date:'dd-MMM-yyyy') || '—' }}</p></div>
+          </div>
+          <div class="info-block" *ngIf="m.description"><label>Notes</label><p class="muted">{{ m.description }}</p></div>
+        </div>
+        <div class="empty-state-sm full" *ngIf="!hospitalMaintenance.length"><p>No maintenance records found.</p></div>
+      </div>
+    </ng-container>
+
+    <!-- ══════════════ DETAILS ══════════════ -->
+    <ng-container *ngIf="activeTab==='details'">
+      <div class="tab-header">
+        <div><h2>Hospital Info</h2><p class="tab-sub">View and edit your hospital details</p></div>
+      </div>
+
+      <div class="profile-hero">
+        <div class="photo-section">
+          <div class="photo-ring" (click)="triggerPhotoUpload()">
+            <img *ngIf="profilePhoto" [src]="profilePhoto" class="photo-img" alt="Hospital Photo">
+            <div *ngIf="!profilePhoto" class="photo-initials">{{ getInitials(hospital.name) }}</div>
+            <div class="photo-overlay">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Change Photo</span>
+            </div>
+          </div>
+          <input type="file" #photoInput accept="image/*" style="display:none" (change)="onPhotoSelected($event)">
+          <div class="photo-hint">Click photo to upload</div>
+          <button class="remove-photo-btn" *ngIf="profilePhoto" (click)="removePhoto()">Remove Photo</button>
+        </div>
+        <div class="profile-info-section">
+          <div class="profile-name">{{ hospital.name }}</div>
+          <div class="profile-location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            {{ hospital.location }}
+          </div>
+          <div class="profile-stats">
+            <div class="ps-item"><div class="ps-num">{{ hospital.equipmentList?.length || 0 }}</div><div class="ps-label">Equipment</div></div>
+            <div class="ps-divider"></div>
+            <div class="ps-item"><div class="ps-num">{{ orders.length }}</div><div class="ps-label">Orders</div></div>
+            <div class="ps-divider"></div>
+            <div class="ps-item"><div class="ps-num">{{ hospitalMaintenance.length }}</div><div class="ps-label">Maintenance</div></div>
+            <div class="ps-divider"></div>
+            <div class="ps-item"><div class="ps-num">{{ getPaidCount() }}</div><div class="ps-label">Paid</div></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="edit-card">
+        <div class="edit-card-header">
+          <div class="edit-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Hospital Details
+          </div>
+          <div class="edit-mode-toggle">
+            <span *ngIf="!editMode" class="edit-hint">Click Edit to make changes</span>
+            <span *ngIf="editMode" class="edit-hint editing">Editing mode on</span>
+          </div>
+        </div>
+        <div class="success-msg" *ngIf="detailSaveSuccess">✅ Hospital details updated successfully!</div>
+        <div class="error-msg"   *ngIf="detailSaveError">❌ {{ detailSaveErrorMsg }}</div>
+        <form [formGroup]="detailForm">
+          <div class="detail-form-grid">
+            <div class="form-group" [class.active-field]="editMode">
+              <label>Hospital Name</label>
+              <input type="text" formControlName="name" [readonly]="!editMode" [class.readonly-input]="!editMode">
+            </div>
+            <div class="form-group" [class.active-field]="editMode">
+              <label>Location / Address</label>
+              <input type="text" formControlName="location" [readonly]="!editMode" [class.readonly-input]="!editMode">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="edit-btn" *ngIf="!editMode" (click)="enableEdit()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Edit
+            </button>
+            <ng-container *ngIf="editMode">
+              <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+              <button type="button" class="save-btn" (click)="saveDetails()" [disabled]="savingDetails">{{ savingDetails ? 'Saving...' : '💾 Save Changes' }}</button>
+            </ng-container>
+          </div>
+        </form>
+      </div>
+
+      <div class="detail-stats-grid">
+        <div class="detail-stat-card green-card">
+          <div class="dsc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="dsc-info"><div class="dsc-num">{{ getOrderCountByStatus('complete') }}</div><div class="dsc-label">Completed Orders</div></div>
+        </div>
+        <div class="detail-stat-card amber-card">
+          <div class="dsc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="dsc-info"><div class="dsc-num">{{ getOrderCountByStatus('initiated') }}</div><div class="dsc-label">Initiated Orders</div></div>
+        </div>
+        <div class="detail-stat-card blue-card">
+          <div class="dsc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg></div>
+          <div class="dsc-info"><div class="dsc-num">{{ getOrderCountByStatus('delivered') }}</div><div class="dsc-label">Delivered Orders</div></div>
+        </div>
+        <div class="detail-stat-card teal-card">
+          <div class="dsc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <div class="dsc-info"><div class="dsc-num">{{ getPaidCount() }}</div><div class="dsc-label">Payments Done</div></div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <div class="main-content loading-wrap" *ngIf="!hospital"><p>Loading hospital data...</p></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- ASSIGN EQUIPMENT + ORDER MODAL             -->
+<!-- ══════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showAssignModal" (click)="closeOnBackdrop($event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h5>Assign Equipment &amp; Place Order</h5>
+      <button class="modal-close" (click)="showAssignModal=false">×</button>
+    </div>
+    <div class="modal-body-inner">
+      <div class="success-msg" *ngIf="showMessage">{{ responseMessage }}</div>
+      <div class="error-msg"   *ngIf="showError">{{ errorMessage }}</div>
+      <form [formGroup]="assignForm">
+        <div class="form-group">
+          <label>Hospital</label>
+          <input type="text" [value]="hospital?.name" disabled>
+        </div>
+        <div class="step-label">Step 1 — Add Equipment</div>
+        <div class="form-group">
+          <label>Equipment Name <span class="req">*</span></label>
+          <input type="text" formControlName="equipmentName" placeholder="e.g. Ventilator, Hospital Bed">
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea formControlName="equipmentDescription" rows="2" placeholder="Optional description"></textarea>
+        </div>
+        <div class="step-label">Step 2 — Place Order</div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Quantity <span class="req">*</span></label>
+            <input type="number" formControlName="quantity" placeholder="e.g. 2" min="1">
+          </div>
+          <div class="form-group">
+            <label>Order Date <span class="req">*</span></label>
+            <input type="date" formControlName="orderDate">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Status <span class="req">*</span></label>
+          <select formControlName="status">
+            <option value="">Select Status</option>
+            <option value="Initiated">Initiated</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Delivered">Delivered</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="secondary-btn" (click)="showAssignModal=false">Cancel</button>
+      <button class="primary-btn" (click)="submitAssignAndOrder()" [disabled]="submitting">{{ submitting ? 'Saving...' : '💾 Save & Order' }}</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SCHEDULE MAINTENANCE MODAL                 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="showMaintenanceModal" (click)="closeMaintenanceBackdrop($event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h5>Schedule Maintenance</h5>
+      <button class="modal-close" (click)="showMaintenanceModal=false">×</button>
+    </div>
+    <div class="modal-body-inner">
+      <div class="success-msg" *ngIf="maintShowMessage">{{ maintResponseMessage }}</div>
+      <div class="error-msg"   *ngIf="maintShowError">{{ maintErrorMessage }}</div>
+
+      <form [formGroup]="maintenanceForm">
+
+        <!-- Hospital: pre-filled, readonly -->
+        <div class="form-group">
+          <label>Hospital</label>
+          <input type="text" [value]="hospital?.name" disabled>
+        </div>
+
+        <!-- Equipment: only complete/delivered orders -->
+        <div class="form-group">
+          <label>Equipment <span class="req">*</span></label>
+          <select formControlName="equipmentId">
+            <option value="">Select Equipment</option>
+            <option *ngFor="let eq of eligibleEquipment" [value]="eq.id">
+              {{ eq.name }} — {{ getEquipmentOrderStatus(eq) }}
+            </option>
+          </select>
+          <small class="field-hint" *ngIf="!eligibleEquipment.length">No equipment with complete/delivered orders yet.</small>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Scheduled Date <span class="req">*</span></label>
+            <input type="date" formControlName="scheduledDate">
+          </div>
+          <div class="form-group">
+            <label>Completed Date</label>
+            <input type="date" formControlName="completedDate">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Status <span class="req">*</span></label>
+          <select formControlName="status">
+            <option value="">Select Status</option>
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Complete">Complete</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea formControlName="description" rows="3" placeholder="Maintenance details..."></textarea>
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="secondary-btn" (click)="showMaintenanceModal=false">Cancel</button>
+      <button class="primary-btn teal-btn" (click)="submitMaintenance()" [disabled]="maintSubmitting">{{ maintSubmitting ? 'Saving...' : '🔧 Schedule' }}</button>
+    </div>
+  </div>
+</div>

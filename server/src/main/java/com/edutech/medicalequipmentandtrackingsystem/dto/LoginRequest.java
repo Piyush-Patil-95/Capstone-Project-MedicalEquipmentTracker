@@ -1,10 +1,25 @@
 package com.edutech.medicalequipmentandtrackingsystem.dto;
 
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class LoginRequest {
 
-    
+    private String username;
+    private String password;
+    private String captchaId;
+    private String captchaAnswer;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getCaptchaId() {
+        return captchaId;
+    }
+
+    public String getCaptchaAnswer() {
+        return captchaAnswer;
+    }
 }

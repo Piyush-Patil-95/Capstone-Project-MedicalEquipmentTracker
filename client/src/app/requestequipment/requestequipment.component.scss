@@ -1,0 +1,232 @@
+/* =========================================
+   THEME (NEW)
+========================================= */
+$primary: #2A6F97;
+$secondary: #61A5C2;
+$bg: #F4F9FC;
+
+$success: #2F9E44;
+$danger: #E03131;
+
+$card-shadow: 0 10px 35px rgba(0,0,0,0.08);
+$hover-shadow: 0 25px 50px rgba(0,0,0,0.12);
+
+/* =========================================
+   ANIMATIONS (NEW + OLD PREMIUM)
+========================================= */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  from { transform: translate(0,0); }
+  to   { transform: translate(40px,-30px); }
+}
+
+/* Old premium shake (optional for validation) */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* =========================================
+   PAGE WRAPPER
+========================================= */
+.page-wrapper {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: $bg;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* =========================================
+   BACKGROUND BLUR
+========================================= */
+.bg-blur {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: $secondary;
+  filter: blur(120px);
+  top: 10%;
+  left: 10%;
+  opacity: 0.85;
+  animation: float 10s infinite alternate;
+  pointer-events: none;
+}
+
+.bg-blur.second {
+  background: $primary;
+  top: 70%;
+  left: 60%;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+.top-bar {
+  margin-bottom: 20px;
+
+  h2 {
+    color: $primary;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+  }
+}
+
+/* =========================================
+   GLASS CARD (NEW BASE + PREMIUM DEPTH)
+========================================= */
+.glass-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: $card-shadow;
+  border: 1px solid rgba(42, 111, 151, 0.10);
+  animation: fadeUp 0.6s ease;
+}
+
+.glass-card:hover {
+  box-shadow: $hover-shadow;
+}
+
+/* =========================================
+   GRID
+========================================= */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 30px;
+  margin-top: 25px;
+}
+
+/* =========================================
+   FORM CONTROLS (NEW + OLD PREMIUM FOCUS)
+========================================= */
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #475569;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #d9e6f2;
+    background: #fff;
+    transition: all 0.25s ease;
+    outline: none;
+    font-size: 14px;
+
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 4px rgba(42, 111, 151, 0.12);
+    }
+
+    &:disabled {
+      background: #f1f5f9;
+      color: #94a3b8;
+      cursor: not-allowed;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+
+  /* Optional validation style if you add class="has-error" to form-group */
+  &.has-error input,
+  &.has-error select,
+  &.has-error textarea {
+    border-color: $danger;
+    box-shadow: 0 0 0 4px rgba(224, 49, 49, 0.12);
+    animation: shake 0.25s ease;
+  }
+}
+
+/* =========================================
+   BUTTON (NEW + PREMIUM HOVER)
+========================================= */
+.btn-wrap {
+  margin-top: 30px;
+}
+
+.primary-btn {
+  width: 100%;
+  background: $primary;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 800;
+  box-shadow: 0 10px 22px rgba(42, 111, 151, 0.22);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(42, 111, 151, 0.28);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 8px 16px rgba(42, 111, 151, 0.18);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* =========================================
+   MESSAGES (NEW + PREMIUM CARD FEEL)
+========================================= */
+.success-msg {
+  background: $success;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-top: 15px;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(47, 158, 68, 0.18);
+  animation: fadeUp 0.35s ease;
+}
+
+.error-msg {
+  background: $danger;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-top: 15px;
+  font-weight: 700;
+  box-shadow: 0 10px 20px rgba(224, 49, 49, 0.18);
+  animation: fadeUp 0.35s ease;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,15 +1,16 @@
 package com.edutech.medicalequipmentandtrackingsystem.repository;
 
-
+import com.edutech.medicalequipmentandtrackingsystem.entitiy.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import com.edutech.medicalequipmentandtrackingsystem.entitiy.Order;
-
 import java.util.List;
 
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Long> {
 
-public interface OrderRepository  {
+    // ✅ Active orders only (deleted = false)
+    List<Order> findByDeletedFalse();
 
-    // extend jpa repository and add method if needed
+    // ✅ Deleted orders only (deleted = true)
+    List<Order> findByDeletedTrue();
 }

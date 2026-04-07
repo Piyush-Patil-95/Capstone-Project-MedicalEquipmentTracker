@@ -1,1 +1,96 @@
-//todo: complete missing code..
+<div class="page-wrapper">
+
+  <!-- Background -->
+  <div class="bg-blur"></div>
+  <div class="bg-blur second"></div>
+
+  <div class="container">
+
+    <!-- TITLE -->
+    <div class="top-bar">
+      <h2>Request Equipment</h2>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="glass-card">
+
+      <h4>Order Equipment</h4>
+
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+
+        <div class="form-grid">
+
+          <!-- Hospital -->
+          <div class="form-group">
+            <label>Hospital</label>
+            <select formControlName="hospitalId"
+                    (change)="onHospitalSelect($event)">
+              <option value="">Select Hospital</option>
+              <option *ngFor="let h of hospitalList" [value]="h.id">
+                {{ h.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Equipment -->
+          <div class="form-group">
+            <label>Equipment</label>
+            <select formControlName="equipmentId">
+              <option value="">Select Equipment</option>
+              <option *ngFor="let eq of equipmentList" [value]="eq.id">
+                {{ eq.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Quantity -->
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number"
+                   placeholder="Enter quantity"
+                   formControlName="quantity">
+          </div>
+
+          <!-- Status -->
+          <div class="form-group">
+            <label>Status</label>
+            <select formControlName="status">
+              <option value="">Select Status</option>
+              <option>Initiated</option>
+              <option>Pending</option>
+              <option>Approved</option>
+              <option>Delivered</option>
+            </select>
+          </div>
+
+          <!-- Order Date -->
+          <div class="form-group">
+            <label>Order Date</label>
+            <input type="date" formControlName="orderDate">
+          </div>
+
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="btn-wrap">
+          <button type="submit" class="primary-btn">
+            Submit Request
+          </button>
+        </div>
+
+        <!-- SUCCESS -->
+        <div *ngIf="showMessage" class="success-msg">
+          {{ responseMessage }}
+        </div>
+
+        <!-- ERROR -->
+        <div *ngIf="showError" class="error-msg">
+          {{ errorMessage }}
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
