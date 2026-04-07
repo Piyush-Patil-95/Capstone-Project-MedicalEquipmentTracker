@@ -49,7 +49,9 @@ public class OrderService {
 
     // ✅ Active orders only (used by supplier view)
     public List<Order> getAllOrders() {
-        return orderRepository.findByDeletedFalse();
+        // return orderRepository.findByDeletedFalse();
+                return orderRepository.findAll();
+
     }
 
     // ✅ Deleted orders only (used by trash panel)

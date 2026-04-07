@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 export class HttpService {
 
   public serverName = environment.apiUrl;
+  private baseUrl = 'https://orchardsolveone.lntedutech.com/project/7358/proxy/8080';
   
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -19,7 +20,7 @@ export class HttpService {
   // Add this inside your HttpService class
 sendContactMessage(data: any): Observable<any> {
   return this.http.post(
-    `${this.serverName}/api/contact/send`, // Adjust this URL to your backend route
+    `${this.baseUrl}/api/contact/send`, // Adjust this URL to your backend route
     data,
     this.getHttpOptions()
   );
@@ -46,7 +47,13 @@ private getPublicOptions() {
 }
 
 // Add this method for the contact form
-
+// In auth.service.ts (if not already present)
+logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userRole');
+  localStorage.removeItem('hospital_profile_photo'); // clear profile photo too
+  // Add any other cleanup needed
+}
 
   getMyHospital(): Observable<any> {
   return this.http.get(
@@ -58,6 +65,8 @@ private getPublicOptions() {
   Login(data: any): Observable<any> {
     return this.http.post(`${this.serverName}/api/user/login`, data);
   }
+ 
+
 
   registerUser(data: any): Observable<any> {
     return this.http.post(`${this.serverName}/api/user/register`, data);
@@ -188,6 +197,13 @@ updateHospital(id: number, data: any): Observable<any> {
 }
 getorders() {
   return this.http.get(`${this.serverName}/api/supplier/orders`, this.getHttpOptions());
+}
+
+getMyOrders(): Observable<any> {
+  return this.http.get(
+    `${this.serverName}/api/hospital/orders`,  // adjust to your actual backend route
+    this.getHttpOptions()
+  );
 }
 
  // ✅ FIXED

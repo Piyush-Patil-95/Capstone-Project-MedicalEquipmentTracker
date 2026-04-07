@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-orders',
@@ -43,7 +44,7 @@ export class OrdersComponent implements OnInit {
   showDeletedPanel:  boolean = false;
   showDeleteAllConfirm: boolean = false;
 
-  constructor(private httpService: HttpService) {}
+  constructor(private httpService: HttpService, private router:Router) {}
 
   ngOnInit(): void {
     this.getOrders();
@@ -368,4 +369,40 @@ export class OrdersComponent implements OnInit {
     this.errorMessage = message;
     setTimeout(() => { this.showError = false; }, 2500);
   }
+
+  signOut() {
+  this.router.navigate(['/dashboard'])
+}
+
+isStepDone(orderStatus: string, stepIndex: number): boolean {
+  const statusIndex = this.getStepIndex(orderStatus);
+  // Last step is "done" when it's the current status, not just passed
+  if (stepIndex === this.trackingSteps.length - 1) {
+    return statusIndex >= stepIndex;
+  }
+  return statusIndex > stepIndex;
+}
+
+isStepCurrent(orderStatus: string, stepIndex: number): boolean {
+  // Last step has no "current" state — it goes straight to done
+  if (stepIndex === this.trackingSteps.length - 1) return false;
+  return this.getStepIndex(orderStatus) === stepIndex;
+}
+getTrackFillPercent(status: string): number {
+  const map: Record<string, number> = {
+    'Initiated': 0,
+    'Complete': 50,
+    'Delivered': 100
+  };
+  return map[status] ?? 0;
+}
+
+getPackagePosition(status: string): string {
+  const map: Record<string, string> = {
+    'Initiated': '18px',
+    'Complete': '50%',
+    'Delivered': 'calc(100% - 18px)'
+  };
+  return map[status] ?? '18px';
+}
 }

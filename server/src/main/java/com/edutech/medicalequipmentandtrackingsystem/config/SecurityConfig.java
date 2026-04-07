@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/user/register/**",
                 "/api/user/login/**",
                 "/api/captcha/**" ,
+                "/api/contact/**", 
                 "/",
                 "/api/user/dashboard"         // 🔥 REQUIRED FIX
             ).permitAll()
@@ -57,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // ✅ ROLE BASED APIs
             .antMatchers("/api/hospital/**").hasAnyAuthority("HOSPITAL", "ADMIN")
     .antMatchers("/api/technician/**").hasAnyAuthority("TECHNICIAN","HOSPITAL", "ADMIN")
-    .antMatchers("/api/supplier/**").hasAnyAuthority("SUPPLIER", "ADMIN")
+    .antMatchers("/api/supplier/**").hasAnyAuthority("SUPPLIER","HOSPITAL", "ADMIN")
     .antMatchers("/api/pdf/**").permitAll()
            
 

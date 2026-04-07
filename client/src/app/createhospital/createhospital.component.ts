@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpService } from '../../services/http.service';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 declare var Razorpay: any;
 
@@ -59,7 +60,8 @@ export class CreatehospitalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private service: HttpService,
-    private auth: AuthService
+    private auth: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -109,26 +111,26 @@ export class CreatehospitalComponent implements OnInit {
   });
 }
       
-
+  
   getOrders() {
-    this.service.getorders().subscribe({
-      next: (data: any) => {
-        const allOrders: any[] = data || [];
-        const equipmentIds = (this.hospital?.equipmentList || []).map((eq: any) => eq.id);
+  this.service.getorders().subscribe({   // hits /api/supplier/orders
+    next: (data: any) => {
+      const allOrders: any[] = data || [];
+      const equipmentIds = (this.hospital?.equipmentList || []).map((eq: any) => eq.id);
 
-        this.orders = allOrders
-          .filter((o: any) =>
-            equipmentIds.includes(o?.equipment?.id) ||
-            equipmentIds.includes(o?.equipment_id)
-          )
-          .sort((a: any, b: any) => b.id - a.id);
+      this.orders = allOrders
+        .filter((o: any) =>
+          equipmentIds.includes(o?.equipment?.id) ||
+          equipmentIds.includes(o?.equipment_id)
+        )
+        .sort((a: any, b: any) => b.id - a.id);
 
-        // Build eligible equipment list for maintenance modal
-        this.buildEligibleEquipment();
-      },
-      error: (err: any) => console.error('Failed to load orders:', err)
-    });
-  }
+      console.log('✅ Hospital orders:', this.orders); // debug
+      this.buildEligibleEquipment();
+    },
+    error: (err: any) => console.error('Failed to load orders:', err)
+  });
+}
 getMaintenance() {
   this.service.getMaintenance().subscribe({
     next: (data: any) => {
@@ -446,4 +448,8 @@ filterHospitalMaintenance() {
       error: (err: any) => console.error('Payment save failed:', err)
     });
   }
+
+  signOut() {
+  this.router.navigate(['/dashboard'])
+}
 }

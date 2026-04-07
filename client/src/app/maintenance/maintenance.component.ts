@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpService } from '../../services/http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-maintenance',
@@ -35,7 +36,8 @@ export class MaintenanceComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private httpService: HttpService
+    private httpService: HttpService,
+    private router:Router
   ) {}
 
   ngOnInit(): void {
@@ -249,5 +251,9 @@ export class MaintenanceComponent implements OnInit {
     next: (data: any) => console.log('RAW API RESPONSE:', data),
     error: (err: any) => console.log('API ERROR:', err)
   });
+}
+
+signOut() {
+  this.router.navigate(['/dashboard'])
 }
 }
