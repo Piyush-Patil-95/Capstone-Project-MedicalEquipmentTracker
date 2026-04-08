@@ -26,7 +26,7 @@ public class OtpService {
 
         // Store OTP with 5 min expiry
         otpStore.put(email, otp);
-        otpExpiry.put(email, LocalDateTime.now().plusMinutes(5));
+        otpExpiry.put(email, LocalDateTime.now().plusMinutes(2));
 
         // Send Email
         SimpleMailMessage msg = new SimpleMailMessage();
@@ -37,7 +37,7 @@ public class OtpService {
             "Hello!\n\n" +
             "Your OTP for MedTrack registration is:\n\n" +
             "🔐 " + otp + "\n\n" +
-            "This OTP is valid for 5 minutes.\n" +
+            "This OTP is valid for 2 minutes.\n" +
             "Do not share this with anyone.\n\n" +
             "Team MedTrack"
         );

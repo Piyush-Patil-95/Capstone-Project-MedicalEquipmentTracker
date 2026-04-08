@@ -10,22 +10,24 @@ import { Router } from '@angular/router';
 })
 export class OrdersComponent implements OnInit {
 
+  currentView: string = 'dashboard';
+
   // ── State ──────────────────────────────────────
   showError:       boolean = false;
   errorMessage:    string  = '';
   showMessage:     boolean = false;
   responseMessage: string  = '';
 
-  orderList:    any[] = [];
+  orderList:     any[] = [];
   deletedOrders: any[] = [];
 
-  orderObj:    any = {};
-  statusModel: any = { newStatus: null };
+  orderObj:      any = {};
+  statusModel:   any = { newStatus: null };
   pendingStatus: string = '';
 
   // ── Tracking steps ────────────────────────────
-  trackingSteps: string[]  = ['Initiated', 'Complete', 'Delivered'];
-  statusFlow:    string[]  = ['Initiated', 'Complete', 'Delivered'];
+  trackingSteps:  string[] = ['Initiated', 'Complete', 'Delivered'];
+  statusFlow:     string[] = ['Initiated', 'Complete', 'Delivered'];
   cardTrackSteps: string[] = ['Initiated', 'Complete', 'Delivered'];
 
   // ── Status filter ─────────────────────────────
@@ -39,12 +41,12 @@ export class OrdersComponent implements OnInit {
   paymentOptions:   string[] = ['All Payments', 'Paid', 'Unpaid'];
 
   // ── Bulk select ───────────────────────────────
-  selectedMap:       { [id: number]: boolean } = {};
-  showDeleteConfirm: boolean = false;
-  showDeletedPanel:  boolean = false;
+  selectedMap:          { [id: number]: boolean } = {};
+  showDeleteConfirm:    boolean = false;
+  showDeletedPanel:     boolean = false;
   showDeleteAllConfirm: boolean = false;
 
-  constructor(private httpService: HttpService, private router:Router) {}
+  constructor(private httpService: HttpService, private router: Router) {}
 
   ngOnInit(): void {
     this.getOrders();
@@ -54,18 +56,45 @@ export class OrdersComponent implements OnInit {
   // ════════════════════════════════════════════
   // LOAD DATA
   // ════════════════════════════════════════════
+// ════════════════════════════════════════════
+// PDF DOWNLOAD
+// ════════════════════════════════════════════
 
+downloadPdf(order: any): void {
+  const id = order.id;
+  this.httpService.downloadOrderPdf(id).subscribe({
+    next: (blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `order_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      this.showSuccess('PDF downloaded successfully!');
+    },
+    error: (err: any) => {
+      console.error('PDF download failed:', err);
+      this.showWarn('Could not download PDF. Please try again.');
+    }
+  });
+}
   getOrders(): void {
     this.httpService.getorders().subscribe({
-      next:  (data: any) => { this.orderList = data; },
-      error: ()          => { this.showWarn('Failed to load orders.'); }
+      next:  (data: any) => {
+        // FIX: Ensure soft-deleted orders are never shown in the active list.
+        // If the backend returns a `deleted` flag, filter them out defensively.
+        this.orderList = (data || []).filter((o: any) => !o.deleted && !o.isDeleted);
+      },
+      error: () => { this.showWarn('Failed to load orders.'); }
     });
   }
 
   loadDeletedOrders(): void {
     this.httpService.getDeletedOrders().subscribe({
-      next:  (data: any) => { this.deletedOrders = data; },
-      error: ()          => { this.showWarn('Failed to load deleted orders.'); }
+      next:  (data: any) => { this.deletedOrders = data || []; },
+      error: () => { this.showWarn('Failed to load deleted orders.'); }
     });
   }
 
@@ -74,19 +103,10 @@ export class OrdersComponent implements OnInit {
   // ════════════════════════════════════════════
 
   get filteredOrders(): any[] {
-    let list = [...this.orderList];
-
-    if (this.selectedStatus !== 'All') {
-      list = list.filter(o => o.status === this.selectedStatus);
+    if (!this.selectedStatus || this.selectedStatus === 'All') {
+      return this.orderList;
     }
-
-    if (this.selectedPayment !== 'All Payments') {
-      list = list.filter(o =>
-        (o.paymentStatus || 'Unpaid').toLowerCase() === this.selectedPayment.toLowerCase()
-      );
-    }
-
-    return list;
+    return this.orderList.filter(o => o.status === this.selectedStatus);
   }
 
   // ════════════════════════════════════════════
@@ -101,11 +121,15 @@ export class OrdersComponent implements OnInit {
   applyFilter(status: string): void {
     this.selectedStatus  = status;
     this.showFilterPanel = false;
+    // FIX: Clear selection when filter changes to avoid
+    // acting on orders that are no longer visible.
+    this.clearSelection();
   }
 
   clearFilter(): void {
     this.selectedStatus  = 'All';
     this.showFilterPanel = false;
+    this.clearSelection();
   }
 
   // ════════════════════════════════════════════
@@ -134,7 +158,7 @@ export class OrdersComponent implements OnInit {
   // ════════════════════════════════════════════
 
   edit(order: any): void {
-    this.orderObj              = order;
+    this.orderObj              = { ...order }; // FIX: Clone to avoid mutating list directly
     this.statusModel.newStatus = order.status;
     this.pendingStatus         = order.status;
   }
@@ -145,9 +169,13 @@ export class OrdersComponent implements OnInit {
 
     if (newIndex < currentIndex) {
       this.statusModel.newStatus = this.orderObj.status;
+      this.pendingStatus         = this.orderObj.status; // FIX: Reset ambulance too
       this.showWarn('❌ Order cannot be changed to a previous state.');
       return;
     }
+
+    // FIX: Update pendingStatus so the road tracker animates live on dropdown change
+    this.pendingStatus = newStatus;
   }
 
   update(): void {
@@ -161,7 +189,6 @@ export class OrdersComponent implements OnInit {
       return;
     }
 
-    // animate ambulance first
     this.pendingStatus = selected;
 
     setTimeout(() => {
@@ -181,15 +208,21 @@ export class OrdersComponent implements OnInit {
   // ════════════════════════════════════════════
 
   deleteOrder(orderId: number): void {
-    this.httpService.deleteOrder(orderId)
-      .pipe(finalize(() => {
-        this.getOrders();
+    this.httpService.deleteOrder(orderId).subscribe({
+      next: (res: any) => {
+        // Remove from local list only after confirmed success
+        this.orderList = this.orderList.filter(o => o.id !== orderId);
+        delete this.selectedMap[orderId];
         this.loadDeletedOrders();
-      }))
-      .subscribe({
-        next:  (res: any) => { this.showSuccess(res?.message || `Order #${orderId} moved to Deleted Orders`); },
-        error: ()         => { this.showWarn('Delete failed'); }
-      });
+        // res may be plain text string or object depending on backend
+        
+        this.showSuccess("Order deleted successfully");
+      },
+      error: (err) => {
+        console.error('Delete order error:', err);
+        this.showWarn('Delete failed: ' + (err?.error || err?.message || 'Unknown error'));
+      }
+    });
   }
 
   // ════════════════════════════════════════════
@@ -197,12 +230,17 @@ export class OrdersComponent implements OnInit {
   // ════════════════════════════════════════════
 
   toggleSelect(orderId: number, event: Event): void {
-    this.selectedMap[orderId] = (event.target as HTMLInputElement).checked;
+    this.selectedMap = {
+      ...this.selectedMap,
+      [orderId]: (event.target as HTMLInputElement).checked
+    };
   }
 
   selectAllVisible(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    this.filteredOrders.forEach(o => { this.selectedMap[o.id] = checked; });
+    const updated: { [id: number]: boolean } = { ...this.selectedMap };
+    this.filteredOrders.forEach(o => { updated[o.id] = checked; });
+    this.selectedMap = updated;
   }
 
   get allVisibleSelected(): boolean {
@@ -241,18 +279,27 @@ export class OrdersComponent implements OnInit {
     const ids = this.selectedIds;
     if (!ids.length) return;
 
+    // FIX: Optimistically remove selected orders from the local list immediately
+    // so they vanish from the UI without waiting for the HTTP response + reload.
+    this.orderList = this.orderList.filter(o => !ids.includes(o.id));
+    this.showDeleteConfirm = false;
+    this.clearSelection();
+
     this.httpService.deleteOrdersBulk(ids)
       .pipe(finalize(() => {
+        // Sync both lists from server to ensure consistency
         this.getOrders();
         this.loadDeletedOrders();
       }))
       .subscribe({
         next: (res: any) => {
-          this.showDeleteConfirm = false;
-          this.clearSelection();
           this.showSuccess(res?.message || `${ids.length} order(s) moved to Deleted Orders`);
         },
-        error: () => { this.showWarn('Bulk delete failed'); }
+        error: () => {
+          // Rollback on failure
+          this.getOrders();
+          this.showWarn('Bulk delete failed');
+        }
       });
   }
 
@@ -273,7 +320,7 @@ export class OrdersComponent implements OnInit {
       }))
       .subscribe({
         next:  (res: any) => { this.showSuccess(res?.message || `Order #${orderId} restored`); },
-        error: ()         => { this.showWarn('Restore failed'); }
+        error: () => { this.showWarn('Restore failed'); }
       });
   }
 
@@ -282,7 +329,7 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => { this.loadDeletedOrders(); }))
       .subscribe({
         next:  (res: any) => { this.showSuccess(res?.message || `Order #${orderId} permanently deleted`); },
-        error: ()         => { this.showWarn('Permanent delete failed'); }
+        error: () => { this.showWarn('Permanent delete failed'); }
       });
   }
 
@@ -295,7 +342,7 @@ export class OrdersComponent implements OnInit {
       }))
       .subscribe({
         next:  (res: any) => { this.showSuccess(res?.message || 'All deleted orders restored'); },
-        error: ()         => { this.showWarn('Restore All failed'); }
+        error: () => { this.showWarn('Restore All failed'); }
       });
   }
 
@@ -316,7 +363,7 @@ export class OrdersComponent implements OnInit {
       }))
       .subscribe({
         next:  (res: any) => { this.showSuccess(res?.message || 'All deleted orders permanently removed'); },
-        error: ()         => { this.showWarn('Delete All Permanently failed'); }
+        error: () => { this.showWarn('Delete All Permanently failed'); }
       });
   }
 
@@ -353,6 +400,41 @@ export class OrdersComponent implements OnInit {
     return (idx / (this.cardTrackSteps.length - 1)) * 100;
   }
 
+  getTrackFillPercent(status: string): number {
+    const map: Record<string, number> = {
+      'Initiated': 0,
+      'Complete':  50,
+      'Delivered': 100
+    };
+    return map[status] ?? 0;
+  }
+
+  getPackagePosition(status: string): string {
+    const map: Record<string, string> = {
+      'Initiated': '18px',
+      'Complete':  '50%',
+      'Delivered': 'calc(100% - 18px)'
+    };
+    return map[status] ?? '18px';
+  }
+
+  getCountByStatus(status: string): number {
+    return this.orderList.filter(o => o.status === status).length;
+  }
+
+  isStepDone(orderStatus: string, stepIndex: number): boolean {
+    const statusIndex = this.getStepIndex(orderStatus);
+    if (stepIndex === this.trackingSteps.length - 1) {
+      return statusIndex >= stepIndex;
+    }
+    return statusIndex > stepIndex;
+  }
+
+  isStepCurrent(orderStatus: string, stepIndex: number): boolean {
+    if (stepIndex === this.trackingSteps.length - 1) return false;
+    return this.getStepIndex(orderStatus) === stepIndex;
+  }
+
   // ════════════════════════════════════════════
   // TOAST HELPERS
   // ════════════════════════════════════════════
@@ -370,39 +452,7 @@ export class OrdersComponent implements OnInit {
     setTimeout(() => { this.showError = false; }, 2500);
   }
 
-  signOut() {
-  this.router.navigate(['/dashboard'])
-}
-
-isStepDone(orderStatus: string, stepIndex: number): boolean {
-  const statusIndex = this.getStepIndex(orderStatus);
-  // Last step is "done" when it's the current status, not just passed
-  if (stepIndex === this.trackingSteps.length - 1) {
-    return statusIndex >= stepIndex;
+  signOut(): void {
+    this.router.navigate(['/login']);
   }
-  return statusIndex > stepIndex;
-}
-
-isStepCurrent(orderStatus: string, stepIndex: number): boolean {
-  // Last step has no "current" state — it goes straight to done
-  if (stepIndex === this.trackingSteps.length - 1) return false;
-  return this.getStepIndex(orderStatus) === stepIndex;
-}
-getTrackFillPercent(status: string): number {
-  const map: Record<string, number> = {
-    'Initiated': 0,
-    'Complete': 50,
-    'Delivered': 100
-  };
-  return map[status] ?? 0;
-}
-
-getPackagePosition(status: string): string {
-  const map: Record<string, string> = {
-    'Initiated': '18px',
-    'Complete': '50%',
-    'Delivered': 'calc(100% - 18px)'
-  };
-  return map[status] ?? '18px';
-}
 }

@@ -190,6 +190,7 @@ h1 {
     transition: border-color 0.2s, background 0.2s;
     box-sizing: border-box;
     appearance: none;
+    padding-right: 45px;
 
     &::placeholder { color: #B0C8CE; }
 
@@ -406,4 +407,49 @@ h1 {
   cursor: not-allowed;
   transform: none !important;
   box-shadow: none !important;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;   // move inside box
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #777;
+  display: flex;
+  align-items: center;
+}
+
+.eye-icon:hover {
+  color: #0FA3B1;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 30px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 15px;
+
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: grey;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.eye-btn:hover {
+  background: black;
+  color: white;
+  box-shadow: 0 0 10px grey;
 }

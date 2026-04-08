@@ -95,7 +95,24 @@ $card-shadow: 0 4px 20px rgba(0,0,0,0.07);
 .card-title { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; svg { width: 15px; height: 15px; color: #94a3b8; } }
 .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; &:last-child { border-bottom: none; } .summary-label { color: #64748b; font-weight: 500; } .summary-val { font-weight: 700; &.default { color:#1e293b; } &.green { color:#1d9e75; } &.teal { color:#0f6e56; } &.amber { color:#ba7517; } &.blue { color:#185fa5; } } }
 .order-item { padding: 11px 0; border-bottom: 1px solid #f1f5f9; &:last-child { border-bottom: none; } .order-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3px; gap: 8px; } .order-name { font-size: 13px; font-weight: 600; color: #1e293b; } .order-sub { font-size: 11px; color: #94a3b8; margin-top: 2px; } .order-payment { margin-top: 4px; } }
-
+ .profile-extra-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.pei-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.06);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  svg { flex-shrink: 0; stroke: rgba(255,255,255,0.4); }
+}
 // ── EQUIPMENT GRID ─────────────────────────
 .equip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; margin-bottom: 120px; }
 .equip-card {

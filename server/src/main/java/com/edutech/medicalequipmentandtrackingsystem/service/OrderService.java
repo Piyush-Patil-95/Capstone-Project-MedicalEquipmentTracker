@@ -94,12 +94,12 @@ public class OrderService {
     // ============================
     // SOFT DELETE — Single
     // ============================
-    public void softDeleteOrder(Long orderId) {
+    public Order softDeleteOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
         order.setDeleted(true);
         order.setDeletedAt(new Date());
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     // ============================

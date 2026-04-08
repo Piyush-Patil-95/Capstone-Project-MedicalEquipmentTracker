@@ -32,7 +32,7 @@
 
   <!-- Heartbeat line -->
   <div class="heartbeat-container">
-    <svg class="heartbeat-svg" viewBox="0 0 800 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="heartbeat-svg" viewBox="0 0 800 60" preserveAspectRatio="none">
       <polyline points="0,30 80,30 110,30 130,8 145,52 160,15 175,42 190,30 250,30 300,30 350,30 400,30 420,30 440,8 455,52 470,15 485,42 500,30 560,30 640,30 720,30 800,30"
         fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -43,9 +43,8 @@
     <span class="flag">🌐</span> En <span class="chevron">▾</span>
   </div>
 
-  <!-- Login Card -->
+  <!-- ✅ Login Card -->
   <div class="login-card">
-    <!-- Medical cross logo -->
     <div class="logo-circle">
       <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="13" y="4" width="6" height="24" rx="2" fill="#0FA3B1"/>
@@ -57,19 +56,21 @@
 
     <form [formGroup]="itemForm" (ngSubmit)="onLogin()">
 
-      <!-- EMAIL / PHONE -->
+      <!-- USERNAME -->
       <div class="form-group">
         <label>Username</label>
         <div class="input-wrapper">
-          <input type="email" formControlName="username" placeholder="username">
+          <input type="text" formControlName="username" placeholder="Enter username">
           <span class="input-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
           </span>
         </div>
         <small class="error"
           *ngIf="itemForm.get('username')?.touched && itemForm.get('username')?.errors">
           <span *ngIf="itemForm.get('username')?.errors?.['required']">Username is required</span>
-          <span *ngIf="itemForm.get('username')?.errors?.['email']">Enter valid email</span>
         </small>
       </div>
 
@@ -77,9 +78,11 @@
       <div class="form-group">
         <label>Password</label>
         <div class="input-wrapper password-field">
-          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="••••••••">
+          <input [type]="showPassword ? 'text' : 'password'"
+                 formControlName="password" placeholder="••••••••">
           <button type="button" (click)="togglePassword()" class="eye-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8">
               <path *ngIf="!showPassword" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
               <circle *ngIf="!showPassword" cx="12" cy="12" r="3"/>
               <path *ngIf="showPassword" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
@@ -87,9 +90,12 @@
             </svg>
           </button>
         </div>
+
+        <!-- ✅ Forgot Password Link -->
         <div class="forgot-link-row">
-          <a class="forgot-link">Forgot Password ?</a>
+          <a class="forgot-link" (click)="openForgotModal()">Forgot Password?</a>
         </div>
+
         <small class="error"
           *ngIf="itemForm.get('password')?.touched && itemForm.get('password')?.errors">
           <span *ngIf="itemForm.get('password')?.errors?.['required']">Password is required</span>
@@ -101,24 +107,19 @@
         <label>Captcha Verification</label>
         <div class="captcha-box">
           <span class="captcha-question">{{ captchaQuestion }}</span>
-          <!-- <button type="button" class="captcha-refresh" (click)="refreshCaptcha()" title="Refresh captcha">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <polyline points="23 4 23 10 17 10"/>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-            </svg>
-          </button> -->
         </div>
         <div class="input-wrapper">
           <input type="text" formControlName="captchaAnswer" placeholder="Enter answer">
           <span class="input-icon">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
           </span>
         </div>
         <small class="error"
           *ngIf="itemForm.get('captchaAnswer')?.touched && itemForm.get('captchaAnswer')?.errors">
-          <span *ngIf="itemForm.get('captchaAnswer')?.errors?.['required']">Captcha answer is required</span>
+          Captcha answer is required
         </small>
       </div>
 
@@ -134,22 +135,204 @@
       </button>
     </form>
 
-    <!-- Divider -->
-    <!-- <div class="divider"><span>OR</span></div> -->
-
-    <!-- Google Sign In -->
-    <!-- <button type="button" class="google-btn" (click)="loginWithGoogle()">
-      <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
-      Continue with Google
-    </button> -->
-
     <p class="footer-text">
-      Don't have an account ? <a (click)="registration()">Sign Up</a>
+      Don't have an account? <a (click)="registration()">Sign Up</a>
     </p>
   </div>
+
+  <!-- ✅ FORGOT PASSWORD MODAL -->
+  <div class="modal-overlay" *ngIf="showForgotModal" (click)="closeForgotModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()" [formGroup]="forgotForm">
+
+      <!-- Close Button -->
+      <button class="modal-close" (click)="closeForgotModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <!-- Logo -->
+      <div class="modal-logo">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect x="13" y="4" width="6" height="24" rx="2" fill="#0FA3B1"/>
+          <rect x="4" y="13" width="24" height="6" rx="2" fill="#0FA3B1"/>
+        </svg>
+      </div>
+
+      <!-- ✅ Step Indicator -->
+      <div class="step-indicator">
+        <div class="step" [class.active]="forgotStep >= 1" [class.done]="forgotStep > 1">
+          <span>1</span>
+        </div>
+        <div class="step-line" [class.active]="forgotStep > 1"></div>
+        <div class="step" [class.active]="forgotStep >= 2" [class.done]="forgotStep > 2">
+          <span>2</span>
+        </div>
+        <div class="step-line" [class.active]="forgotStep > 2"></div>
+        <div class="step" [class.active]="forgotStep >= 3" [class.done]="forgotStep > 3">
+          <span>3</span>
+        </div>
+      </div>
+
+      <!-- ✅ SUCCESS State (Step 4) -->
+      <div class="modal-success" *ngIf="forgotStep === 4">
+        <div class="success-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+               stroke="#22c55e" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3>Password Reset!</h3>
+        <p>Your password has been reset successfully.</p>
+        <button class="modal-btn" (click)="closeForgotModal()">
+          Back to Login
+        </button>
+      </div>
+
+      <!-- ✅ STEP 1: Enter Email -->
+      <div class="modal-step" *ngIf="forgotStep === 1">
+        <h3>Forgot Password?</h3>
+        <p class="modal-subtitle">Enter your registered email to receive OTP</p>
+
+        <div class="modal-form-group">
+          <label>Email Address</label>
+          <div class="modal-input-wrapper">
+            <input type="email" formControlName="email" placeholder="example@gmail.com">
+            <span class="modal-input-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.8">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <polyline points="2,4 12,13 22,4"/>
+              </svg>
+            </span>
+          </div>
+          <small class="modal-error"
+            *ngIf="forgotForm.get('email')?.touched && forgotForm.get('email')?.errors">
+            <span *ngIf="forgotForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="forgotForm.get('email')?.errors?.['email']">Invalid email format</span>
+          </small>
+        </div>
+
+        <small class="modal-error-msg" *ngIf="forgotError">{{ forgotError }}</small>
+
+        <button class="modal-btn" (click)="sendForgotOtp()" [disabled]="forgotLoading">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          {{ forgotLoading ? 'Sending...' : 'Send OTP' }}
+        </button>
+      </div>
+
+      <!-- ✅ STEP 2: Enter OTP -->
+      <div class="modal-step" *ngIf="forgotStep === 2">
+        <h3>Enter OTP</h3>
+        <p class="modal-subtitle">
+          OTP sent to <strong>{{ forgotEmail }}</strong>
+        </p>
+
+        <div class="modal-success-info" *ngIf="forgotSuccess">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          {{ forgotSuccess }}
+        </div>
+
+        <div class="modal-form-group">
+          <label>6-Digit OTP</label>
+          <div class="modal-input-wrapper">
+            <input type="text" formControlName="otp"
+                   placeholder="Enter OTP" maxlength="6">
+            <span class="modal-input-icon">🔐</span>
+          </div>
+          <small class="modal-error"
+            *ngIf="forgotForm.get('otp')?.touched && forgotForm.get('otp')?.errors">
+            OTP must be 6 digits
+          </small>
+        </div>
+
+        <small class="modal-error-msg" *ngIf="forgotError">{{ forgotError }}</small>
+
+        <!-- Resend Timer -->
+        <p class="resend-text" *ngIf="resendTimer > 0">
+          Resend OTP in <strong>{{ resendTimer }}s</strong>
+        </p>
+        <p class="resend-text" *ngIf="resendTimer === 0">
+          Didn't receive?
+          <a class="resend-link" (click)="resendForgotOtp()">Resend OTP</a>
+        </p>
+
+        <button class="modal-btn" (click)="verifyForgotOtp()" [disabled]="forgotLoading">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          {{ forgotLoading ? 'Verifying...' : 'Verify OTP' }}
+        </button>
+
+        <button class="modal-btn-outline" (click)="forgotStep = 1">
+          ← Back
+        </button>
+      </div>
+
+      <!-- ✅ STEP 3: New Password -->
+      <div class="modal-step" *ngIf="forgotStep === 3">
+        <h3>New Password</h3>
+        <p class="modal-subtitle">Set your new secure password</p>
+
+        <div class="modal-success-info" *ngIf="forgotSuccess">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          {{ forgotSuccess }}
+        </div>
+
+        <div class="modal-form-group">
+          <label>New Password</label>
+          <div class="modal-input-wrapper password-field">
+            <input [type]="showNewPassword ? 'text' : 'password'"
+                   formControlName="newPassword"
+                   placeholder="Min 8 chars, A-Z, a-z, 0-9">
+            <button type="button" class="eye-btn" (click)="toggleNewPassword()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.8">
+                <path *ngIf="!showNewPassword" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                <circle *ngIf="!showNewPassword" cx="12" cy="12" r="3"/>
+                <path *ngIf="showNewPassword" d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line *ngIf="showNewPassword" x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+          <small class="modal-error"
+            *ngIf="forgotForm.get('newPassword')?.touched && forgotForm.get('newPassword')?.errors">
+            <span *ngIf="forgotForm.get('newPassword')?.errors?.['required']">Password required</span>
+            <span *ngIf="forgotForm.get('newPassword')?.errors?.['minlength']">Min 8 characters</span>
+            <span *ngIf="forgotForm.get('newPassword')?.errors?.['pattern']">Must have A-Z, a-z, 0-9</span>
+          </small>
+        </div>
+
+        <small class="modal-error-msg" *ngIf="forgotError">{{ forgotError }}</small>
+
+        <button class="modal-btn" (click)="resetPassword()" [disabled]="forgotLoading">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          {{ forgotLoading ? 'Resetting...' : 'Reset Password' }}
+        </button>
+
+        <button class="modal-btn-outline" (click)="forgotStep = 2">
+          ← Back
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </div>

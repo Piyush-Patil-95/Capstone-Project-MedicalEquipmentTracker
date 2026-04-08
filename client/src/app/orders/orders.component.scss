@@ -408,3 +408,204 @@ $card-shadow: 0 4px 20px rgba(0,0,0,0.07);
     &.done-lbl   { color: $teal; }
   }
 } 
+
+/* Overview cards */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 0 0 24px 0;
+}
+.overview-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 20px 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  border: 1px solid #f0f0f0;
+  .ov-num { font-size: 2rem; font-weight: 700; color: #1a2332;
+    &.green { color: #1d9e75; }
+    &.gold  { color: #d4a017; }
+    &.blue  { color: #2A6F97; }
+    &.red   { color: #e05252; }
+  }
+  .ov-label { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #6b7a8d; margin-top: 6px; }
+  .ov-dot { width: 9px; height: 9px; border-radius: 50%; background: #aaa; display: inline-block;
+    &.green { background: #1d9e75; }
+    &.gold  { background: #d4a017; }
+    &.blue  { background: #2A6F97; }
+    &.grey  { background: #9aa3af; }
+  }
+}
+
+/* Filter pills */
+.filter-pills {
+  display: flex;
+  gap: 8px;
+  .fpill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1.5px solid #e2e8f0;
+    background: #fff;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #6b7a8d;
+    cursor: pointer;
+    transition: all 0.18s;
+    &:hover { border-color: #5dcaa5; color: #1d9e75; }
+    &.active { background: #1d9e75; color: #fff; border-color: #1d9e75; }
+    &.initiated.active { background: #2A6F97; border-color: #2A6F97; }
+    &.complete.active  { background: #1d9e75; border-color: #1d9e75; }
+    &.delivered.active { background: #5563a0; border-color: #5563a0; }
+  }
+}
+
+.dark-banner { background: #0f1b2d !important; .tech-title { color: #fff !important; } .tech-sub, .tech-banner-right p { color: #8fa3b8 !important; } }
+.overview-label-row { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; color: #9aa3af; margin: 24px 0 12px; }
+.overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.overview-card { background: #fff; border-radius: 12px; padding: 24px 20px 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border: 1px solid #f0f0f0; }
+.ov-num { font-size: 2.2rem; font-weight: 700; color: #1a2332; &.ov-green { color: #1d9e75; } &.ov-gold { color: #c8920a; } &.ov-blue { color: #2A6F97; } }
+.ov-label { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: #6b7a8d; margin-top: 8px; }
+.ov-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; &.grey { background: #9aa3af; } &.green { background: #1d9e75; } &.gold { background: #c8920a; } &.blue { background: #2A6F97; } }
+.dash-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.dash-summary-card, .dash-recent-card { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border: 1px solid #f0f0f0; }
+.dash-card-title { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; color: #1a2332; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
+.dash-summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f7f7f7; font-size: 0.88rem; color: #4a5568; &:last-child { border-bottom: none; } }
+.ds-val { font-weight: 700; color: #1a2332; &.ds-green { color: #1d9e75; } &.ds-gold { color: #c8920a; } &.ds-blue { color: #2A6F97; } }
+.recent-order-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f7f7f7; &:last-child { border-bottom: none; } }
+.recent-order-name { font-size: 0.88rem; font-weight: 600; color: #1a2332; }
+.recent-order-sub { font-size: 0.75rem; color: #9aa3af; margin-top: 2px; }
+.filter-pills { display: flex; gap: 8px; }
+.fpill { padding: 6px 16px; border-radius: 20px; border: 1.5px solid #e2e8f0; background: #fff; font-size: 0.82rem; font-weight: 500; color: #6b7a8d; cursor: pointer; transition: all 0.18s; &:hover { border-color: #5dcaa5; color: #1d9e75; } &.active { background: #1d9e75; color: #fff; border-color: #1d9e75; } &.fpill-initiated.active { background: #2A6F97; border-color: #2A6F97; } &.fpill-delivered.active { background: #5563a0; border-color: #5563a0; } }
+
+.filter-pills-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.filter-pill {
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-pill:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.filter-pill.active {
+  background: #1e4d72;   /* match your dark teal/navy brand color */
+  color: #fff;
+  border-color: #1e4d72;
+}
+
+.filter-pills-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.filter-pill {
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-pill:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+// ── CARD FOOTER ────────────────────────────
+.card-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; // ✅ changed from 1fr 1fr to 1fr 1fr 1fr
+  gap: 8px;
+  margin-top: 14px;
+}
+
+// ── ACTION BUTTONS ─────────────────────────
+
+// shared base for all three buttons
+.action-edit-btn,
+.action-pdf-btn,
+.action-del-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+// Update button - blue
+.action-edit-btn {
+  border: 1.5px solid $primary;
+  color: $primary;
+
+  &:hover {
+    background: $primary;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(42, 111, 151, 0.25);
+  }
+}
+
+// PDF button - teal
+.action-pdf-btn {
+  border: 1.5px solid $teal;
+  color: $teal;
+
+  &:hover {
+    background: $teal;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(29, 158, 117, 0.25);
+  }
+}
+
+// Delete button - red
+.action-del-btn {
+  border: 1.5px solid #ef4444;
+  color: #ef4444;
+
+  &:hover {
+    background: #ef4444;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.25);
+    transform: translateY(-1px);
+  }
+}
+
+.filter-pill.active {
+  background: #1e4d72;
+  color: #fff;
+  border-color: #1e4d72;
+}

@@ -90,19 +90,19 @@ export class DashbaordComponent implements OnInit, OnDestroy {
   ];
 
   stats = [
-    { value: 500, suffix: '+', label: 'Hospitals', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>' },
-    { value: 50000, suffix: '+', label: 'Equipment', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>' },
-    { value: 1200, suffix: '+', label: 'Technicians', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
+    { value: 100, suffix: '+', label: 'Hospitals', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M9 8h1M9 12h1M9 16h1M14 8h1M14 12h1M14 16h1M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/></svg>' },
+    { value: 100, suffix: '+', label: 'Equipment', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>' },
+    { value: 50, suffix: '+', label: 'Technicians', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
     { value: 99, suffix: '%', label: 'Uptime', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' }
   ];
 
   testimonials = [
-    { quote: 'MedTrack has revolutionized how we manage our equipment. The real-time tracking is incredible!', name: 'Dr. Sarah Johnson', role: 'Hospital Admin', initials: 'SJ', color: '#2A6F97', rating: 5 },
-    { quote: 'The predictive maintenance feature saved us thousands in potential repairs. Highly recommended!', name: 'Michael Chen', role: 'CTO, City Hospital', initials: 'MC', color: '#667eea', rating: 5 },
-    { quote: 'As a technician, the mobile app makes my work so much easier. Everything I need is at my fingertips.', name: 'James Wilson', role: 'Senior Technician', initials: 'JW', color: '#f5576c', rating: 4 },
-    { quote: 'The analytics dashboard gives us insights we never had before. Game changer!', name: 'Emily Davis', role: 'Operations Manager', initials: 'ED', color: '#43e97b', rating: 5 },
-    { quote: 'MedTrack has revolutionized how we manage our equipment. The real-time tracking is incredible!', name: 'Dr. Sarah Johnson', role: 'Hospital Admin', initials: 'SJ', color: '#2A6F97', rating: 5 },
-    { quote: 'The predictive maintenance feature saved us thousands in potential repairs. Highly recommended!', name: 'Michael Chen', role: 'CTO, City Hospital', initials: 'MC', color: '#667eea', rating: 5 }
+    { quote: 'MedTrack has revolutionized how we manage our equipment. The real-time tracking is incredible!', name: 'Dr. Ram Patil', role: 'Hospital Admin', initials: 'RP', color: '#2A6F97', rating: 5 },
+    { quote: 'The predictive maintenance feature saved us thousands in potential repairs. Highly recommended!', name: 'Hrugved Lakhapati', role: 'CTO, City Hospital', initials: 'HL', color: '#667eea', rating: 5 },
+    { quote: 'As a technician, the mobile app makes my work so much easier. Everything I need is at my fingertips.', name: 'Dr. Anup Tiwari', role: 'Senior Technician', initials: 'AP', color: '#f5576c', rating: 4 },
+    { quote: 'The analytics dashboard gives us insights we never had before. Game changer!', name: 'Atul Waghmare', role: 'Senior Technician', initials: 'AW', color: '#43e97b', rating: 5 },
+    { quote: 'MedTrack has revolutionized how we manage our equipment. The real-time tracking is incredible!', name: 'Dr. Ashish Mankar', role: 'Hospital Admin', initials: 'AM', color: '#2A6F97', rating: 5 },
+    { quote: 'The predictive maintenance feature saved us thousands in potential repairs. Highly recommended!', name: 'Dr. Vijay Khandelwal', role: 'CTO, City Hospital', initials: 'VK', color: '#667eea', rating: 5 }
   ];
 
   private animationId: number = 0;
@@ -227,7 +227,7 @@ export class DashbaordComponent implements OnInit, OnDestroy {
 
     // Hero stats
     const heroNumbers = document.querySelectorAll('.hero-stats .number');
-    const heroTargets = [500, 50000, 99];
+    const heroTargets = [100, 50, 99];
     heroNumbers.forEach((el, i) => {
       const target = heroTargets[i];
       const duration = 2000;

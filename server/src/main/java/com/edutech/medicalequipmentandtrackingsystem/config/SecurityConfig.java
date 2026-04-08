@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/captcha/**",
                 "/api/contact/**",      // ✅ Contact form - public
                 "/api/pdf/**",
+                "/api/password/**",  
                 "/api/otp/**", 
                 "/",
                 "/api/user/dashboard"

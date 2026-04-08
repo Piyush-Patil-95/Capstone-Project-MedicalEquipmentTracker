@@ -6,10 +6,13 @@
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/repository/EquipmentRepository.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/entitiy/Maintenance.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/config/Configurations.java
+/home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/service/ForgotPasswordService.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/service/MaintenanceService.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/controller/ContactController.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/dto/OtpRequest.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/jwt/JwtRequestFilter.java
+/home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/controller/ForgotPasswordController.java
+/home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/service/MaintenancePdfService.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/config/SecurityConfig.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/dto/LoginRequest.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/controller/RegisterAndLoginController.java
@@ -29,6 +32,7 @@
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/controller/CaptchaController.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/service/OrderService.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/repository/MaintenanceRepository.java
+/home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/dto/ForgotPasswordRequest.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/repository/HospitalRepository.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/controller/TechnicianController.java
 /home/coder/app/server/src/main/java/com/edutech/medicalequipmentandtrackingsystem/controller/SupplierController.java

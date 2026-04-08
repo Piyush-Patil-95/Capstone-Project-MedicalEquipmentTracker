@@ -11,6 +11,7 @@ import { HttpService } from '../../services/http.service';
 export class RegistrationComponent implements OnInit {
   itemForm!: FormGroup;
   otpForm!: FormGroup;
+  hidePassword: boolean = true;
 
   successMessage: string = '';
   errorMessage: string = '';
@@ -37,7 +38,7 @@ export class RegistrationComponent implements OnInit {
     this.itemForm = this.fb.group({
       username:     ['', [Validators.required, Validators.minLength(6), Validators.pattern('^[A-Za-z]+$')]],
       email:        ['', [Validators.required, Validators.email]],
-      password:     ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$')]],
+      password:     ['', [Validators.required, Validators.minLength(8), Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).+$')]],
       role:         ['', Validators.required],
       hospitalName: [''],
       location:     [''],
