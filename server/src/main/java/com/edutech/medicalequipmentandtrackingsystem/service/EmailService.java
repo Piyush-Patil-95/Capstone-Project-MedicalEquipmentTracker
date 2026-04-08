@@ -15,8 +15,13 @@ public class EmailService {
 
     private static final String TO_EMAIL = "projecttestbackend@gmail.com";
 
+    // ✅ Only ONE method - clean version
     public void sendContactMail(ContactRequest req) {
         SimpleMailMessage msg = new SimpleMailMessage();
+
+        // ✅ Set FROM
+        msg.setFrom("projecttestbackend@gmail.com");
+        // ✅ Set TO
         msg.setTo(TO_EMAIL);
 
         String subject = (req.getSubject() == null || req.getSubject().trim().isEmpty())
@@ -26,11 +31,11 @@ public class EmailService {
         msg.setSubject("MedTrack Contact: " + subject);
 
         msg.setText(
-                "✅ New Contact Form Submission\n\n" +
-                "Name: " + safe(req.getName()) + "\n" +
-                "Email: " + safe(req.getEmail()) + "\n" +
-                "Subject: " + safe(req.getSubject()) + "\n\n" +
-                "Message:\n" + safe(req.getMessage()) + "\n"
+            "New Contact Form Submission\n\n" +
+            "Name: "    + safe(req.getName())    + "\n" +
+            "Email: "   + safe(req.getEmail())   + "\n" +
+            "Subject: " + safe(req.getSubject()) + "\n\n" +
+            "Message:\n" + safe(req.getMessage()) + "\n"
         );
 
         mailSender.send(msg);

@@ -15,23 +15,17 @@ export class CreatehospitalComponent implements OnInit {
 
   @ViewChild('photoInput') photoInput!: ElementRef<HTMLInputElement>;
 
-  // ── TABS ──────────────────────────────────
   activeTab: 'dashboard' | 'orders' | 'maintenance' | 'details' = 'dashboard';
 
-  // ── DATA ──────────────────────────────────
   hospital: any = null;
   orders: any[] = [];
   maintenance: any[] = [];
   hospitalMaintenance: any[] = [];
-
-  // Equipment that has complete/delivered order — shown in maintenance modal
   eligibleEquipment: any[] = [];
 
-  // ── PROFILE PHOTO ─────────────────────────
   profilePhoto: string | null = null;
   private PHOTO_KEY = 'hospital_profile_photo';
 
-  // ── ASSIGN EQUIPMENT MODAL ────────────────
   showAssignModal = false;
   submitting = false;
   assignForm!: FormGroup;
@@ -40,7 +34,6 @@ export class CreatehospitalComponent implements OnInit {
   showError = false;
   errorMessage = '';
 
-  // ── MAINTENANCE MODAL ─────────────────────
   showMaintenanceModal = false;
   maintSubmitting = false;
   maintenanceForm!: FormGroup;
@@ -49,7 +42,6 @@ export class CreatehospitalComponent implements OnInit {
   maintShowError = false;
   maintErrorMessage = '';
 
-  // ── DETAILS EDIT ──────────────────────────
   detailForm!: FormGroup;
   editMode = false;
   savingDetails = false;
@@ -70,7 +62,7 @@ export class CreatehospitalComponent implements OnInit {
       equipmentDescription: [''],
       quantity:             ['', [Validators.required, Validators.min(1)]],
       orderDate:            ['', Validators.required],
-      status:               ['', Validators.required]
+      status:               ['', Validators.required],
     });
 
     this.maintenanceForm = this.fb.group({
@@ -82,8 +74,14 @@ export class CreatehospitalComponent implements OnInit {
     });
 
     this.detailForm = this.fb.group({
-      name:     ['', Validators.required],
-      location: ['', Validators.required]
+      name:               ['', Validators.required],
+      location:           ['', Validators.required],
+      doctorName:         [''],
+      specialization:     [''],
+      phone:              [''],
+      email:              [''],
+      bedCapacity:        [''],
+      registrationNumber: ['']
     });
 
     this.profilePhoto = localStorage.getItem(this.PHOTO_KEY) || null;
@@ -94,99 +92,67 @@ export class CreatehospitalComponent implements OnInit {
   // ── DATA LOADING ──────────────────────────
 
   getHospital() {
-  this.service.getMyHospital().subscribe({
-    next: (data: any) => {
-      this.hospital = Array.isArray(data) ? data[0] : data;
-      if (this.hospital) {
-        this.detailForm.patchValue({
-          name: this.hospital.name,
-          location: this.hospital.location
-        });
-        this.detailForm.disable();
-        this.getOrders();
-        this.getMaintenance();
-      }
-    },
-    error: (err: any) => console.error('Failed to load hospital:', err)
-  });
-}
-      
-  
+    this.service.getMyHospital().subscribe({
+      next: (data: any) => {
+        this.hospital = Array.isArray(data) ? data[0] : data;
+        if (this.hospital) {
+          this.detailForm.patchValue({
+            name:               this.hospital.name,
+            location:           this.hospital.location,
+            doctorName:         this.hospital.doctorName         || '',
+            specialization:     this.hospital.specialization     || '',
+            phone:              this.hospital.phone              || '',
+            email:              this.hospital.email              || '',
+            bedCapacity:        this.hospital.bedCapacity        || '',
+            registrationNumber: this.hospital.registrationNumber || ''
+          });
+          this.detailForm.disable();
+          this.getOrders();
+          this.getMaintenance();
+        }
+      },
+      error: (err: any) => console.error('Failed to load hospital:', err)
+    });
+  }
+
   getOrders() {
-  this.service.getorders().subscribe({   // hits /api/supplier/orders
-    next: (data: any) => {
-      const allOrders: any[] = data || [];
-      const equipmentIds = (this.hospital?.equipmentList || []).map((eq: any) => eq.id);
+    this.service.getorders().subscribe({
+      next: (data: any) => {
+        const allOrders: any[] = data || [];
+        const equipmentIds = (this.hospital?.equipmentList || []).map((eq: any) => eq.id);
+        this.orders = allOrders
+          .filter((o: any) =>
+            equipmentIds.includes(o?.equipment?.id) ||
+            equipmentIds.includes(o?.equipment_id)
+          )
+          .sort((a: any, b: any) => b.id - a.id);
+        this.buildEligibleEquipment();
+      },
+      error: (err: any) => console.error('Failed to load orders:', err)
+    });
+  }
 
-      this.orders = allOrders
-        .filter((o: any) =>
-          equipmentIds.includes(o?.equipment?.id) ||
-          equipmentIds.includes(o?.equipment_id)
-        )
-        .sort((a: any, b: any) => b.id - a.id);
+  getMaintenance() {
+    this.service.getMaintenance().subscribe({
+      next: (data: any) => {
+        this.maintenance = data || [];
+        this.filterHospitalMaintenance();
+      },
+      error: (err: any) => console.error('Failed to load maintenance:', err)
+    });
+  }
 
-      console.log('✅ Hospital orders:', this.orders); // debug
-      this.buildEligibleEquipment();
-    },
-    error: (err: any) => console.error('Failed to load orders:', err)
-  });
-}
-getMaintenance() {
-  this.service.getMaintenance().subscribe({
-    next: (data: any) => {
-      console.log('📋 RAW maintenance data:', JSON.stringify(data));
-      this.maintenance = data || [];
-      this.filterHospitalMaintenance();
-    },
-    error: (err: any) => console.error('Failed to load maintenance:', err)
-  });
-}
-
-filterHospitalMaintenance() {
-  if (!this.hospital) return;
-
-  const equipmentIds = (this.hospital?.equipmentList || []).map((eq: any) => eq.id);
-  console.log('🏥 Hospital:', JSON.stringify(this.hospital));
-  console.log('🔧 Equipment IDs from hospital:', equipmentIds);
-  console.log('📋 All maintenance records:', JSON.stringify(this.maintenance));
-
-  this.hospitalMaintenance = this.maintenance.filter((m: any) => {
-    console.log('🔍 Checking record:', JSON.stringify(m));
-    return (
+  filterHospitalMaintenance() {
+    if (!this.hospital) return;
+    const equipmentIds = (this.hospital?.equipmentList || []).map((eq: any) => eq.id);
+    this.hospitalMaintenance = this.maintenance.filter((m: any) =>
       equipmentIds.includes(m?.equipment?.id) ||
       m?.hospital?.id === this.hospital?.id
     );
-  });
-
-  console.log('✅ Filtered result:', JSON.stringify(this.hospitalMaintenance));
-}
-//   getMaintenance() {
-//     this.service.getMaintenance().subscribe({
-//       next: (data: any) => {
-//         this.maintenance = data || [];
-//         this.filterHospitalMaintenance();
-//       },
-//       error: (err: any) => console.error('Failed to load maintenance:', err)
-//     });
-//   }
-
-//  filterHospitalMaintenance() {
-//   if (!this.hospital) return;
-
-//   const equipmentIds = (this.hospital?.equipmentList || []).map((eq: any) => eq.id);
-
-//   this.hospitalMaintenance = this.maintenance.filter((m: any) =>
-//     equipmentIds.includes(m?.equipment?.id) ||   // matched via equipment
-//     m?.hospital?.id === this.hospital?.id         // matched via hospital
-//   );
-// }
-
-  // ── ELIGIBLE EQUIPMENT ────────────────────
-  // Only equipment whose latest order is 'complete' or 'delivered'
+  }
 
   buildEligibleEquipment() {
     if (!this.hospital?.equipmentList) return;
-
     this.eligibleEquipment = this.hospital.equipmentList.filter((eq: any) => {
       const status = this.getEquipmentOrderStatus(eq).toLowerCase();
       return status.includes('complete') || status.includes('deliver');
@@ -269,24 +235,66 @@ filterHospitalMaintenance() {
     this.editMode = false;
     this.detailSaveSuccess = false;
     this.detailSaveError = false;
-    this.detailForm.patchValue({ name: this.hospital.name, location: this.hospital.location });
+    this.detailForm.patchValue({
+      name:               this.hospital.name,
+      location:           this.hospital.location,
+      doctorName:         this.hospital.doctorName         || '',
+      specialization:     this.hospital.specialization     || '',
+      phone:              this.hospital.phone              || '',
+      email:              this.hospital.email              || '',
+      bedCapacity:        this.hospital.bedCapacity        || '',
+      registrationNumber: this.hospital.registrationNumber || ''
+    });
     this.detailForm.disable();
   }
 
   saveDetails() {
-    if (this.detailForm.invalid) { this.detailSaveError = true; this.detailSaveErrorMsg = 'Please fill all required fields.'; return; }
+    if (this.detailForm.invalid) {
+      this.detailSaveError = true;
+      this.detailSaveErrorMsg = 'Please fill all required fields.';
+      return;
+    }
     this.savingDetails = true;
     this.detailSaveSuccess = false;
     this.detailSaveError = false;
-    const payload = { name: this.detailForm.value.name, location: this.detailForm.value.location };
+
+    const payload = {
+      name:               this.detailForm.value.name,
+      location:           this.detailForm.value.location,
+      doctorName:         this.detailForm.value.doctorName,
+      specialization:     this.detailForm.value.specialization,
+      phone:              this.detailForm.value.phone,
+      email:              this.detailForm.value.email,
+      bedCapacity:        this.detailForm.value.bedCapacity,
+      registrationNumber: this.detailForm.value.registrationNumber
+    };
+
     this.service.updateHospital(this.hospital.id, payload).subscribe({
       next: (updated: any) => {
         this.savingDetails = false;
         this.editMode = false;
         this.detailSaveSuccess = true;
-        this.hospital.name     = updated.name     || payload.name;
-        this.hospital.location = updated.location || payload.location;
-        this.detailForm.patchValue({ name: this.hospital.name, location: this.hospital.location });
+
+        // Update local hospital object so pills refresh instantly
+        this.hospital.name               = updated.name               || payload.name;
+        this.hospital.location           = updated.location           || payload.location;
+        this.hospital.doctorName         = updated.doctorName         || payload.doctorName;
+        this.hospital.specialization     = updated.specialization     || payload.specialization;
+        this.hospital.phone              = updated.phone              || payload.phone;
+        this.hospital.email              = updated.email              || payload.email;
+        this.hospital.bedCapacity        = updated.bedCapacity        || payload.bedCapacity;
+        this.hospital.registrationNumber = updated.registrationNumber || payload.registrationNumber;
+
+        this.detailForm.patchValue({
+          name:               this.hospital.name,
+          location:           this.hospital.location,
+          doctorName:         this.hospital.doctorName,
+          specialization:     this.hospital.specialization,
+          phone:              this.hospital.phone,
+          email:              this.hospital.email,
+          bedCapacity:        this.hospital.bedCapacity,
+          registrationNumber: this.hospital.registrationNumber
+        });
         this.detailForm.disable();
         setTimeout(() => this.detailSaveSuccess = false, 3000);
       },
@@ -359,40 +367,19 @@ filterHospitalMaintenance() {
       this.maintErrorMessage = 'Please fill all required fields.';
       return;
     }
-
     this.maintSubmitting = true;
     this.maintShowError = false;
     this.maintShowMessage = false;
-
     const formVal = this.maintenanceForm.value;
-
     const payload = {
-  scheduledDate: formVal.scheduledDate,
-  completedDate: formVal.completedDate || null,
-  status:        formVal.status,
-  description:   formVal.description || '',
-  equipment: { id: formVal.equipmentId }, 
-  hospitalId:    this.hospital.id   // ✅ ADD THIS
-};
-
-    // this.service.scheduleMaintenance(payload, formVal.equipmentId).subscribe({
-    //   next: () => {
-    //     this.maintSubmitting = false;
-    //     this.maintShowMessage = true;
-    //     this.maintResponseMessage = 'Maintenance scheduled successfully!';
-    //     this.maintenanceForm.reset();
-    //     this.getMaintenance();
-    //     setTimeout(() => { this.showMaintenanceModal = false; this.maintShowMessage = false; }, 1500);
-    //   },
-    //   error: (err: any) => {
-    //     this.maintSubmitting = false;
-    //     this.maintShowError = true;
-    //     this.maintErrorMessage = 'Failed to schedule maintenance. Please try again.';
-    //     console.error(err);
-    //   }
-    // });
-
-    this.service.addMaintenance(payload).subscribe(({
+      scheduledDate: formVal.scheduledDate,
+      completedDate: formVal.completedDate || null,
+      status:        formVal.status,
+      description:   formVal.description || '',
+      equipment:     { id: formVal.equipmentId },
+      hospitalId:    this.hospital.id
+    };
+    this.service.addMaintenance(payload).subscribe({
       next: () => {
         this.maintSubmitting = false;
         this.maintShowMessage = true;
@@ -407,25 +394,23 @@ filterHospitalMaintenance() {
         this.maintErrorMessage = 'Failed to schedule maintenance. Please try again.';
         console.error(err);
       }
-    }))
+    });
   }
 
-  // ── PAYMENT — logic unchanged ─────────────
+  // ── PAYMENT — ORDERS ──────────────────────
 
   getAmountForOrder(order: any): number {
-  const name = (order?.equipment?.name ?? '').toLowerCase();
-
-  if (name.includes('bed')) return 1500;
-  if (name.includes('ventilator')) return 5000;
-  if (name.includes('thermometer')) return 200;
-  if (name.includes('oxygen')) return 800;
-  if (name.includes('monitor')) return 2500;
-  if (name.includes('wheelchair')) return 1200;
-  if (name.includes('defibrillator')) return 4000;
-  if (name.includes('syringe')) return 100;
-
-  return 1000;
-}
+    const name = (order?.equipment?.name ?? '').toLowerCase();
+    if (name.includes('bed'))           return 1500;
+    if (name.includes('ventilator'))    return 5000;
+    if (name.includes('thermometer'))   return 200;
+    if (name.includes('oxygen'))        return 800;
+    if (name.includes('monitor'))       return 2500;
+    if (name.includes('wheelchair'))    return 1200;
+    if (name.includes('defibrillator')) return 4000;
+    if (name.includes('syringe'))       return 100;
+    return 1000;
+  }
 
   payNow(order: any) {
     if (order.paymentDone) { alert('Already Paid'); return; }
@@ -449,7 +434,49 @@ filterHospitalMaintenance() {
     });
   }
 
+  // ── PAYMENT — MAINTENANCE ─────────────────
+
+  getAmountForMaintenance(maintenance: any): number {
+    const name = (maintenance?.equipment?.name ?? '').toLowerCase();
+    if (name.includes('bed'))           return 1500;
+    if (name.includes('ventilator'))    return 5000;
+    if (name.includes('thermometer'))   return 200;
+    if (name.includes('oxygen'))        return 800;
+    if (name.includes('monitor'))       return 2500;
+    if (name.includes('wheelchair'))    return 1200;
+    if (name.includes('defibrillator')) return 4000;
+    if (name.includes('syringe'))       return 100;
+    return 1000;
+  }
+
+  payMaintenanceNow(maintenance: any) {
+    if (maintenance.paymentDone) { alert('Already Paid'); return; }
+    const totalAmount = this.getAmountForMaintenance(maintenance);
+    let paymentHandled = false;
+    const options = {
+      key: 'rzp_test_SZ7wiMY5dnVOV4',
+      amount: totalAmount * 100,
+      currency: 'INR',
+      name: 'Maintenance Payment',
+      handler: () => { paymentHandled = true; this.saveMaintenancePayment(maintenance); },
+      modal: { ondismiss: () => { if (!paymentHandled) this.saveMaintenancePayment(maintenance); } }
+    };
+    new Razorpay(options).open();
+  }
+
+  saveMaintenancePayment(maintenance: any) {
+    this.service.markPaymentDone({ orderId: maintenance.id }).subscribe({
+      next: () => {
+        maintenance.paymentDone = true;
+        this.getMaintenance();
+      },
+      error: (err: any) => console.error('Maintenance payment save failed:', err)
+    });
+  }
+
+  // ── SIGN OUT ──────────────────────────────
+
   signOut() {
-  this.router.navigate(['/dashboard'])
-}
+    this.router.navigate(['/dashboard']);
+  }
 }

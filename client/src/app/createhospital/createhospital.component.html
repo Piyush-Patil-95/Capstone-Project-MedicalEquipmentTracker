@@ -11,8 +11,6 @@
       </div>
       <span class="logo-name">MediCore</span>
     </div>
-    
-    
 
     <div class="nav-section">Operations</div>
 
@@ -60,17 +58,14 @@
       </div>
     </div>
 
-    
-    
     <button class="signout-btn" (click)="signOut()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15">
-      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-      <polyline points="16 17 21 12 16 7"/>
-      <line x1="21" y1="12" x2="9" y2="12"/>
-    </svg>
-    Sign Out
-  </button>
- 
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15">
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Sign Out
+    </button>
   </div>
 
   <!-- MAIN CONTENT -->
@@ -91,11 +86,17 @@
           <div>
             <div class="hosp-name">{{ hospital.name }}</div>
             <div class="hosp-meta">{{ hospital.location }}</div>
+            <div class="hosp-meta" *ngIf="hospital.doctorName">👨‍⚕️ {{ hospital.doctorName }}</div>
+            <div class="hosp-meta" *ngIf="hospital.phone">📞 {{ hospital.phone }}</div>
+            <div class="hosp-meta" *ngIf="hospital.email">✉️ {{ hospital.email }}</div>
+            <div class="hosp-meta" *ngIf="hospital.specialization">🏥 {{ hospital.specialization }}</div>
           </div>
         </div>
         <div class="hosp-right">
           <p>{{ hospital.equipmentList?.length || 0 }} equipment assigned</p>
           <p>{{ orders.length }} total orders</p>
+          <p *ngIf="hospital.bedCapacity">🛏 {{ hospital.bedCapacity }} beds</p>
+          <p *ngIf="hospital.registrationNumber">Reg: {{ hospital.registrationNumber }}</p>
         </div>
       </div>
 
@@ -164,7 +165,6 @@
         <div class="empty-state-sm" *ngIf="!hospital.equipmentList?.length"><p>No equipment assigned yet.</p></div>
       </div>
 
-      <!-- DUAL FAB -->
       <div class="fab-wrap">
         <button class="fab-btn fab-secondary" (click)="openMaintenanceModal()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
@@ -202,7 +202,7 @@
           <button class="pay-btn" *ngIf="order.status?.toLowerCase().includes('complete') && !order.paymentDone" (click)="payNow(order)">
             💳 Pay ₹{{ getAmountForOrder(order) }}
           </button>
-          <div class="paid-banner"    *ngIf="order.paymentDone">✅ Payment Completed</div>
+          <div class="paid-banner" *ngIf="order.paymentDone">✅ Payment Completed</div>
           <div class="pending-banner" *ngIf="!order.status?.toLowerCase().includes('complete') && !order.paymentDone">⏳ Payment available after order is complete</div>
         </div>
         <div class="empty-state-sm full" *ngIf="!orders.length"><p>No orders found.</p></div>
@@ -230,7 +230,20 @@
             <div><label>Scheduled</label><p>{{ m.scheduledDate | date:'dd-MMM-yyyy' }}</p></div>
             <div><label>Completed</label><p>{{ (m.completedDate | date:'dd-MMM-yyyy') || '—' }}</p></div>
           </div>
-          <div class="info-block" *ngIf="m.description"><label>Notes</label><p class="muted">{{ m.description }}</p></div>
+          <div class="info-block" *ngIf="m.description">
+            <label>Notes</label>
+            <p class="muted">{{ m.description }}</p>
+          </div>
+
+          <!-- PAYMENT SECTION -->
+          <button class="pay-btn"
+            *ngIf="m.status?.toLowerCase().includes('complete') && !m.paymentDone"
+            (click)="payMaintenanceNow(m)">
+            💳 Pay ₹{{ getAmountForMaintenance(m) }}
+          </button>
+          <div class="paid-banner" *ngIf="m.paymentDone">✅ Payment Completed</div>
+          <div class="pending-banner" *ngIf="!m.status?.toLowerCase().includes('complete') && !m.paymentDone">⏳ Payment available after maintenance is complete</div>
+
         </div>
         <div class="empty-state-sm full" *ngIf="!hospitalMaintenance.length"><p>No maintenance records found.</p></div>
       </div>
@@ -256,12 +269,42 @@
           <div class="photo-hint">Click photo to upload</div>
           <button class="remove-photo-btn" *ngIf="profilePhoto" (click)="removePhoto()">Remove Photo</button>
         </div>
+
         <div class="profile-info-section">
           <div class="profile-name">{{ hospital.name }}</div>
           <div class="profile-location">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
             {{ hospital.location }}
           </div>
+
+          <!-- EXTRA INFO PILLS -->
+          <div class="profile-extra-info">
+            <div class="pei-item" *ngIf="hospital.doctorName">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              {{ hospital.doctorName }}
+            </div>
+            <div class="pei-item" *ngIf="hospital.phone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.12 1.18 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              {{ hospital.phone }}
+            </div>
+            <div class="pei-item" *ngIf="hospital.email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              {{ hospital.email }}
+            </div>
+            <div class="pei-item" *ngIf="hospital.specialization">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              {{ hospital.specialization }}
+            </div>
+            <div class="pei-item" *ngIf="hospital.bedCapacity">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+              {{ hospital.bedCapacity }} Beds
+            </div>
+            <div class="pei-item" *ngIf="hospital.registrationNumber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              {{ hospital.registrationNumber }}
+            </div>
+          </div>
+
           <div class="profile-stats">
             <div class="ps-item"><div class="ps-num">{{ hospital.equipmentList?.length || 0 }}</div><div class="ps-label">Equipment</div></div>
             <div class="ps-divider"></div>
@@ -273,7 +316,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="edit-card">
         <div class="edit-card-header">
           <div class="edit-card-title">
@@ -285,8 +328,10 @@
             <span *ngIf="editMode" class="edit-hint editing">Editing mode on</span>
           </div>
         </div>
+
         <div class="success-msg" *ngIf="detailSaveSuccess">✅ Hospital details updated successfully!</div>
         <div class="error-msg"   *ngIf="detailSaveError">❌ {{ detailSaveErrorMsg }}</div>
+
         <form [formGroup]="detailForm">
           <div class="detail-form-grid">
             <div class="form-group" [class.active-field]="editMode">
@@ -298,6 +343,40 @@
               <input type="text" formControlName="location" [readonly]="!editMode" [class.readonly-input]="!editMode">
             </div>
           </div>
+
+          <div class="detail-form-grid">
+            <div class="form-group" [class.active-field]="editMode">
+              <label>Doctor Name</label>
+              <input type="text" formControlName="doctorName" [readonly]="!editMode" [class.readonly-input]="!editMode" placeholder="e.g. Dr. John Smith">
+            </div>
+            <div class="form-group" [class.active-field]="editMode">
+              <label>Specialization</label>
+              <input type="text" formControlName="specialization" [readonly]="!editMode" [class.readonly-input]="!editMode" placeholder="e.g. Cardiology, General">
+            </div>
+          </div>
+
+          <div class="detail-form-grid">
+            <div class="form-group" [class.active-field]="editMode">
+              <label>Phone Number</label>
+              <input type="tel" formControlName="phone" [readonly]="!editMode" [class.readonly-input]="!editMode" placeholder="e.g. +91 9876543210">
+            </div>
+            <div class="form-group" [class.active-field]="editMode">
+              <label>Email Address</label>
+              <input type="email" formControlName="email" [readonly]="!editMode" [class.readonly-input]="!editMode" placeholder="e.g. hospital@email.com">
+            </div>
+          </div>
+
+          <div class="detail-form-grid">
+            <div class="form-group" [class.active-field]="editMode">
+              <label>Bed Capacity</label>
+              <input type="number" formControlName="bedCapacity" [readonly]="!editMode" [class.readonly-input]="!editMode" placeholder="e.g. 100">
+            </div>
+            <div class="form-group" [class.active-field]="editMode">
+              <label>Registration Number</label>
+              <input type="text" formControlName="registrationNumber" [readonly]="!editMode" [class.readonly-input]="!editMode" placeholder="e.g. MH/2024/1234">
+            </div>
+          </div>
+
           <div class="form-actions">
             <button type="button" class="edit-btn" *ngIf="!editMode" (click)="enableEdit()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="14" height="14"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -329,6 +408,7 @@
           <div class="dsc-info"><div class="dsc-num">{{ getPaidCount() }}</div><div class="dsc-label">Payments Done</div></div>
         </div>
       </div>
+
     </ng-container>
 
   </div>
@@ -406,16 +486,11 @@
     <div class="modal-body-inner">
       <div class="success-msg" *ngIf="maintShowMessage">{{ maintResponseMessage }}</div>
       <div class="error-msg"   *ngIf="maintShowError">{{ maintErrorMessage }}</div>
-
       <form [formGroup]="maintenanceForm">
-
-        <!-- Hospital: pre-filled, readonly -->
         <div class="form-group">
           <label>Hospital</label>
           <input type="text" [value]="hospital?.name" disabled>
         </div>
-
-        <!-- Equipment: only complete/delivered orders -->
         <div class="form-group">
           <label>Equipment <span class="req">*</span></label>
           <select formControlName="equipmentId">
@@ -426,18 +501,16 @@
           </select>
           <small class="field-hint" *ngIf="!eligibleEquipment.length">No equipment with complete/delivered orders yet.</small>
         </div>
-
         <div class="form-row-2">
           <div class="form-group">
             <label>Scheduled Date <span class="req">*</span></label>
             <input type="date" formControlName="scheduledDate">
           </div>
           <div class="form-group">
-            <label>Completed Date</label>
+            <label>Equipment Needed By</label>
             <input type="date" formControlName="completedDate">
           </div>
         </div>
-
         <div class="form-group">
           <label>Status <span class="req">*</span></label>
           <select formControlName="status">
@@ -447,12 +520,10 @@
             <option value="Complete">Complete</option>
           </select>
         </div>
-
         <div class="form-group">
-          <label>Description</label>
-          <textarea formControlName="description" rows="3" placeholder="Maintenance details..."></textarea>
+          <label>Reason for Maintenance</label>
+          <textarea formControlName="description" rows="3" placeholder="Describe the issue"></textarea>
         </div>
-
       </form>
     </div>
     <div class="modal-foot">

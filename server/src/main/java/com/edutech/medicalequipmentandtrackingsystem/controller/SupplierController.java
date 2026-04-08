@@ -38,9 +38,9 @@ public class SupplierController {
     // SOFT DELETE — Single
     // ============================
     @DeleteMapping("/api/supplier/order/delete/{orderId}")
-    public ResponseEntity<Map<String, String>> softDelete(@PathVariable Long orderId) {
-        orderService.softDeleteOrder(orderId);
-        return ResponseEntity.ok(Map.of("message", "Order moved to deleted list"));
+    public ResponseEntity<Order> softDelete(@PathVariable Long orderId) {
+        Order order = orderService.softDeleteOrder(orderId);
+        return ResponseEntity.ok(order);
     }
 
     // ============================

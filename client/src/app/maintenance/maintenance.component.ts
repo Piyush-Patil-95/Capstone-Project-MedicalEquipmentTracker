@@ -37,15 +37,15 @@ export class MaintenanceComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private httpService: HttpService,
-    private router:Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.editForm = this.fb.group({
       scheduledDate: ['', Validators.required],
       completedDate: [''],
-      status:        ['', Validators.required],
-      description:   ['']
+      status: ['', Validators.required],
+      description: ['']
     });
 
     this.getMaintenance();
@@ -54,17 +54,17 @@ export class MaintenanceComponent implements OnInit {
   // ── DATA LOADING ──────────────────────────
 
   getMaintenance() {
-  this.httpService.getMaintenance().subscribe({
-    next: (data: any) => {
-      this.maintenanceList = (Array.isArray(data) ? data : []).sort(
-        (a: any, b: any) => b.id - a.id
-      );
-      this.applyFilter();
-      this.buildHospitalBreakdown();
-    },
-    error: (err: any) => console.error('Failed to load maintenance:', err)
-  });
-}
+    this.httpService.getMaintenance().subscribe({
+      next: (data: any) => {
+        this.maintenanceList = (Array.isArray(data) ? data : []).sort(
+          (a: any, b: any) => b.id - a.id
+        );
+        this.applyFilter();
+        this.buildHospitalBreakdown();
+      },
+      error: (err: any) => console.error('Failed to load maintenance:', err)
+    });
+  }
 
   // ── FILTER ────────────────────────────────
 
@@ -91,19 +91,13 @@ export class MaintenanceComponent implements OnInit {
     ).length;
   }
 
-  /**
-   * FIX: 'in progress' was incorrectly mapped to 'initiated'.
-   * Now correctly maps to 'inprogress' CSS class.
-   * Ensure your SCSS has: .badge.complete, .badge.inprogress, .badge.pending,
-   * .badge.initiated, .badge.scheduled, .badge.unknown
-   */
   getStatusClass(status: string): string {
     const s = (status ?? '').toLowerCase().trim();
-    if (s === 'complete')    return 'complete';
-    if (s === 'progress') return 'in-progress';
-    if (s === 'pending')     return 'pending';
-    if (s === 'initiated')   return 'initiated';
-    if (s === 'scheduled')   return 'scheduled';
+    if (s === 'complete') return 'complete';
+    if (s === 'in progress') return 'in-progress';
+    if (s === 'pending') return 'pending';
+    if (s === 'initiated') return 'initiated';
+    if (s === 'scheduled') return 'scheduled';
     return 'unknown';
   }
 
@@ -146,13 +140,10 @@ export class MaintenanceComponent implements OnInit {
     this.editErrorMessage = '';
     this.editResponseMessage = '';
 
-    // Safely parse dates — handles both 'YYYY-MM-DD' strings and ISO timestamps
     const toDateString = (val: any): string => {
       if (!val) return '';
       const s = val.toString();
-      // Already in YYYY-MM-DD format
       if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-      // ISO timestamp — take date part only
       return s.split('T')[0];
     };
 
@@ -173,7 +164,6 @@ export class MaintenanceComponent implements OnInit {
   }
 
   submitUpdate(): void {
-    // Mark all controls as touched to trigger validation UI
     this.editForm.markAllAsTouched();
 
     if (this.editForm.invalid) {
@@ -199,7 +189,6 @@ export class MaintenanceComponent implements OnInit {
         this.editShowMessage  = true;
         this.editResponseMessage = 'Updated successfully!';
 
-        // Refresh list
         this.getMaintenance();
 
         setTimeout(() => {
@@ -235,25 +224,48 @@ export class MaintenanceComponent implements OnInit {
     });
   }
 
+  // ── PDF DOWNLOAD ──────────────────────────
+
+ downloadPdf(item: any): void {
+  const id = item.id;
+  // ✅ Use the correct maintenance PDF method
+  this.httpService.downloadMaintenancePdf(id).subscribe({
+    next: (blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `maintenance_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      this.showToastMsg('PDF downloaded successfully!');
+    },
+    error: (err: any) => {
+      console.error('PDF download failed:', err);
+      alert('Could not download PDF. Please try again.');
+    }
+  });
+}
+
   // ── TOAST ─────────────────────────────────
 
   showToastMsg(msg: string): void {
     this.toastMessage = msg;
-    this.showToast    = true;
+    this.showToast = true;
     setTimeout(() => (this.showToast = false), 3000);
   }
 
-
   debugData() {
-  console.log('maintenanceList:', this.maintenanceList);
-  console.log('filteredMaintenance:', this.filteredMaintenance);
-  this.httpService.getMaintenance().subscribe({
-    next: (data: any) => console.log('RAW API RESPONSE:', data),
-    error: (err: any) => console.log('API ERROR:', err)
-  });
-}
+    console.log('maintenanceList:', this.maintenanceList);
+    console.log('filteredMaintenance:', this.filteredMaintenance);
+    this.httpService.getMaintenance().subscribe({
+      next: (data: any) => console.log('RAW API RESPONSE:', data),
+      error: (err: any) => console.log('API ERROR:', err)
+    });
+  }
 
-signOut() {
-  this.router.navigate(['/dashboard'])
-}
+  signOut() {
+    this.router.navigate(['/dashboard']);
+  }
 }

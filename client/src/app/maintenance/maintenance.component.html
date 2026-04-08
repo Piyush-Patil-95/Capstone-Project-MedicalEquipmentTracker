@@ -1,5 +1,4 @@
 <div class="page-wrapper">
-
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="logo">
@@ -41,14 +40,13 @@
         <span>{{ maintenanceList.length }} records</span>
       </div>
       <button class="signout-btn" (click)="signOut()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15">
-      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-      <polyline points="16 17 21 12 16 7"/>
-      <line x1="21" y1="12" x2="9" y2="12"/>
-    </svg>
-    Sign Out
-  </button>
-
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Sign Out
+      </button>
     </div>
   </div>
 
@@ -78,27 +76,27 @@
 
       <div class="section-label">Maintenance Overview</div>
       <div class="stat-grid">
-  <div class="stat-card">
-    <div class="stat-num default">{{ maintenanceList.length }}</div>
-    <div class="stat-label"><div class="stat-dot grey"></div> Total Records</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num green">{{ getMaintenanceCountByStatus('complete') }}</div>
-    <div class="stat-label"><div class="stat-dot green"></div> Complete</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num amber">{{ getMaintenanceCountByStatus('pending') }}</div>
-    <div class="stat-label"><div class="stat-dot amber"></div> Pending</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num blue">{{ getMaintenanceCountByStatus('in progress') }}</div>
-    <div class="stat-label"><div class="stat-dot blue"></div> In Progress</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-num teal">{{ getMaintenanceCountByStatus('initiated') }}</div>
-    <div class="stat-label"><div class="stat-dot teal"></div> Initiated</div>
-  </div>
-</div>
+        <div class="stat-card">
+          <div class="stat-num default">{{ maintenanceList.length }}</div>
+          <div class="stat-label"><div class="stat-dot grey"></div> Total Records</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num green">{{ getMaintenanceCountByStatus('complete') }}</div>
+          <div class="stat-label"><div class="stat-dot green"></div> Complete</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num amber">{{ getMaintenanceCountByStatus('pending') }}</div>
+          <div class="stat-label"><div class="stat-dot amber"></div> Pending</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">{{ getMaintenanceCountByStatus('in progress') }}</div>
+          <div class="stat-label"><div class="stat-dot blue"></div> In Progress</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num teal">{{ getMaintenanceCountByStatus('initiated') }}</div>
+          <div class="stat-label"><div class="stat-dot teal"></div> Initiated</div>
+        </div>
+      </div>
 
       <div class="bottom-row">
 
@@ -200,6 +198,15 @@
               </svg>
               Update
             </button>
+            <button class="action-pdf-btn" (click)="downloadPdf(item)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="12" y1="18" x2="12" y2="12"/>
+                <line x1="9" y1="15" x2="15" y2="15"/>
+              </svg>
+              PDF
+            </button>
             <button class="action-del-btn" (click)="deleteMaintenance(item.id)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="13" height="13">
                 <polyline points="3 6 5 6 21 6"/>
@@ -219,10 +226,8 @@
       </div>
 
     </ng-container>
-
   </div>
 </div>
-
 
 <!-- UPDATE MAINTENANCE MODAL -->
 <div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditBackdrop($event)">
