@@ -12,6 +12,7 @@ export class RegistrationComponent implements OnInit {
   itemForm!: FormGroup;
   otpForm!: FormGroup;
   hidePassword: boolean = true;
+  showPopup = false;
 
   successMessage: string = '';
   errorMessage: string = '';
@@ -171,9 +172,10 @@ export class RegistrationComponent implements OnInit {
 
     this.httpService.registerUser(payload).subscribe({
       next: () => {
-        this.successMessage = '✅ Registration successful! Redirecting to login...';
         this.itemForm.reset();
-        setTimeout(() => this.router.navigate(['/login']), 2000);
+        this.showPopup = true;
+        setTimeout(() => {this.showPopup = false; 
+          this.router.navigate(['/login']);},2500);
       },
       error: (err) => {
         this.errorMessage = err?.error?.message || 'Registration failed. Please try again.';
