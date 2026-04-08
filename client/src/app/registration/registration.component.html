@@ -96,6 +96,22 @@
         </small>
       </div>
 
+      <!-- Success Popup -->
+<div class="popup-overlay" *ngIf="showPopup">
+<div class="popup-box">
+<div class="popup-icon">
+<svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+<circle cx="12" cy="12" r="12" fill="#4caf50"/>
+<polyline points="5,13 10,18 19,7" stroke="white" stroke-width="2.5" 
+stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</div>
+<h2>Registration Successful!</h2>
+<p>Redirecting you to login...</p>
+<div class="popup-progress"></div>
+</div>
+</div>
+
       <!-- ✅ HOSPITAL FIELDS -->
       <ng-container *ngIf="itemForm.get('role')?.value === 'HOSPITAL'">
         <div class="form-group">
